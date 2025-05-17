@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-import type { ChatMessage } from "../../types";
+import type { ChatMessage, SelectedUser } from "../../types";
 
 import "./ReplyBox.scss";
 
 interface ReplyBoxProps {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-  selectedUser: string | null;
+  selectedUser: SelectedUser;
 }
 
 const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {

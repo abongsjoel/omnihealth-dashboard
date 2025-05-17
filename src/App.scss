@@ -4,33 +4,6 @@
   height: 100vh;
   font-family: "Open Sans", sans-serif;
 
-  .user-list {
-    border-right: 1px solid #ddd;
-    padding: 1rem;
-    overflow-y: auto;
-    background: #f8f8f8;
-
-    h2 {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .user {
-      padding: 0.5rem;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #eee;
-      }
-
-      &.selected {
-        background-color: #dbeafe;
-      }
-    }
-  }
-
   .chat-area {
     display: flex;
     flex-direction: column;

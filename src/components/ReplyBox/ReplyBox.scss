@@ -31,15 +31,15 @@
   }
 
   button {
-    background-color: #2563eb;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
 
     &:hover {
-      background-color: #1e40af;
+      background-color: var(--primary-hover);
     }
   }
 }

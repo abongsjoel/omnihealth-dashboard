@@ -1,1 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
 
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1e40af;
+  --primary-selected: #dbeafe;
+
+  --gray-100: #eee;
+  --gray-200: #ddd;
+  --gray-300: #f8f8f8;
+
+  --white: #fff;
+}
