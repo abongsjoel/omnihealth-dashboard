@@ -20,15 +20,17 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   return (
     <section className="user-list">
       <h2 className="title">Users</h2>
-      {users.map((userId) => (
-        <div
-          key={userId}
-          onClick={() => setSelectedUser(userId)}
-          className={`user ${selectedUser === userId ? "selected" : ""}`}
-        >
-          {userId}
-        </div>
-      ))}
+      {users
+        .filter((u) => u !== "WEB_SIMULATION")
+        .map((userId) => (
+          <div
+            key={userId}
+            onClick={() => setSelectedUser(userId)}
+            className={`user ${selectedUser === userId ? "selected" : ""}`}
+          >
+            {userId}
+          </div>
+        ))}
     </section>
   );
 };

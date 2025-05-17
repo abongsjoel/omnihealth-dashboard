@@ -23,5 +23,9 @@
     &.selected {
       background-color: var(--primary-selected);
     }
+
+    @media (max-width: 600px) {
+      font-size: 0.7rem;
+    }
   }
 }
