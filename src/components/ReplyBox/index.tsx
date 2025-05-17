@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import type { ChatMessage } from "../../App";
@@ -13,6 +13,8 @@ interface ReplyBoxProps {
 const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
   const [reply, setReply] = useState<string>("");
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const handleSend = async () => {
     if (!reply.trim()) return;
 
@@ -25,13 +27,22 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
     setReply("");
   };
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [reply]);
+
   return (
     <div className="input-box">
       <textarea
+        ref={textareaRef}
         value={reply}
         onChange={(e) => setReply(e.target.value)}
         placeholder="Type your reply..."
-        rows={6}
+        rows={4}
+        style={{ resize: "none", overflow: "hidden" }}
       />
       <div className="btn-container">
         <button onClick={handleSend}>Send</button>
