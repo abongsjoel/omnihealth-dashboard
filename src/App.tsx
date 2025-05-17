@@ -6,6 +6,7 @@ import ReplyBox from "./components/ReplyBox";
 import type { ChatMessage } from "./types";
 
 import "./App.scss";
+import Messages from "./components/Messages";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -40,21 +41,7 @@ function App() {
       </div>
 
       <div className="chat-area">
-        <div className="messages">
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`message ${
-                msg.role === "user" ? "user-msg" : "assistant-msg"
-              }`}
-            >
-              <strong className="msg-sender">
-                {msg.role === "user" ? "User" : "Assistant"}:
-              </strong>{" "}
-              {msg.content}
-            </div>
-          ))}
-        </div>
+        <Messages messages={messages} />
         <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
       </div>
     </div>

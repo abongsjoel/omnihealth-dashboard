@@ -13,7 +13,6 @@ interface ReplyBoxProps {
 const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
   const [reply, setReply] = useState<string>("");
   const [isSending, setIsSending] = useState<boolean>(false);
-  console.log({ isSending });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

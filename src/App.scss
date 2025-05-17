@@ -37,33 +37,5 @@
     flex: 1;
     overflow-y: auto;
     height: 100vh;
-
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem;
-    }
-
-    .message {
-      margin-bottom: 0.75rem;
-      padding: 0.5rem 0.75rem;
-      max-width: 70%;
-      border-radius: 6px;
-
-      &.user-msg {
-        background-color: #e5e5e5;
-        align-self: flex-start;
-      }
-
-      &.assistant-msg {
-        background-color: #c7f0d9;
-        align-self: flex-end;
-      }
-    }
-
-    .msg-sender {
-      font-weight: bold;
-      font-style: italic;
-    }
   }
 }
