@@ -50,7 +50,7 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
   }, [reply]);
 
   return (
-    <div className="input-box">
+    <section className="input-box">
       <textarea
         ref={textareaRef}
         value={reply}
@@ -59,12 +59,12 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
         placeholder="Type your reply..."
         rows={4}
       />
-      <div className="btn-container">
+      <footer className="btn-container">
         <button onClick={handleSend} disabled={isSending}>
           {isSending ? "Sending..." : "Send"}
         </button>
-      </div>
-    </div>
+      </footer>
+    </section>
   );
 };
 

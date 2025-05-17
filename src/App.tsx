@@ -8,6 +8,7 @@ import type { ChatMessage, SelectedUser } from "./types";
 
 import "./App.scss";
 import Users from "./components/Users";
+import EmptyChat from "./components/EmptyChat";
 
 function App() {
   const [selectedUser, setSelectedUser] = useState<SelectedUser>(null);
@@ -22,14 +23,20 @@ function App() {
   }, [selectedUser]);
 
   return (
-    <div className="dashboard">
+    <main className="dashboard">
       <Users selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
 
-      <div className="chat-area">
-        <Messages messages={messages} />
-        <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
-      </div>
-    </div>
+      <section className="chat-area">
+        {selectedUser ? (
+          <>
+            <Messages messages={messages} />
+            <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
+          </>
+        ) : (
+          <EmptyChat />
+        )}
+      </section>
+    </main>
   );
 }
 
