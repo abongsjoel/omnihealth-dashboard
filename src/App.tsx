@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import "./App.scss";
 import ReplyBox from "./components/ReplyBox";
 
-export interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
+import type { ChatMessage } from "./types";
+
+import "./App.scss";
 
 function App() {
   const [users, setUsers] = useState([]);

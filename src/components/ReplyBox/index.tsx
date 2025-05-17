@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-import type { ChatMessage } from "../../App";
+import type { ChatMessage } from "../../types";
 
 import "./ReplyBox.scss";
 
@@ -42,7 +42,6 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
         onChange={(e) => setReply(e.target.value)}
         placeholder="Type your reply..."
         rows={4}
-        style={{ resize: "none", overflow: "hidden" }}
       />
       <div className="btn-container">
         <button onClick={handleSend}>Send</button>
