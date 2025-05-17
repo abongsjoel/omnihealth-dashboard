@@ -12,7 +12,19 @@ function App() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  console.log({ users, selectedUser, messages });
+  const [reply, setReply] = useState<string>("");
+
+  const handleSend = async () => {
+    if (!reply.trim()) return;
+
+    await axios.post("/api/send-message", {
+      to: selectedUser,
+      message: reply,
+    });
+
+    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    setReply("");
+  };
 
   useEffect(() => {
     axios.get("/api/users").then((res) => setUsers(res.data));
@@ -50,10 +62,24 @@ function App() {
                 msg.role === "user" ? "user-msg" : "assistant-msg"
               }`}
             >
-              <strong>{msg.role === "user" ? "User" : "AI"}:</strong>{" "}
+              <strong className="msg-sender">
+                {msg.role === "user" ? "User" : "Assistant"}:
+              </strong>{" "}
               {msg.content}
             </div>
           ))}
+        </div>
+
+        <div className="input-box">
+          <textarea
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            placeholder="Type your reply..."
+            rows={6}
+          />
+          <div className="btn-container">
+            <button onClick={handleSend}>Send</button>
+          </div>
         </div>
       </div>
     </div>
