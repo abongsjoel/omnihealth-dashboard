@@ -12,19 +12,35 @@ interface ReplyBoxProps {
 
 const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
   const [reply, setReply] = useState<string>("");
+  const [isSending, setIsSending] = useState<boolean>(false);
+  console.log({ isSending });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = async () => {
-    if (!reply.trim()) return;
+    if (!reply.trim() || isSending) return;
+    setIsSending(true);
 
-    await axios.post("/api/send-message", {
-      to: selectedUser,
-      message: reply,
-    });
+    try {
+      await axios.post("/api/send-message", {
+        to: selectedUser,
+        message: reply,
+      });
 
-    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-    setReply("");
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      setReply("");
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   useEffect(() => {
@@ -40,11 +56,14 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
         ref={textareaRef}
         value={reply}
         onChange={(e) => setReply(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Type your reply..."
         rows={4}
       />
       <div className="btn-container">
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend} disabled={isSending}>
+          {isSending ? "Sending..." : "Send"}
+        </button>
       </div>
     </div>
   );
