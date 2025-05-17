@@ -34,6 +34,9 @@
   .chat-area {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    height: 100vh;
 
     .messages {
       flex: 1;
