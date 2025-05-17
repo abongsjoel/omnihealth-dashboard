@@ -2,29 +2,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "./App.scss";
+import ReplyBox from "./components/ReplyBox";
 
-interface ChatMessage {
+export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
 }
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [reply, setReply] = useState<string>("");
-
-  const handleSend = async () => {
-    if (!reply.trim()) return;
-
-    await axios.post("/api/send-message", {
-      to: selectedUser,
-      message: reply,
-    });
-
-    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-    setReply("");
-  };
 
   useEffect(() => {
     axios.get("/api/users").then((res) => setUsers(res.data));
@@ -69,18 +57,7 @@ function App() {
             </div>
           ))}
         </div>
-
-        <div className="input-box">
-          <textarea
-            value={reply}
-            onChange={(e) => setReply(e.target.value)}
-            placeholder="Type your reply..."
-            rows={6}
-          />
-          <div className="btn-container">
-            <button onClick={handleSend}>Send</button>
-          </div>
-        </div>
+        <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
       </div>
     </div>
   );
