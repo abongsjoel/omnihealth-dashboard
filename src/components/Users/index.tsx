@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+import { API_BASE_URL } from "../../config";
 import type { SelectedUser } from "../../types";
 
 import "./Users.scss";
@@ -14,7 +15,7 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/users").then((res) => setUsers(res.data));
+    axios.get(`${API_BASE_URL}/api/users`).then((res) => setUsers(res.data));
   }, []);
 
   return (
