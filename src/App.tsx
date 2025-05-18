@@ -17,8 +17,12 @@ function App() {
   useEffect(() => {
     async function doFetchSelectedUser() {
       if (selectedUser) {
-        const data = await fetchUserData(selectedUser);
-        setMessages(data);
+        try {
+          const data = await fetchUserData(selectedUser);
+          setMessages(data);
+        } catch (error) {
+          console.log("Error", error);
+        }
       }
     }
 

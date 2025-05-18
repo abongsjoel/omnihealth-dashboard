@@ -4,34 +4,33 @@ import { API_BASE_URL } from "./config";
 import type { SelectedUser } from "./types";
 
 export async function fetchUsers() {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/api/users`);
-    return response.data;
-  } catch (error) {
-    console.log("Error", error);
-    return [];
+  const response = await axios.get(`${API_BASE_URL}/api/users`);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch users");
   }
+
+  return response.data;
 }
 
 export async function fetchUserData(selectedUser: SelectedUser) {
-  try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/messages/${selectedUser}`
-    );
-    return response.data;
-  } catch (error) {
-    console.log("Error", error);
-    return null;
+  const response = await axios.get(
+    `${API_BASE_URL}/api/messages/${selectedUser}`
+  );
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch user data");
   }
+  return response.data;
 }
 
 export async function sendMessage(selectedUser: SelectedUser, reply: string) {
-  try {
-    await axios.post(`${API_BASE_URL}/api/send-message`, {
-      to: selectedUser,
-      message: reply,
-    });
-  } catch (err) {
-    console.error("Failed to send message:", err);
+  const response = await axios.post(`${API_BASE_URL}/api/send-message`, {
+    to: selectedUser,
+    message: reply,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch user data");
   }
 }

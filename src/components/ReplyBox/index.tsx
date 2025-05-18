@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import type { ChatMessage, SelectedUser } from "../../types";
-import { sendMessage } from "../../http";
 
+import { sendMessage } from "../../http";
 import "./ReplyBox.scss";
 
 interface ReplyBoxProps {
@@ -20,12 +20,16 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
     if (!reply.trim() || isSending) return;
     setIsSending(true);
 
-    await sendMessage(selectedUser, reply);
+    try {
+      await sendMessage(selectedUser, reply);
 
-    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-    setReply("");
-
-    setIsSending(false);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      setReply("");
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

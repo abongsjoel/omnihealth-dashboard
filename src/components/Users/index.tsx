@@ -11,12 +11,16 @@ interface MessagesProps {
 }
 
 const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<string[]>([]);
 
   useEffect(() => {
     async function doFetch() {
-      const fetchedUsers = await fetchUsers();
-      setUsers(fetchedUsers);
+      try {
+        const fetchedusers: string[] = await fetchUsers();
+        setUsers(fetchedusers);
+      } catch (error) {
+        console.log("Error:", error);
+      }
     }
     doFetch();
   }, []);
