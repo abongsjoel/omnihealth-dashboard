@@ -5,6 +5,7 @@ import { fetchUsers } from "../../http";
 import { useFetch } from "../../hooks/useFetch";
 
 import "./Users.scss";
+import Skeleton from "./Skeleton";
 
 interface MessagesProps {
   selectedUser: SelectedUser;
@@ -23,7 +24,10 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   return (
     <section className="user-list">
       <h2 className="title">Users</h2>
-      {users &&
+      {isFetching ? (
+        <Skeleton />
+      ) : (
+        users &&
         users
           .filter((u) => u !== "WEB_SIMULATION")
           .map((userId) => (
@@ -34,7 +38,8 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
             >
               {userId}
             </div>
-          ))}
+          ))
+      )}
     </section>
   );
 };
