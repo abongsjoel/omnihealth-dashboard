@@ -6,6 +6,7 @@ import { useFetch } from "../../hooks/useFetch";
 
 import "./Users.scss";
 import Skeleton from "./Skeleton";
+import Error from "../Error";
 
 interface MessagesProps {
   selectedUser: SelectedUser;
@@ -19,13 +20,16 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
     fetchedData: users,
   } = useFetch<string[]>(fetchUsers, []);
 
-  console.log({ isFetching, error, users });
-
   return (
     <section className="user-list">
       <h2 className="title">Users</h2>
       {isFetching ? (
         <Skeleton />
+      ) : error ? (
+        <Error
+          title="Unable to load users"
+          message="Please check your connection or try again shortly."
+        />
       ) : (
         users &&
         users
