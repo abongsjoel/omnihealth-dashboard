@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import type { SelectedUser } from "../../types";
 import { fetchUsers } from "../../http";
+import { useFetch } from "../../hooks/useFetch";
 
 import "./Users.scss";
 
@@ -11,34 +12,29 @@ interface MessagesProps {
 }
 
 const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
-  const [users, setUsers] = useState<string[]>([]);
+  const {
+    isFetching,
+    error,
+    fetchedData: users,
+  } = useFetch<string[]>(fetchUsers, []);
 
-  useEffect(() => {
-    async function doFetch() {
-      try {
-        const fetchedusers: string[] = await fetchUsers();
-        setUsers(fetchedusers);
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    }
-    doFetch();
-  }, []);
+  console.log({ isFetching, error, users });
 
   return (
     <section className="user-list">
       <h2 className="title">Users</h2>
-      {users
-        .filter((u) => u !== "WEB_SIMULATION")
-        .map((userId) => (
-          <div
-            key={userId}
-            onClick={() => setSelectedUser(userId)}
-            className={`user ${selectedUser === userId ? "selected" : ""}`}
-          >
-            {userId}
-          </div>
-        ))}
+      {users &&
+        users
+          .filter((u) => u !== "WEB_SIMULATION")
+          .map((userId) => (
+            <div
+              key={userId}
+              onClick={() => setSelectedUser(userId)}
+              className={`user ${selectedUser === userId ? "selected" : ""}`}
+            >
+              {userId}
+            </div>
+          ))}
     </section>
   );
 };
