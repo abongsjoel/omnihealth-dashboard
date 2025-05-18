@@ -1,0 +1,31 @@
+.user-list {
+  border-right: 1px solid var(--gray-200);
+  padding: 1rem;
+  overflow-y: auto;
+  background: var(--gray-300);
+
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+  }
+
+  .user {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--gray-100);
+    }
+
+    &.selected {
+      background-color: var(--primary-selected);
+    }
+
+    @media (max-width: 600px) {
+      font-size: 0.7rem;
+    }
+  }
+}
