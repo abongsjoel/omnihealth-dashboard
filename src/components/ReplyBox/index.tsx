@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 
 import type { ChatMessage, SelectedUser } from "../../types";
+import { sendMessage } from "../../http";
 
 import "./ReplyBox.scss";
 
@@ -20,19 +20,12 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
     if (!reply.trim() || isSending) return;
     setIsSending(true);
 
-    try {
-      await axios.post("/api/send-message", {
-        to: selectedUser,
-        message: reply,
-      });
+    await sendMessage(selectedUser, reply);
 
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-      setReply("");
-    } catch (err) {
-      console.error("Failed to send message:", err);
-    } finally {
-      setIsSending(false);
-    }
+    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    setReply("");
+
+    setIsSending(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

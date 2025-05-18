@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
-import { API_BASE_URL } from "../../config";
 import type { SelectedUser } from "../../types";
+import { fetchUsers } from "../../http";
 
 import "./Users.scss";
 
@@ -15,7 +14,11 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/users`).then((res) => setUsers(res.data));
+    async function doFetch() {
+      const fetchedUsers = await fetchUsers();
+      setUsers(fetchedUsers);
+    }
+    doFetch();
   }, []);
 
   return (
