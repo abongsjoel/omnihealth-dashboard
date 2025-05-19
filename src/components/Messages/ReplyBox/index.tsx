@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { sendMessage } from "../../../http";
-import type { ChatMessage, SelectedUser } from "../../../types";
+import type { ChatMessage, UserId } from "../../../types";
 import Button from "../../common/Button";
 
 import "./ReplyBox.scss";
 
 interface ReplyBoxProps {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-  selectedUser: SelectedUser;
+  selectedUserId: UserId;
 }
 
-const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
+const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUserId }) => {
   const [reply, setReply] = useState<string>("");
   const [isSending, setIsSending] = useState<boolean>(false);
 
@@ -22,7 +22,7 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
     setIsSending(true);
 
     try {
-      await sendMessage(selectedUser, reply);
+      await sendMessage(selectedUserId, reply);
 
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
       setReply("");

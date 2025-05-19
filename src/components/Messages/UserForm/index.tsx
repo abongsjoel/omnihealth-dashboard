@@ -69,7 +69,6 @@ const UserForm: React.FC<UserFormProps> = ({
       }
     } catch (err) {
       console.error("Failed to assign name:", err);
-      // Optionally show error to user
     }
   };
 

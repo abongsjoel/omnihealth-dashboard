@@ -1,10 +1,10 @@
 import axios from "axios";
 
 import { API_BASE_URL } from "./config";
-import type { SelectedUser, UserFormValues } from "./types";
+import type { UserId, UserFormValues } from "./types";
 
 export async function fetchUsers() {
-  const response = await axios.get(`${API_BASE_URL}/api/users`);
+  const response = await axios.get(`${API_BASE_URL}/api/user-ids`);
 
   if (response.status !== 200) {
     throw new Error("Failed to fetch users");
@@ -13,9 +13,9 @@ export async function fetchUsers() {
   return response.data;
 }
 
-export async function fetchUserData(selectedUser: SelectedUser) {
+export async function fetchUserData(selectedUserId: UserId) {
   const response = await axios.get(
-    `${API_BASE_URL}/api/messages/${selectedUser}`
+    `${API_BASE_URL}/api/messages/${selectedUserId}`
   );
 
   if (response.status !== 200) {
@@ -24,9 +24,9 @@ export async function fetchUserData(selectedUser: SelectedUser) {
   return response.data;
 }
 
-export async function sendMessage(selectedUser: SelectedUser, reply: string) {
+export async function sendMessage(selectedUserId: UserId, reply: string) {
   const response = await axios.post(`${API_BASE_URL}/api/send-message`, {
-    to: selectedUser,
+    to: selectedUserId,
     message: reply,
   });
 

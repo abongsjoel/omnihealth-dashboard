@@ -4,22 +4,22 @@ import ReplyBox from "./components/Messages/ReplyBox";
 import Messages from "./components/Messages";
 import Users from "./components/Users";
 import EmptyChat from "./components/Messages/EmptyChat";
+import MessageHeader from "./components/Messages/MessageHeader";
 import { fetchUserData } from "./http";
 
-import type { ChatMessage, SelectedUser } from "./types";
+import type { ChatMessage, UserId } from "./types";
 
 import "./App.scss";
-import MessageHeader from "./components/Messages/MessageHeader";
 
 function App() {
-  const [selectedUser, setSelectedUser] = useState<SelectedUser>(null);
+  const [selectedUserId, setSelectedUserId] = useState<UserId>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
     async function doFetchSelectedUser() {
-      if (selectedUser) {
+      if (selectedUserId) {
         try {
-          const data = await fetchUserData(selectedUser);
+          const data = await fetchUserData(selectedUserId);
           setMessages(data);
         } catch (error) {
           console.log("Error", error);
@@ -28,18 +28,27 @@ function App() {
     }
 
     doFetchSelectedUser();
-  }, [selectedUser]);
+  }, [selectedUserId]);
 
   return (
     <main className="dashboard">
-      <Users selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+      <Users
+        selectedUserId={selectedUserId}
+        setSelectedUserId={setSelectedUserId}
+      />
 
       <section className="chat-area">
-        {selectedUser ? (
+        {selectedUserId ? (
           <>
-            <MessageHeader selectedUser={selectedUser} displayName="Chi Joel" />
+            <MessageHeader
+              selectedUserId={selectedUserId}
+              displayName="Chi Joel"
+            />
             <Messages messages={messages} />
-            <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
+            <ReplyBox
+              setMessages={setMessages}
+              selectedUserId={selectedUserId}
+            />
           </>
         ) : (
           <EmptyChat />
