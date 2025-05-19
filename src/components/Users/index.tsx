@@ -1,12 +1,13 @@
 import React from "react";
 
-import type { SelectedUser } from "../../types";
 import { fetchUsers } from "../../http";
 import { useFetch } from "../../hooks/useFetch";
-
-import "./Users.scss";
 import Skeleton from "./Skeleton";
 import Error from "../Error";
+
+import type { SelectedUser } from "../../types";
+
+import "./Users.scss";
 
 interface MessagesProps {
   selectedUser: SelectedUser;
@@ -22,6 +23,7 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
 
   return (
     <section className="user-list">
+      <h1 className="logo">OmniHealth Dashboard</h1>
       <h2 className="title">Users</h2>
       {isFetching ? (
         <Skeleton />
