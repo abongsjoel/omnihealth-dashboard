@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { API_BASE_URL } from "./config";
-import type { UserId, UserFormValues } from "./types";
+import type { UserId } from "./types";
 
 export async function fetchUserData(selectedUserId: UserId) {
   const response = await axios.get(

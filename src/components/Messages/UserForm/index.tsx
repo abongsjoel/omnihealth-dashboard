@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 import Input from "../../common/Input";
 import Button from "../../common/Button";
+import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
 import type { UserFormValues } from "../../../types";
 
 import "./UserForm.scss";
-import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
 interface UserFormProps {
   title?: string;
@@ -68,9 +69,14 @@ const UserForm: React.FC<UserFormProps> = ({
         if (handleCloseModal) {
           handleCloseModal();
         }
+
+        toast.success(
+          `Assigned "${result.user.username}" to ${result.user.userId}`
+        );
       }
     } catch (err) {
       console.error("Failed to assign name:", err);
+      toast.error("Failed to assign name. Please try again.");
     }
   };
 

@@ -66,7 +66,6 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
       return a.username.localeCompare(b.username);
     });
   }, [userIds, users]);
-  console.log({ usersList });
 
   return (
     <section className="user-list">

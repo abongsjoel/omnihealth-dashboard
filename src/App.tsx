@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 import ReplyBox from "./components/Messages/ReplyBox";
 import Messages from "./components/Messages";
@@ -34,6 +35,16 @@ function App() {
 
   return (
     <main className="dashboard">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontSize: "0.75rem",
+            borderRadius: "6px",
+          },
+        }}
+      />
       <Users selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
 
       <section className="chat-area">
