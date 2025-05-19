@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 import Input from "../../common/Input";
 import Button from "../../common/Button";
-import { assignName } from "../../../http";
+import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
 import type { UserFormValues } from "../../../types";
 
@@ -11,6 +12,7 @@ import "./UserForm.scss";
 interface UserFormProps {
   title?: string;
   userId?: string;
+  username?: string;
   handleCloseModal?: () => void;
 }
 
@@ -30,7 +32,9 @@ const validate = (
   }
 
   if (!form.userId) {
-    newErrors.userId = "Password is required.";
+    newErrors.userId = "Phone number is required.";
+  } else if (form.userId.length < 9 || form.userId.length > 15) {
+    newErrors.userId = "Phone number must be between 9 and 15 digits.";
   }
 
   setErrors(newErrors);
@@ -40,9 +44,12 @@ const validate = (
 const UserForm: React.FC<UserFormProps> = ({
   title = "",
   userId = "",
+  username = "",
   handleCloseModal,
 }) => {
-  const [form, setForm] = useState({ username: "", userId });
+  const [assignName, { isLoading }] = useAssignNameMutation();
+
+  const [form, setForm] = useState({ username, userId });
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,18 +64,23 @@ const UserForm: React.FC<UserFormProps> = ({
     event.preventDefault();
     if (!validate(form, setErrors)) return;
 
+    console.log({ form });
+
     try {
-      const result = await assignName(form);
+      const result = await assignName(form).unwrap();
 
       if (result.success) {
-        console.log("Name assigned:", result.user);
-
         if (handleCloseModal) {
           handleCloseModal();
         }
+
+        toast.success(
+          `Assigned "${result.user.username}" to ${result.user.userId}`
+        );
       }
     } catch (err) {
       console.error("Failed to assign name:", err);
+      toast.error("Failed to assign name. Please try again.");
     }
   };
 
@@ -85,21 +97,22 @@ const UserForm: React.FC<UserFormProps> = ({
           value={form.username}
           onChange={handleChange}
           error={errors.username}
-          required
+          // required
           autoComplete="username"
           className="user_input"
         />
         <Input
-          id="phone"
-          name="phone"
-          type="phone"
+          id="userId"
+          name="userId"
+          type="number"
           label="Phone Number"
           placeholder="237670312288"
           value={form.userId}
           onChange={handleChange}
-          // error={errors.phone}
+          error={errors.userId}
           autoComplete="current-password"
-          // required
+          pattern="[0-9]{9,15}"
+          required
           disabled={!!userId}
           className="user_input"
         />
@@ -110,7 +123,12 @@ const UserForm: React.FC<UserFormProps> = ({
             className="user_btn"
             outline
           />
-          <Button label="Assign" onClick={handleSubmit} className="user_btn" />
+          <Button
+            label={isLoading ? "Assigning..." : "Assign"}
+            onClick={handleSubmit}
+            className="user_btn"
+            disabled={isLoading}
+          />
         </footer>
       </main>
     </form>

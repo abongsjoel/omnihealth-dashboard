@@ -1,35 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { sendMessage } from "../../../http";
-import type { ChatMessage, UserId } from "../../../types";
+import { useSendMessageMutation } from "../../../redux/apis/messagesApi";
 import Button from "../../common/Button";
+
+import type { UserId } from "../../../types";
 
 import "./ReplyBox.scss";
 
 interface ReplyBoxProps {
-  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
   selectedUserId: UserId;
 }
 
-const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUserId }) => {
+const ReplyBox: React.FC<ReplyBoxProps> = ({ selectedUserId }) => {
+  const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
+
   const [reply, setReply] = useState<string>("");
-  const [isSending, setIsSending] = useState<boolean>(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = async () => {
     if (!reply.trim() || isSending) return;
-    setIsSending(true);
 
     try {
-      await sendMessage(selectedUserId, reply);
+      await sendMessage({ to: selectedUserId, message: reply });
 
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
       setReply("");
     } catch (err) {
       console.error("Failed to send message:", err);
-    } finally {
-      setIsSending(false);
     }
   };
 

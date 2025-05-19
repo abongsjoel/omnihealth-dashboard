@@ -1,37 +1,45 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
-import { useFetch } from "../../hooks/useFetch";
+import {
+  useGetUserIdsQuery,
+  useGetUsersQuery,
+} from "../../redux/apis/usersApi";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
-import { fetchUserIds, fetchUsers } from "../../http";
+import Button from "../common/Button";
+import Modal from "../common/Modal";
 
-import type { UserFormValues } from "../../types";
+import type { UserId } from "../../types";
 
 import "./Users.scss";
+import UserForm from "../Messages/UserForm";
 
 interface MessagesProps {
-  selectedUser: UserFormValues | undefined;
-  setSelectedUser: React.Dispatch<
-    React.SetStateAction<UserFormValues | undefined>
-  >;
+  selectedUserId: UserId;
+  setSelectedUserId: React.Dispatch<React.SetStateAction<UserId>>;
 }
 
-const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
+const Users: React.FC<MessagesProps> = ({
+  selectedUserId,
+  setSelectedUserId,
+}) => {
   const {
-    isFetching: isFetchingIds,
+    data: userIds = [],
+    isLoading: isLoadingIds,
     error: errorIds,
-    fetchedData: userIds,
-  } = useFetch<string[]>(fetchUserIds, []);
+  } = useGetUserIdsQuery();
 
   const {
-    isFetching: isFetchingUsers,
+    data: users = [],
+    isLoading: isLoadingUsers,
     error: errorUsers,
-    fetchedData: users,
-  } = useFetch<UserFormValues[]>(fetchUsers, []);
+  } = useGetUsersQuery();
 
-  const isFetching = useMemo(
-    () => isFetchingIds || isFetchingUsers,
-    [isFetchingIds, isFetchingUsers]
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const isLoading = useMemo(
+    () => isLoadingIds || isLoadingUsers,
+    [isLoadingIds, isLoadingUsers]
   );
   const error = useMemo(() => errorIds || errorUsers, [errorIds, errorUsers]);
 
@@ -64,42 +72,61 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
       return a.username.localeCompare(b.username);
     });
   }, [userIds, users]);
-  console.log({ usersList });
+
+  const handleUserClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
-    <section className="user-list">
-      <h1 className="logo">OmniHealth Dashboard</h1>
-      <h2 className="title">Users</h2>
-      {isFetching ? (
-        <Skeleton />
-      ) : error ? (
-        <Error
-          title="Unable to load users"
-          message="Please check your connection or try again shortly."
-        />
-      ) : (
-        usersList
-          .filter((u) => u.userId !== "WEB_SIMULATION")
-          .map((usr) => (
-            <div
-              key={usr.userId}
-              onClick={() => setSelectedUser(usr)}
-              className={`user ${
-                selectedUser?.userId === usr.userId ? "selected" : ""
-              }`}
-            >
-              {usr.username ? (
-                <div className="user-details">
-                  <span className="user_name">{usr.username}</span>
-                  <span className="user_id">{usr.userId}</span>
-                </div>
-              ) : (
-                usr.userId
-              )}
-            </div>
-          ))
-      )}
-    </section>
+    <>
+      <section className="user-list">
+        <h1 className="logo">OmniHealth Dashboard</h1>
+        <section className="user-list-header">
+          <h2 className="title">Users</h2>
+          <Button
+            label="Add User"
+            onClick={handleUserClick}
+            className="add_user_btn"
+          />
+        </section>
+        {isLoading ? (
+          <Skeleton />
+        ) : error ? (
+          <Error
+            title="Unable to load users"
+            message="Please check your connection or try again shortly."
+          />
+        ) : (
+          usersList
+            .filter((u) => u.userId !== "WEB_SIMULATION")
+            .map((usr) => (
+              <div
+                key={usr.userId}
+                onClick={() => setSelectedUserId(usr.userId)}
+                className={`user ${
+                  selectedUserId === usr.userId ? "selected" : ""
+                }`}
+              >
+                {usr.username ? (
+                  <div className="user-details">
+                    <span className="user_name">{usr.username}</span>
+                    <span className="user_id">{usr.userId}</span>
+                  </div>
+                ) : (
+                  usr.userId
+                )}
+              </div>
+            ))
+        )}
+      </section>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <UserForm title="Add User" handleCloseModal={handleCloseModal} />
+      </Modal>
+    </>
   );
 };
 

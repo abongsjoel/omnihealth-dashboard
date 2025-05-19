@@ -25,3 +25,9 @@
     font-style: italic;
   }
 }
+
+@media (max-width: $mobile-breakpoint) {
+  .messages {
+    font-size: 0.75rem;
+  }
+}
