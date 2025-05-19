@@ -9,6 +9,7 @@ import { fetchUserData } from "./http";
 import type { ChatMessage, SelectedUser } from "./types";
 
 import "./App.scss";
+import MessageHeader from "./components/Messages/MessageHeader";
 
 function App() {
   const [selectedUser, setSelectedUser] = useState<SelectedUser>(null);
@@ -36,6 +37,7 @@ function App() {
       <section className="chat-area">
         {selectedUser ? (
           <>
+            <MessageHeader selectedUser={selectedUser} displayName="Chi Joel" />
             <Messages messages={messages} />
             <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
           </>

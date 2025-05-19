@@ -52,7 +52,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: $mobile-breakpoint) {
   .user-list {
     .logo {
       font-size: 0.8rem;
