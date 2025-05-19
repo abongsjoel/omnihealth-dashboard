@@ -1,9 +1,13 @@
 import React, { useMemo } from "react";
 
-import { useFetch } from "../../hooks/useFetch";
+// import { useFetch } from "../../hooks/useFetch";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
-import { fetchUserIds, fetchUsers } from "../../http";
+// import { fetchUserIds, fetchUsers } from "../../http";
+import {
+  useGetUserIdsQuery,
+  useGetUsersQuery,
+} from "../../redux/apis/usersApi";
 
 import type { UserFormValues } from "../../types";
 
@@ -18,16 +22,28 @@ interface MessagesProps {
 
 const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   const {
-    isFetching: isFetchingIds,
+    data: userIds = [],
+    isLoading: isFetchingIds,
     error: errorIds,
-    fetchedData: userIds,
-  } = useFetch<string[]>(fetchUserIds, []);
+  } = useGetUserIdsQuery();
 
   const {
-    isFetching: isFetchingUsers,
+    data: users = [],
+    isLoading: isFetchingUsers,
     error: errorUsers,
-    fetchedData: users,
-  } = useFetch<UserFormValues[]>(fetchUsers, []);
+  } = useGetUsersQuery();
+
+  // const {
+  //   isFetching: isFetchingIds,
+  //   error: errorIds,
+  //   fetchedData: userIds,
+  // } = useFetch<string[]>(fetchUserIds, []);
+
+  // const {
+  //   isFetching: isFetchingUsers,
+  //   error: errorUsers,
+  //   fetchedData: users,
+  // } = useFetch<UserFormValues[]>(fetchUsers, []);
 
   const isFetching = useMemo(
     () => isFetchingIds || isFetchingUsers,

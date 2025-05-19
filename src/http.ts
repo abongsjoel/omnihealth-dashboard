@@ -3,16 +3,6 @@ import axios from "axios";
 import { API_BASE_URL } from "./config";
 import type { UserId, UserFormValues } from "./types";
 
-export async function fetchUserIds() {
-  const response = await axios.get(`${API_BASE_URL}/api/user-ids`);
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch users");
-  }
-
-  return response.data;
-}
-
 export async function fetchUserData(selectedUserId: UserId) {
   const response = await axios.get(
     `${API_BASE_URL}/api/messages/${selectedUserId}`
@@ -47,8 +37,20 @@ export async function assignName(form: UserFormValues) {
   return response.data;
 }
 
+/* Taken care of with RTK Query*/
+
 export async function fetchUsers() {
   const response = await axios.get(`${API_BASE_URL}/api/users`);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch users");
+  }
+
+  return response.data;
+}
+
+export async function fetchUserIds() {
+  const response = await axios.get(`${API_BASE_URL}/api/user-ids`);
 
   if (response.status !== 200) {
     throw new Error("Failed to fetch users");
