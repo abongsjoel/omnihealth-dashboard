@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { sendMessage } from "../../../http";
 import type { ChatMessage, SelectedUser } from "../../../types";
+import Button from "../../common/Button";
 
 import "./ReplyBox.scss";
-import Button from "../../common/Button";
 
 interface ReplyBoxProps {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;

@@ -10,16 +10,16 @@ button {
     background-color: var(--primary-hover);
   }
 
-  &.btn-disabled {
+  &.disabled {
     background-color: var(--gray-200);
     cursor: not-allowed;
   }
-  &.btn-secondary {
-    background-color: var(--secondary);
+  &.secondary {
+    background-color: var(--tertiary);
     color: var(--white);
 
     &:hover {
-      background-color: var(--secondary-hover);
+      background-color: var(--tertiary-hover);
     }
   }
 }

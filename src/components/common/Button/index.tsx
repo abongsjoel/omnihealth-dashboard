@@ -1,5 +1,6 @@
 import React from "react";
 import type { ReactNode } from "react";
+import classNames from "classnames";
 
 import "./Button.scss";
 
@@ -7,22 +8,28 @@ interface ButtonProps {
   label?: string;
   onClick: () => void;
   disabled?: boolean;
+  secondary?: boolean;
   className?: string;
   children?: ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
   label,
-  onClick,
   disabled = false,
   className = "",
+  secondary = false,
   children,
+  ...rest
 }) => {
   return (
     <button
-      onClick={onClick}
       disabled={disabled}
-      className={`btn ${className} ${disabled ? "btn-disabled" : ""}`}
+      {...rest}
+      //   className={`btn ${className} ${disabled ? "btn-disabled" : ""}`}
+      className={classNames("btn", className, {
+        disabled,
+        secondary,
+      })}
     >
       {children || label}
     </button>
