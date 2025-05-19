@@ -7,18 +7,19 @@ import {
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
 
-import type { UserFormValues } from "../../types";
+import type { UserId } from "../../types";
 
 import "./Users.scss";
 
 interface MessagesProps {
-  selectedUser: UserFormValues | undefined;
-  setSelectedUser: React.Dispatch<
-    React.SetStateAction<UserFormValues | undefined>
-  >;
+  selectedUserId: UserId;
+  setSelectedUserId: React.Dispatch<React.SetStateAction<UserId>>;
 }
 
-const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
+const Users: React.FC<MessagesProps> = ({
+  selectedUserId,
+  setSelectedUserId,
+}) => {
   const {
     data: userIds = [],
     isLoading: isLoadingIds,
@@ -84,9 +85,9 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
           .map((usr) => (
             <div
               key={usr.userId}
-              onClick={() => setSelectedUser(usr)}
+              onClick={() => setSelectedUserId(usr.userId)}
               className={`user ${
-                selectedUser?.userId === usr.userId ? "selected" : ""
+                selectedUserId === usr.userId ? "selected" : ""
               }`}
             >
               {usr.username ? (

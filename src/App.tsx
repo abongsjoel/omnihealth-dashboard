@@ -7,12 +7,12 @@ import Users from "./components/Users";
 import EmptyChat from "./components/Messages/EmptyChat";
 import MessageHeader from "./components/Messages/MessageHeader";
 
-import type { UserFormValues } from "./types";
+import type { UserId } from "./types";
 
 import "./App.scss";
 
 function App() {
-  const [selectedUser, setSelectedUser] = useState<UserFormValues>();
+  const [selectedUserId, setSelectedUserId] = useState<UserId>(null);
 
   return (
     <main className="dashboard">
@@ -27,14 +27,17 @@ function App() {
         }}
       />
 
-      <Users selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+      <Users
+        selectedUserId={selectedUserId}
+        setSelectedUserId={setSelectedUserId}
+      />
 
       <section className="chat-area">
-        {selectedUser ? (
+        {selectedUserId ? (
           <>
-            <MessageHeader selectedUser={selectedUser} />
-            <Messages selectedUserId={selectedUser.userId} />
-            <ReplyBox selectedUserId={selectedUser.userId} />
+            <MessageHeader selectedUserId={selectedUserId} />
+            <Messages selectedUserId={selectedUserId} />
+            <ReplyBox selectedUserId={selectedUserId} />
           </>
         ) : (
           <EmptyChat />
