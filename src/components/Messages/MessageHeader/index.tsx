@@ -27,6 +27,8 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
+  const label = `${username ? "Edit" : "Assign"} Name`;
+
   return (
     <>
       <header className="message-header">
@@ -35,13 +37,14 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
         <Button onClick={handleAssignName} className="btn-add-user">
-          Assign Name
+          {label}
         </Button>
       </header>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <UserForm
-          title="Assign User"
+          title={label}
           userId={selectedUserId ?? ""}
+          username={username}
           handleCloseModal={handleCloseModal}
         />
       </Modal>

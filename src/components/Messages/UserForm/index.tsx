@@ -11,7 +11,8 @@ import "./UserForm.scss";
 
 interface UserFormProps {
   title?: string;
-  userId?: string;
+  userId: string;
+  username?: string;
   handleCloseModal?: () => void;
 }
 
@@ -40,12 +41,13 @@ const validate = (
 
 const UserForm: React.FC<UserFormProps> = ({
   title = "",
-  userId = "",
+  userId,
+  username = "",
   handleCloseModal,
 }) => {
   const [assignName, { isLoading }] = useAssignNameMutation();
 
-  const [form, setForm] = useState({ username: "", userId });
+  const [form, setForm] = useState({ username, userId });
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
