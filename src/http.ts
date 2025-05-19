@@ -25,6 +25,8 @@ export async function sendMessage(selectedUserId: UserId, reply: string) {
   }
 }
 
+/* Taken care of with RTK Query*/
+
 export async function assignName(form: UserFormValues) {
   const response = await axios.post(`${API_BASE_URL}/api/users/assign-name`, {
     ...form,
@@ -32,28 +34,6 @@ export async function assignName(form: UserFormValues) {
 
   if (response.status !== 200) {
     throw new Error("Failed to assign name");
-  }
-
-  return response.data;
-}
-
-/* Taken care of with RTK Query*/
-
-export async function fetchUsers() {
-  const response = await axios.get(`${API_BASE_URL}/api/users`);
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch users");
-  }
-
-  return response.data;
-}
-
-export async function fetchUserIds() {
-  const response = await axios.get(`${API_BASE_URL}/api/user-ids`);
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch users");
   }
 
   return response.data;

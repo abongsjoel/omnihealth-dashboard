@@ -1,9 +1,7 @@
 import React, { useMemo } from "react";
 
-// import { useFetch } from "../../hooks/useFetch";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
-// import { fetchUserIds, fetchUsers } from "../../http";
 import {
   useGetUserIdsQuery,
   useGetUsersQuery,
@@ -32,18 +30,6 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
     isLoading: isFetchingUsers,
     error: errorUsers,
   } = useGetUsersQuery();
-
-  // const {
-  //   isFetching: isFetchingIds,
-  //   error: errorIds,
-  //   fetchedData: userIds,
-  // } = useFetch<string[]>(fetchUserIds, []);
-
-  // const {
-  //   isFetching: isFetchingUsers,
-  //   error: errorUsers,
-  //   fetchedData: users,
-  // } = useFetch<UserFormValues[]>(fetchUsers, []);
 
   const isFetching = useMemo(
     () => isFetchingIds || isFetchingUsers,
