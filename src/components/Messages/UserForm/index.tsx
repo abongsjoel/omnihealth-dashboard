@@ -2,11 +2,11 @@ import React, { useState } from "react";
 
 import Input from "../../common/Input";
 import Button from "../../common/Button";
-import { assignName } from "../../../http";
 
 import type { UserFormValues } from "../../../types";
 
 import "./UserForm.scss";
+import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
 interface UserFormProps {
   title?: string;
@@ -42,6 +42,8 @@ const UserForm: React.FC<UserFormProps> = ({
   userId = "",
   handleCloseModal,
 }) => {
+  const [assignName, { isLoading }] = useAssignNameMutation();
+
   const [form, setForm] = useState({ username: "", userId });
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -58,7 +60,7 @@ const UserForm: React.FC<UserFormProps> = ({
     if (!validate(form, setErrors)) return;
 
     try {
-      const result = await assignName(form);
+      const result = await assignName(form).unwrap();
 
       if (result.success) {
         console.log("Name assigned:", result.user);
@@ -110,7 +112,12 @@ const UserForm: React.FC<UserFormProps> = ({
             className="user_btn"
             outline
           />
-          <Button label="Assign" onClick={handleSubmit} className="user_btn" />
+          <Button
+            label={isLoading ? "Assigning..." : "Assign"}
+            onClick={handleSubmit}
+            className="user_btn"
+            disabled={isLoading}
+          />
         </footer>
       </main>
     </form>

@@ -24,17 +24,3 @@ export async function sendMessage(selectedUserId: UserId, reply: string) {
     throw new Error("Failed to fetch user data");
   }
 }
-
-/* Taken care of with RTK Query*/
-
-export async function assignName(form: UserFormValues) {
-  const response = await axios.post(`${API_BASE_URL}/api/users/assign-name`, {
-    ...form,
-  });
-
-  if (response.status !== 200) {
-    throw new Error("Failed to assign name");
-  }
-
-  return response.data;
-}
