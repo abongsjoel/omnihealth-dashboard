@@ -7,9 +7,14 @@ import "./UserForm.scss";
 interface UserFormProps {
   title?: string;
   userId?: string;
+  handleCloseModal?: () => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ title = "", userId = "" }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  title = "",
+  userId = "",
+  handleCloseModal,
+}) => {
   const [form, setForm] = useState({ username: "", phone: userId });
   const [errors, setErrors] = useState<{ username?: string; phone?: string }>(
     {}
@@ -21,6 +26,10 @@ const UserForm: React.FC<UserFormProps> = ({ title = "", userId = "" }) => {
     // if (!/\S+@\S+\.\S+/.test(form.phone)) {
     //   newErrors.phone = "Enter a valid phone number.";
     // }
+
+    if (!form.username) {
+      newErrors.username = "User name is required.";
+    }
 
     if (!form.phone) {
       newErrors.phone = "Password is required.";
@@ -43,6 +52,11 @@ const UserForm: React.FC<UserFormProps> = ({ title = "", userId = "" }) => {
     if (validate()) {
       console.log("Login submitted", form);
       // Proceed with actual login
+
+      if (handleCloseModal) {
+        console.log("Closing modal");
+        handleCloseModal();
+      }
     }
   };
 
@@ -59,8 +73,9 @@ const UserForm: React.FC<UserFormProps> = ({ title = "", userId = "" }) => {
           value={form.username}
           onChange={handleChange}
           error={errors.username}
+          required
           autoComplete="username"
-          className="user_input"
+          // className="user_input"
         />
         <Input
           id="phone"
@@ -76,8 +91,15 @@ const UserForm: React.FC<UserFormProps> = ({ title = "", userId = "" }) => {
           disabled={!!userId}
           className="user_input"
         />
-
-        <Button label="Login" onClick={handleSubmit} />
+        <footer className="btn_container">
+          <Button
+            label="Cancel"
+            onClick={handleCloseModal}
+            className="user_btn"
+            outline
+          />
+          <Button label="Assign" onClick={handleSubmit} className="user_btn" />
+        </footer>
       </main>
     </form>
   );

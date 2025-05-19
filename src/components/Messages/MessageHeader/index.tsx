@@ -23,6 +23,10 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({
     setIsModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <header className="message-header">
@@ -34,8 +38,12 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({
           Assign Name
         </Button>
       </header>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <UserForm title="Assign User" userId={selectedUser ?? ""} />
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <UserForm
+          title="Assign User"
+          userId={selectedUser ?? ""}
+          handleCloseModal={handleCloseModal}
+        />
       </Modal>
     </>
   );

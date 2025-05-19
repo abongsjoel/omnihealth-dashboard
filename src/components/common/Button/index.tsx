@@ -6,9 +6,10 @@ import "./Button.scss";
 
 interface ButtonProps {
   label?: string;
-  onClick: (event: React.FormEvent) => void;
+  onClick?: (event: React.FormEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   secondary?: boolean;
+  outline?: boolean;
   className?: string;
   children?: ReactNode;
 }
@@ -18,6 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = "",
   secondary = false,
+  outline = false,
   children,
   ...rest
 }) => {
@@ -28,6 +30,7 @@ const Button: React.FC<ButtonProps> = ({
       className={classNames("btn", className, {
         disabled,
         secondary,
+        outline,
       })}
     >
       {children || label}

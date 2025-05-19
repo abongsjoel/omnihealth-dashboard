@@ -9,7 +9,7 @@ interface ErrorProps {
 
 const Error: React.FC<ErrorProps> = ({ title, message }) => {
   return (
-    <div className="error">
+    <div className="error_container">
       <p>⚠️ {title}</p>
       <p className="subtle">{message}</p>
     </div>

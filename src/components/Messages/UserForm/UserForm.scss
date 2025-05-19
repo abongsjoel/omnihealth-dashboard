@@ -20,5 +20,22 @@
     .user_input {
       font-size: 0.75rem;
     }
+
+    .btn_container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+
+      .user_btn {
+        font-size: 0.75rem;
+        width: 100%;
+      }
+    }
+    .btn_cancel {
+      background-color: var(--gray-200);
+      color: var(--gray-500);
+      border: 1px solid var(--gray-200);
+      cursor: not-allowed;
+    }
   }
 }

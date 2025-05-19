@@ -14,12 +14,24 @@ button {
     background-color: var(--gray-200);
     cursor: not-allowed;
   }
+
   &.secondary {
     background-color: var(--tertiary);
     color: var(--white);
 
     &:hover {
       background-color: var(--tertiary-hover);
+    }
+  }
+
+  &.outline {
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+
+    &:hover {
+      background-color: var(--primary-selected);
+      color: var(--white);
     }
   }
 }

@@ -20,12 +20,6 @@
 
     &.error {
       border-color: var(--error);
-
-      &::placeholder {
-        color: var(--error);
-        font-size: 12px;
-        font-weight: 600;
-      }
     }
 
     &:disabled {
@@ -34,9 +28,9 @@
       border-color: var(--disabled-border);
       cursor: not-allowed;
 
-      // &::placeholder {
-      //   color: var(--disabled-placeholder);
-      // }
+      &::placeholder {
+        color: var(--disabled-placeholder);
+      }
     }
   }
 
@@ -55,51 +49,3 @@
     font-size: 10px;
   }
 }
-
-// @media (max-width: 768px) {
-//     .input_container {
-//     font-size: 14px;
-
-//     .input {
-//         padding: 8px 16px;
-
-//         &::placeholder {
-//         font-size: 10px;
-//         font-weight: 500;
-//         }
-//     }
-
-//     .eye_icon {
-//         width: 18px;
-//         height: 18px;
-//     }
-
-//     .error_text {
-//         font-size: 8px;
-//     }
-//     }
-// }
-
-// @media (max-width: 768px) {
-//     .input_container {
-//     font-size: 14px;
-
-//     .input {
-//         padding: 8px 16px;
-
-//         &::placeholder {
-//         font-size: 10px;
-//         font-weight: 500;
-//         }
-//     }
-
-//     .eye_icon {
-//         width: 18px;
-//         height: 18px;
-//     }
-
-//     .error_text {
-//         font-size: 8px;
-//     }
-//     }
-// }
