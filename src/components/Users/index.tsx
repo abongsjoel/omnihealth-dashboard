@@ -1,15 +1,18 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
-import Skeleton from "./Skeleton";
-import Error from "../common/Error";
 import {
   useGetUserIdsQuery,
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
+import Skeleton from "./Skeleton";
+import Error from "../common/Error";
+import Button from "../common/Button";
+import Modal from "../common/Modal";
 
 import type { UserId } from "../../types";
 
 import "./Users.scss";
+import UserForm from "../Messages/UserForm";
 
 interface MessagesProps {
   selectedUserId: UserId;
@@ -31,6 +34,8 @@ const Users: React.FC<MessagesProps> = ({
     isLoading: isLoadingUsers,
     error: errorUsers,
   } = useGetUsersQuery();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isLoading = useMemo(
     () => isLoadingIds || isLoadingUsers,
@@ -68,40 +73,60 @@ const Users: React.FC<MessagesProps> = ({
     });
   }, [userIds, users]);
 
+  const handleUserClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <section className="user-list">
-      <h1 className="logo">OmniHealth Dashboard</h1>
-      <h2 className="title">Users</h2>
-      {isLoading ? (
-        <Skeleton />
-      ) : error ? (
-        <Error
-          title="Unable to load users"
-          message="Please check your connection or try again shortly."
-        />
-      ) : (
-        usersList
-          .filter((u) => u.userId !== "WEB_SIMULATION")
-          .map((usr) => (
-            <div
-              key={usr.userId}
-              onClick={() => setSelectedUserId(usr.userId)}
-              className={`user ${
-                selectedUserId === usr.userId ? "selected" : ""
-              }`}
-            >
-              {usr.username ? (
-                <div className="user-details">
-                  <span className="user_name">{usr.username}</span>
-                  <span className="user_id">{usr.userId}</span>
-                </div>
-              ) : (
-                usr.userId
-              )}
-            </div>
-          ))
-      )}
-    </section>
+    <>
+      <section className="user-list">
+        <h1 className="logo">OmniHealth Dashboard</h1>
+        <section className="user-list-header">
+          <h2 className="title">Users</h2>
+          <Button
+            label="Add User"
+            onClick={handleUserClick}
+            className="add_user_btn"
+          />
+        </section>
+        {isLoading ? (
+          <Skeleton />
+        ) : error ? (
+          <Error
+            title="Unable to load users"
+            message="Please check your connection or try again shortly."
+          />
+        ) : (
+          usersList
+            .filter((u) => u.userId !== "WEB_SIMULATION")
+            .map((usr) => (
+              <div
+                key={usr.userId}
+                onClick={() => setSelectedUserId(usr.userId)}
+                className={`user ${
+                  selectedUserId === usr.userId ? "selected" : ""
+                }`}
+              >
+                {usr.username ? (
+                  <div className="user-details">
+                    <span className="user_name">{usr.username}</span>
+                    <span className="user_id">{usr.userId}</span>
+                  </div>
+                ) : (
+                  usr.userId
+                )}
+              </div>
+            ))
+        )}
+      </section>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <UserForm title="Add User" handleCloseModal={handleCloseModal} />
+      </Modal>
+    </>
   );
 };
 

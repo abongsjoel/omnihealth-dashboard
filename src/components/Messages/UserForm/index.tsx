@@ -11,7 +11,7 @@ import "./UserForm.scss";
 
 interface UserFormProps {
   title?: string;
-  userId: string;
+  userId?: string;
   username?: string;
   handleCloseModal?: () => void;
 }
@@ -32,7 +32,9 @@ const validate = (
   }
 
   if (!form.userId) {
-    newErrors.userId = "Password is required.";
+    newErrors.userId = "Phone number is required.";
+  } else if (form.userId.length < 9 || form.userId.length > 15) {
+    newErrors.userId = "Phone number must be between 9 and 15 digits.";
   }
 
   setErrors(newErrors);
@@ -41,7 +43,7 @@ const validate = (
 
 const UserForm: React.FC<UserFormProps> = ({
   title = "",
-  userId,
+  userId = "",
   username = "",
   handleCloseModal,
 }) => {
@@ -61,6 +63,8 @@ const UserForm: React.FC<UserFormProps> = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!validate(form, setErrors)) return;
+
+    console.log({ form });
 
     try {
       const result = await assignName(form).unwrap();
@@ -93,21 +97,22 @@ const UserForm: React.FC<UserFormProps> = ({
           value={form.username}
           onChange={handleChange}
           error={errors.username}
-          required
+          // required
           autoComplete="username"
           className="user_input"
         />
         <Input
-          id="phone"
-          name="phone"
-          type="phone"
+          id="userId"
+          name="userId"
+          type="number"
           label="Phone Number"
           placeholder="237670312288"
           value={form.userId}
           onChange={handleChange}
-          // error={errors.phone}
+          error={errors.userId}
           autoComplete="current-password"
-          // required
+          pattern="[0-9]{9,15}"
+          required
           disabled={!!userId}
           className="user_input"
         />
