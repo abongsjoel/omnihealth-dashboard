@@ -1,7 +1,51 @@
 import axios from "axios";
 
 import { API_BASE_URL } from "./config";
-import type { SelectedUser } from "./types";
+import type { UserId, UserFormValues } from "./types";
+
+export async function fetchUserIds() {
+  const response = await axios.get(`${API_BASE_URL}/api/user-ids`);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch users");
+  }
+
+  return response.data;
+}
+
+export async function fetchUserData(selectedUserId: UserId) {
+  const response = await axios.get(
+    `${API_BASE_URL}/api/messages/${selectedUserId}`
+  );
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch user data");
+  }
+  return response.data;
+}
+
+export async function sendMessage(selectedUserId: UserId, reply: string) {
+  const response = await axios.post(`${API_BASE_URL}/api/send-message`, {
+    to: selectedUserId,
+    message: reply,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch user data");
+  }
+}
+
+export async function assignName(form: UserFormValues) {
+  const response = await axios.post(`${API_BASE_URL}/api/users/assign-name`, {
+    ...form,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to assign name");
+  }
+
+  return response.data;
+}
 
 export async function fetchUsers() {
   const response = await axios.get(`${API_BASE_URL}/api/users`);
@@ -11,26 +55,4 @@ export async function fetchUsers() {
   }
 
   return response.data;
-}
-
-export async function fetchUserData(selectedUser: SelectedUser) {
-  const response = await axios.get(
-    `${API_BASE_URL}/api/messages/${selectedUser}`
-  );
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch user data");
-  }
-  return response.data;
-}
-
-export async function sendMessage(selectedUser: SelectedUser, reply: string) {
-  const response = await axios.post(`${API_BASE_URL}/api/send-message`, {
-    to: selectedUser,
-    message: reply,
-  });
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch user data");
-  }
 }

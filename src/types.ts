@@ -3,4 +3,9 @@ export interface ChatMessage {
   content: string;
 }
 
-export type SelectedUser = string | null;
+export type UserId = string | null;
+
+export interface UserFormValues {
+  username: string;
+  userId: string;
+}

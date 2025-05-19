@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
 
-import ReplyBox from "./components/ReplyBox";
+import ReplyBox from "./components/Messages/ReplyBox";
 import Messages from "./components/Messages";
 import Users from "./components/Users";
-import EmptyChat from "./components/EmptyChat";
+import EmptyChat from "./components/Messages/EmptyChat";
+import MessageHeader from "./components/Messages/MessageHeader";
 import { fetchUserData } from "./http";
 
-import type { ChatMessage, SelectedUser } from "./types";
+import type { ChatMessage, UserFormValues } from "./types";
 
 import "./App.scss";
 
 function App() {
-  const [selectedUser, setSelectedUser] = useState<SelectedUser>(null);
+  const [selectedUser, setSelectedUser] = useState<UserFormValues>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
     async function doFetchSelectedUser() {
-      if (selectedUser) {
+      if (selectedUser && selectedUser.userId) {
         try {
-          const data = await fetchUserData(selectedUser);
-          setMessages(data);
+          const chatMessages: ChatMessage[] = await fetchUserData(
+            selectedUser.userId
+          );
+          setMessages(chatMessages);
         } catch (error) {
           console.log("Error", error);
         }
@@ -36,8 +39,12 @@ function App() {
       <section className="chat-area">
         {selectedUser ? (
           <>
+            <MessageHeader selectedUser={selectedUser} />
             <Messages messages={messages} />
-            <ReplyBox setMessages={setMessages} selectedUser={selectedUser} />
+            <ReplyBox
+              setMessages={setMessages}
+              selectedUserId={selectedUser.userId}
+            />
           </>
         ) : (
           <EmptyChat />

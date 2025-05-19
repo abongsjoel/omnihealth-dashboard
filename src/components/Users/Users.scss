@@ -4,10 +4,18 @@
   overflow-y: auto;
   background: var(--gray-300);
 
+  .logo {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
   .title {
     font-size: 1.2rem;
+    font-weight: 600;
     margin-bottom: 1rem;
-    color: var(--primary);
+    color: var(--secondary);
   }
 
   .user {
@@ -24,8 +32,65 @@
       background-color: var(--primary-selected);
     }
 
-    @media (max-width: 600px) {
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .user_name {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-500);
+      }
+
+      .user_id {
+        font-size: 0.675rem;
+        color: var(--text-200);
+      }
+    }
+
+    &.skeleton {
+      height: 1.5rem;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        background-color: #e0e0e0;
+      }
+      50% {
+        background-color: #f0f0f0;
+      }
+    }
+  }
+}
+
+@media (max-width: $mobile-breakpoint) {
+  .user-list {
+    .logo {
+      font-size: 0.8rem;
+    }
+
+    .title {
+      font-size: 1rem;
+    }
+
+    .user {
       font-size: 0.7rem;
+
+      .user-details {
+        .user_name {
+          font-size: 0.75rem;
+        }
+
+        .user_id {
+          font-size: 0.5rem;
+        }
+      }
     }
   }
 }

@@ -1,0 +1,41 @@
+.add_user_form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 350px;
+
+  .title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .user_input {
+      font-size: 0.75rem;
+    }
+
+    .btn_container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+
+      .user_btn {
+        font-size: 0.75rem;
+        width: 100%;
+      }
+    }
+    .btn_cancel {
+      background-color: var(--gray-200);
+      color: var(--gray-500);
+      border: 1px solid var(--gray-200);
+      cursor: not-allowed;
+    }
+  }
+}
