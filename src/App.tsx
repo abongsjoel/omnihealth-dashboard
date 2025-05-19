@@ -7,20 +7,22 @@ import EmptyChat from "./components/Messages/EmptyChat";
 import MessageHeader from "./components/Messages/MessageHeader";
 import { fetchUserData } from "./http";
 
-import type { ChatMessage, UserId } from "./types";
+import type { ChatMessage, UserFormValues } from "./types";
 
 import "./App.scss";
 
 function App() {
-  const [selectedUserId, setSelectedUserId] = useState<UserId>(null);
+  const [selectedUser, setSelectedUser] = useState<UserFormValues>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
     async function doFetchSelectedUser() {
-      if (selectedUserId) {
+      if (selectedUser && selectedUser.userId) {
         try {
-          const data = await fetchUserData(selectedUserId);
-          setMessages(data);
+          const chatMessages: ChatMessage[] = await fetchUserData(
+            selectedUser.userId
+          );
+          setMessages(chatMessages);
         } catch (error) {
           console.log("Error", error);
         }
@@ -28,26 +30,20 @@ function App() {
     }
 
     doFetchSelectedUser();
-  }, [selectedUserId]);
+  }, [selectedUser]);
 
   return (
     <main className="dashboard">
-      <Users
-        selectedUserId={selectedUserId}
-        setSelectedUserId={setSelectedUserId}
-      />
+      <Users selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
 
       <section className="chat-area">
-        {selectedUserId ? (
+        {selectedUser ? (
           <>
-            <MessageHeader
-              selectedUserId={selectedUserId}
-              displayName="Chi Joel"
-            />
+            <MessageHeader selectedUser={selectedUser} />
             <Messages messages={messages} />
             <ReplyBox
               setMessages={setMessages}
-              selectedUserId={selectedUserId}
+              selectedUserId={selectedUser.userId}
             />
           </>
         ) : (

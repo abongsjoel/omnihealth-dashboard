@@ -1,23 +1,22 @@
 import React, { useMemo } from "react";
 
-import { fetchUserIds, fetchUsers } from "../../http";
 import { useFetch } from "../../hooks/useFetch";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
+import { fetchUserIds, fetchUsers } from "../../http";
 
-import type { UserFormValues, UserId } from "../../types";
+import type { UserFormValues } from "../../types";
 
 import "./Users.scss";
 
 interface MessagesProps {
-  selectedUserId: UserId;
-  setSelectedUserId: React.Dispatch<React.SetStateAction<UserId>>;
+  selectedUser: UserFormValues | undefined;
+  setSelectedUser: React.Dispatch<
+    React.SetStateAction<UserFormValues | undefined>
+  >;
 }
 
-const Users: React.FC<MessagesProps> = ({
-  selectedUserId,
-  setSelectedUserId,
-}) => {
+const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   const {
     isFetching: isFetchingIds,
     error: errorIds,
@@ -29,8 +28,6 @@ const Users: React.FC<MessagesProps> = ({
     error: errorUsers,
     fetchedData: users,
   } = useFetch<UserFormValues[]>(fetchUsers, []);
-
-  console.log({ userIds, users });
 
   const isFetching = useMemo(
     () => isFetchingIds || isFetchingUsers,
@@ -86,9 +83,9 @@ const Users: React.FC<MessagesProps> = ({
           .map((usr) => (
             <div
               key={usr.userId}
-              onClick={() => setSelectedUserId(usr.userId)}
+              onClick={() => setSelectedUser(usr)}
               className={`user ${
-                selectedUserId === usr.userId ? "selected" : ""
+                selectedUser?.userId === usr.userId ? "selected" : ""
               }`}
             >
               {usr.username ? (
