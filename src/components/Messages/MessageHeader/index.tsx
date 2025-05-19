@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+
 import Button from "../../common/Button";
+import Modal from "../../common/Modal";
+import UserForm from "../UserForm";
+
 import type { SelectedUser } from "../../../types";
 
 import "./MessageHeader.scss";
-import Modal from "../../common/Modal";
 
 interface MessageHeaderProps {
   selectedUser: SelectedUser;
@@ -15,7 +18,6 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({
   displayName,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log({ isModalOpen });
 
   const handleAssignName = () => {
     setIsModalOpen(true);
@@ -33,7 +35,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({
         </Button>
       </header>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        Modal
+        <UserForm title="Assign User" userId={selectedUser ?? ""} />
       </Modal>
     </>
   );

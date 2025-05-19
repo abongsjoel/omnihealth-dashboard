@@ -6,8 +6,8 @@ body {
 }
 
 :root {
-  --primary: #2563eb;
-  --primary-hover: #1e40af;
+  --primary: #595ce1;
+  --primary-hover: #797cfd;
   --primary-selected: #dbeafe;
 
   --secondary: #f97316;
@@ -49,6 +49,23 @@ body {
   --light: #f9f9f9;
   --light-hover: #f0f0f0;
   --light-selected: #e0e0e0;
+
+  --disabled-bg: #f0f0f0;
+  --disabled-text: #b0b0b0;
+  --disabled-border: #d0d0d0;
+  --disabled-placeholder: #d0d0d0;
+  --disabled-bg-hover: #e0e0e0;
+  --disabled-bg-selected: #d0d0d0;
+  --disabled-text-hover: #a0a0a0;
+  --disabled-text-selected: #a0a0a0;
+  --disabled-border-hover: #c0c0c0;
+  --disabled-border-selected: #c0c0c0;
+
+  --text-100: #9aa1b1;
+  --text-200: #687184;
+  --text-500: #454545;
+
+  --error: #d03930;
 
   --white: #fff;
   --black: #000;

@@ -1,0 +1,24 @@
+.add_user_form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 350px;
+
+  .title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .user_input {
+      font-size: 0.75rem;
+    }
+  }
+}

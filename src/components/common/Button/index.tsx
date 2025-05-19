@@ -6,7 +6,7 @@ import "./Button.scss";
 
 interface ButtonProps {
   label?: string;
-  onClick: () => void;
+  onClick: (event: React.FormEvent) => void;
   disabled?: boolean;
   secondary?: boolean;
   className?: string;
@@ -25,7 +25,6 @@ const Button: React.FC<ButtonProps> = ({
     <button
       disabled={disabled}
       {...rest}
-      //   className={`btn ${className} ${disabled ? "btn-disabled" : ""}`}
       className={classNames("btn", className, {
         disabled,
         secondary,
