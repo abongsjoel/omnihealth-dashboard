@@ -3,7 +3,7 @@ import React from "react";
 import { fetchUsers } from "../../http";
 import { useFetch } from "../../hooks/useFetch";
 import Skeleton from "./Skeleton";
-import Error from "../Error";
+import Error from "../common/Error";
 
 import type { SelectedUser } from "../../types";
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import ReplyBox from "./components/ReplyBox";
+import ReplyBox from "./components/Messages/ReplyBox";
 import Messages from "./components/Messages";
 import Users from "./components/Users";
-import EmptyChat from "./components/EmptyChat";
+import EmptyChat from "./components/Messages/EmptyChat";
 import { fetchUserData } from "./http";
 
 import type { ChatMessage, SelectedUser } from "./types";

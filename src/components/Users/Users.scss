@@ -32,10 +32,6 @@
       background-color: var(--primary-selected);
     }
 
-    @media (max-width: 600px) {
-      font-size: 0.7rem;
-    }
-
     &.skeleton {
       height: 1.5rem;
       background-color: #e0e0e0;
@@ -52,6 +48,22 @@
       50% {
         background-color: #f0f0f0;
       }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .user-list {
+    .logo {
+      font-size: 0.8rem;
+    }
+
+    .title {
+      font-size: 1rem;
+    }
+
+    .user {
+      font-size: 0.7rem;
     }
   }
 }

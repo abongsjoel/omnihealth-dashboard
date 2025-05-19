@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import type { ChatMessage, SelectedUser } from "../../types";
+import { sendMessage } from "../../../http";
+import type { ChatMessage, SelectedUser } from "../../../types";
 
-import { sendMessage } from "../../http";
 import "./ReplyBox.scss";
 
 interface ReplyBoxProps {
