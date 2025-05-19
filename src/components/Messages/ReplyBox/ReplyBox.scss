@@ -29,17 +29,4 @@
     display: flex;
     justify-content: end;
   }
-
-  button {
-    background-color: var(--primary);
-    color: var(--white);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: var(--primary-hover);
-    }
-  }
 }

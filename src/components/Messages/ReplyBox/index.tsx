@@ -4,6 +4,7 @@ import { sendMessage } from "../../../http";
 import type { ChatMessage, SelectedUser } from "../../../types";
 
 import "./ReplyBox.scss";
+import Button from "../../common/Button";
 
 interface ReplyBoxProps {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
@@ -57,9 +58,9 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ setMessages, selectedUser }) => {
         rows={4}
       />
       <footer className="btn-container">
-        <button onClick={handleSend} disabled={isSending}>
+        <Button onClick={handleSend} disabled={isSending}>
           {isSending ? "Sending..." : "Send"}
-        </button>
+        </Button>
       </footer>
     </section>
   );
