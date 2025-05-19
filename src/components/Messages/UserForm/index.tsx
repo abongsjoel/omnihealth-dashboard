@@ -64,8 +64,6 @@ const UserForm: React.FC<UserFormProps> = ({
       const result = await assignName(form).unwrap();
 
       if (result.success) {
-        console.log("Name assigned:", result.user);
-
         if (handleCloseModal) {
           handleCloseModal();
         }

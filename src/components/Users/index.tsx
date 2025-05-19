@@ -21,19 +21,19 @@ interface MessagesProps {
 const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
   const {
     data: userIds = [],
-    isLoading: isFetchingIds,
+    isLoading: isLoadingIds,
     error: errorIds,
   } = useGetUserIdsQuery();
 
   const {
     data: users = [],
-    isLoading: isFetchingUsers,
+    isLoading: isLoadingUsers,
     error: errorUsers,
   } = useGetUsersQuery();
 
-  const isFetching = useMemo(
-    () => isFetchingIds || isFetchingUsers,
-    [isFetchingIds, isFetchingUsers]
+  const isLoading = useMemo(
+    () => isLoadingIds || isLoadingUsers,
+    [isLoadingIds, isLoadingUsers]
   );
   const error = useMemo(() => errorIds || errorUsers, [errorIds, errorUsers]);
 
@@ -71,7 +71,7 @@ const Users: React.FC<MessagesProps> = ({ selectedUser, setSelectedUser }) => {
     <section className="user-list">
       <h1 className="logo">OmniHealth Dashboard</h1>
       <h2 className="title">Users</h2>
-      {isFetching ? (
+      {isLoading ? (
         <Skeleton />
       ) : error ? (
         <Error
