@@ -53,7 +53,9 @@ const Input: React.FC<InputProps> = ({
           className="eye_icon"
         />
       )}
-      {error && <p className="error_text">{error}</p>}
+      <p className={classNames("error_text", { visible: !!error })}>
+        {error || ""}
+      </p>
     </div>
   );
 };

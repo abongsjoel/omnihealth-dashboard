@@ -10,6 +10,34 @@ interface UserFormProps {
   handleCloseModal?: () => void;
 }
 
+interface FormValues {
+  username: string;
+  phone: string;
+}
+
+interface FormErrors {
+  username?: string;
+  phone?: string;
+}
+
+const validate = (
+  form: FormValues,
+  setErrors: React.Dispatch<React.SetStateAction<FormErrors>>
+): boolean => {
+  const newErrors: FormErrors = {};
+
+  if (!form.username) {
+    newErrors.username = "User name is required.";
+  }
+
+  if (!form.phone) {
+    newErrors.phone = "Password is required.";
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 const UserForm: React.FC<UserFormProps> = ({
   title = "",
   userId = "",
@@ -19,25 +47,6 @@ const UserForm: React.FC<UserFormProps> = ({
   const [errors, setErrors] = useState<{ username?: string; phone?: string }>(
     {}
   );
-
-  const validate = () => {
-    const newErrors: { username?: string; phone?: string } = {};
-
-    // if (!/\S+@\S+\.\S+/.test(form.phone)) {
-    //   newErrors.phone = "Enter a valid phone number.";
-    // }
-
-    if (!form.username) {
-      newErrors.username = "User name is required.";
-    }
-
-    if (!form.phone) {
-      newErrors.phone = "Password is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
@@ -49,12 +58,11 @@ const UserForm: React.FC<UserFormProps> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (validate()) {
+    if (validate(form, setErrors)) {
       console.log("Login submitted", form);
       // Proceed with actual login
 
       if (handleCloseModal) {
-        console.log("Closing modal");
         handleCloseModal();
       }
     }
@@ -75,7 +83,7 @@ const UserForm: React.FC<UserFormProps> = ({
           error={errors.username}
           required
           autoComplete="username"
-          // className="user_input"
+          className="user_input"
         />
         <Input
           id="phone"
