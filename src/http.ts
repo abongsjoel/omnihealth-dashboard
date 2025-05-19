@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { API_BASE_URL } from "./config";
-import type { SelectedUser } from "./types";
+import type { SelectedUser, UserFormValues } from "./types";
 
 export async function fetchUsers() {
   const response = await axios.get(`${API_BASE_URL}/api/users`);
@@ -33,4 +33,16 @@ export async function sendMessage(selectedUser: SelectedUser, reply: string) {
   if (response.status !== 200) {
     throw new Error("Failed to fetch user data");
   }
+}
+
+export async function assignName(form: UserFormValues) {
+  const response = await axios.post(`${API_BASE_URL}/api/users/assign-name`, {
+    ...form,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to assign name");
+  }
+
+  return response.data;
 }

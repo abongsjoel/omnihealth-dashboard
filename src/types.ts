@@ -4,3 +4,8 @@ export interface ChatMessage {
 }
 
 export type SelectedUser = string | null;
+
+export interface UserFormValues {
+  username: string;
+  userId: string;
+}

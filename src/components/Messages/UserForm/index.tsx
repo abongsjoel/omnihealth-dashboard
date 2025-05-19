@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+
 import Input from "../../common/Input";
 import Button from "../../common/Button";
+import { assignName } from "../../../http";
+
+import type { UserFormValues } from "../../../types";
 
 import "./UserForm.scss";
 
@@ -10,18 +14,13 @@ interface UserFormProps {
   handleCloseModal?: () => void;
 }
 
-interface FormValues {
-  username: string;
-  phone: string;
-}
-
 interface FormErrors {
   username?: string;
-  phone?: string;
+  userId?: string;
 }
 
 const validate = (
-  form: FormValues,
+  form: UserFormValues,
   setErrors: React.Dispatch<React.SetStateAction<FormErrors>>
 ): boolean => {
   const newErrors: FormErrors = {};
@@ -30,8 +29,8 @@ const validate = (
     newErrors.username = "User name is required.";
   }
 
-  if (!form.phone) {
-    newErrors.phone = "Password is required.";
+  if (!form.userId) {
+    newErrors.userId = "Password is required.";
   }
 
   setErrors(newErrors);
@@ -43,10 +42,8 @@ const UserForm: React.FC<UserFormProps> = ({
   userId = "",
   handleCloseModal,
 }) => {
-  const [form, setForm] = useState({ username: "", phone: userId });
-  const [errors, setErrors] = useState<{ username?: string; phone?: string }>(
-    {}
-  );
+  const [form, setForm] = useState({ username: "", userId });
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
@@ -56,15 +53,23 @@ const UserForm: React.FC<UserFormProps> = ({
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (validate(form, setErrors)) {
-      console.log("Login submitted", form);
-      // Proceed with actual login
+    if (!validate(form, setErrors)) return;
 
-      if (handleCloseModal) {
-        handleCloseModal();
+    try {
+      const result = await assignName(form);
+
+      if (result.success) {
+        console.log("Name assigned:", result.user);
+
+        if (handleCloseModal) {
+          handleCloseModal();
+        }
       }
+    } catch (err) {
+      console.error("Failed to assign name:", err);
+      // Optionally show error to user
     }
   };
 
@@ -91,7 +96,7 @@ const UserForm: React.FC<UserFormProps> = ({
           type="phone"
           label="Phone Number"
           placeholder="237670312288"
-          value={form.phone}
+          value={form.userId}
           onChange={handleChange}
           // error={errors.phone}
           autoComplete="current-password"
