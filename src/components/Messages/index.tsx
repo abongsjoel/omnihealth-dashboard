@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
 import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
+import MessagesSkeleton from "./MessagesSkeleton";
 import Error from "../common/Error";
 
 import "./Messages.scss";
@@ -25,7 +26,7 @@ const Messages: React.FC<MessagesProps> = ({ selectedUserId }) => {
   return (
     <section className="messages">
       {isLoading ? (
-        <p>Loading</p>
+        <MessagesSkeleton />
       ) : error ? (
         <Error
           title="Unable to load this user's messages"

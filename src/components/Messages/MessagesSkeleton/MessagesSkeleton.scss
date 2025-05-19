@@ -1,0 +1,35 @@
+.messages-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+
+  .skeleton-bubble {
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    max-width: 70%;
+
+    &.user {
+      align-self: flex-start;
+      width: 50%;
+      height: 1.25rem;
+    }
+
+    &.assistant {
+      align-self: flex-end;
+      width: 60%;
+      height: 6.25rem;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+}
