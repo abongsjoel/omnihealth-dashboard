@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 
-import { fetchUsers } from "../../http";
+import { fetchUserIds, fetchUsers } from "../../http";
 import { useFetch } from "../../hooks/useFetch";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
 
-import type { UserId } from "../../types";
+import type { UserFormValues, UserId } from "../../types";
 
 import "./Users.scss";
 
@@ -19,10 +19,55 @@ const Users: React.FC<MessagesProps> = ({
   setSelectedUserId,
 }) => {
   const {
-    isFetching,
-    error,
+    isFetching: isFetchingIds,
+    error: errorIds,
     fetchedData: userIds,
-  } = useFetch<string[]>(fetchUsers, []);
+  } = useFetch<string[]>(fetchUserIds, []);
+
+  const {
+    isFetching: isFetchingUsers,
+    error: errorUsers,
+    fetchedData: users,
+  } = useFetch<UserFormValues[]>(fetchUsers, []);
+
+  console.log({ userIds, users });
+
+  const isFetching = useMemo(
+    () => isFetchingIds || isFetchingUsers,
+    [isFetchingIds, isFetchingUsers]
+  );
+  const error = useMemo(() => errorIds || errorUsers, [errorIds, errorUsers]);
+
+  const usersList = useMemo(() => {
+    const userMap = new Map<string, string>();
+
+    // Add all known users (with username)
+    for (const user of users || []) {
+      userMap.set(user.userId, user.username);
+    }
+
+    // Add all userIds (preserve existing usernames, or add blank)
+    for (const id of userIds || []) {
+      if (!userMap.has(id)) {
+        userMap.set(id, "");
+      }
+    }
+
+    // Convert to array
+    const merged = Array.from(userMap.entries()).map(([userId, username]) => ({
+      userId,
+      username,
+    }));
+
+    // Sort: named users A–Z, unnamed at the end
+    return merged.sort((a, b) => {
+      if (!a.username && !b.username) return 0;
+      if (!a.username) return 1;
+      if (!b.username) return -1;
+      return a.username.localeCompare(b.username);
+    });
+  }, [userIds, users]);
+  console.log({ usersList });
 
   return (
     <section className="user-list">
@@ -36,16 +81,24 @@ const Users: React.FC<MessagesProps> = ({
           message="Please check your connection or try again shortly."
         />
       ) : (
-        userIds &&
-        userIds
-          .filter((u) => u !== "WEB_SIMULATION")
-          .map((userId) => (
+        usersList
+          .filter((u) => u.userId !== "WEB_SIMULATION")
+          .map((usr) => (
             <div
-              key={userId}
-              onClick={() => setSelectedUserId(userId)}
-              className={`user ${selectedUserId === userId ? "selected" : ""}`}
+              key={usr.userId}
+              onClick={() => setSelectedUserId(usr.userId)}
+              className={`user ${
+                selectedUserId === usr.userId ? "selected" : ""
+              }`}
             >
-              {userId}
+              {usr.username ? (
+                <div className="user-details">
+                  <span className="user_name">{usr.username}</span>
+                  <span className="user_id">{usr.userId}</span>
+                </div>
+              ) : (
+                usr.userId
+              )}
             </div>
           ))
       )}

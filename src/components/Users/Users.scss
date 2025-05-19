@@ -32,6 +32,23 @@
       background-color: var(--primary-selected);
     }
 
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .user_name {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-500);
+      }
+
+      .user_id {
+        font-size: 0.675rem;
+        color: var(--text-200);
+      }
+    }
+
     &.skeleton {
       height: 1.5rem;
       background-color: #e0e0e0;
@@ -64,6 +81,16 @@
 
     .user {
       font-size: 0.7rem;
+
+      .user-details {
+        .user_name {
+          font-size: 0.75rem;
+        }
+
+        .user_id {
+          font-size: 0.5rem;
+        }
+      }
     }
   }
 }

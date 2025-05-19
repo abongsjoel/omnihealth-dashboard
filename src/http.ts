@@ -3,7 +3,7 @@ import axios from "axios";
 import { API_BASE_URL } from "./config";
 import type { UserId, UserFormValues } from "./types";
 
-export async function fetchUsers() {
+export async function fetchUserIds() {
   const response = await axios.get(`${API_BASE_URL}/api/user-ids`);
 
   if (response.status !== 200) {
@@ -42,6 +42,16 @@ export async function assignName(form: UserFormValues) {
 
   if (response.status !== 200) {
     throw new Error("Failed to assign name");
+  }
+
+  return response.data;
+}
+
+export async function fetchUsers() {
+  const response = await axios.get(`${API_BASE_URL}/api/users`);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch users");
   }
 
   return response.data;
