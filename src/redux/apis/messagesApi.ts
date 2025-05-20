@@ -28,18 +28,18 @@ import type { ChatMessage, UserId } from "../../types";
 export const messagesApi = createApi({
   reducerPath: "messagesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
   }),
   tagTypes: ["Messages"],
   endpoints: (builder) => ({
     getUserMessages: builder.query<ChatMessage[], UserId>({
-      query: (userId) => `messages/${userId}`,
+      query: (userId) => `/api/messages/${userId}`,
       providesTags: (_, __, userId) =>
         userId ? [{ type: "Messages", id: userId }] : [],
     }),
     sendMessage: builder.mutation<void, { to: UserId; message: string }>({
       query: ({ to, message }) => ({
-        url: "send-message",
+        url: "/api/send-message",
         method: "POST",
         body: { to, message },
       }),

@@ -4,16 +4,16 @@ import type { UserFormValues } from "../../types";
 export const usersApi = createApi({
   reducerPath: "usersApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
   }),
   tagTypes: ["Users"],
   endpoints: (builder) => ({
     getUsers: builder.query<UserFormValues[], void>({
-      query: () => "/users",
+      query: () => "/api/users",
       providesTags: ["Users"],
     }),
     getUserIds: builder.query<string[], void>({
-      query: () => "/user-ids",
+      query: () => "/api/user-ids",
       providesTags: ["Users"],
     }),
     assignName: builder.mutation<
@@ -21,7 +21,7 @@ export const usersApi = createApi({
       UserFormValues
     >({
       query: (body) => ({
-        url: "/users/assign-name",
+        url: "/api/users/assign-name",
         method: "POST",
         body,
       }),
