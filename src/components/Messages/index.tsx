@@ -17,7 +17,9 @@ const Messages: React.FC<MessagesProps> = ({ selectedUserId }) => {
     data: messages = [],
     isLoading,
     error,
-  } = useGetUserMessagesQuery(selectedUserId);
+  } = useGetUserMessagesQuery(selectedUserId, {
+    pollingInterval: 10000, // 5 seconds
+  });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

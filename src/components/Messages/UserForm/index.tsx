@@ -97,7 +97,7 @@ const UserForm: React.FC<UserFormProps> = ({
           value={form.username}
           onChange={handleChange}
           error={errors.username}
-          // required
+          required
           autoComplete="username"
           className="user_input"
         />

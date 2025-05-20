@@ -8,11 +8,11 @@ import Skeleton from "./Skeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
+import UserForm from "../Messages/UserForm";
 
 import type { UserId } from "../../types";
 
 import "./Users.scss";
-import UserForm from "../Messages/UserForm";
 
 interface MessagesProps {
   selectedUserId: UserId;
