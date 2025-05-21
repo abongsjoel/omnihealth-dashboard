@@ -1,54 +1,114 @@
-# React + TypeScript + Vite
+# OmniHealth Dashboard (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend dashboard for **OmniHealth**, a telehealth assistant built to support hybrid AI/human-powered communication via WhatsApp using the Infobip platform.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔗 [https://omnihealth-dashboard.vercel.app](https://omnihealth-dashboard.vercel.app)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+<!-- ## ✅ CI/CD Status
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+[![Vercel Deployment](https://vercel.com/api/button)](https://vercel.com/your-vercel-username/vercel-project-name)
+
+[![CI](https://github.com/your-username/omnihealth-dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/your-username/omnihealth-dashboard/actions)
+
+--- -->
+
+<!-- ## 🚀 Tech Stack
+
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Redux Toolkit & RTK Query](https://redux-toolkit.js.org/)
+- [SCSS Modules](https://sass-lang.com/)
+- [Infobip WhatsApp API](https://www.infobip.com/channels/whatsapp)
+- [Axios](https://axios-http.com/)
+- [react-hot-toast](https://react-hot-toast.com/) -->
+
+## 🛠 Tech Stack
+
+- ⚛️ React + Vite
+- 🟦 TypeScript
+- 💅 SCSS (Modules)
+- ⚙️ Redux Toolkit + RTK Query
+- 🌐 Infobip WhatsApp API
+- ☁️ Vercel (Hosting)
+- 🔥 Axios + Toast Notifications
+
+## 🧩 Features
+
+- Realtime WhatsApp message viewer
+- Assign user-friendly names to phone numbers
+- AI + human reply capabilities
+- Survey logging
+- Modal forms + Skeleton loaders
+- Mobile responsive layout
+
+## 📦 Setup Instructions
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-username/omnihealth-dashboard.git
+cd omnihealth-dashboard
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install Dependencise
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm install
 ```
+
+### 3. Create a .env file
+
+```bash
+VITE_API_BASE_URL=https://your-backend-server.com
+```
+
+Base URL of your deployed Express API
+
+### 4. Start the dev server
+
+```bash
+npm run dev
+```
+
+App will be available at http://localhost:5173
+
+## Deployment
+
+Vercel
+
+## 📁 Project Structure
+
+src/
+├── components/ # UI: messages, users, forms
+├── redux/ # RTK Query setup
+├── hooks/ # Custom logic hooks
+├── types/ # TypeScript interfaces/types
+├── styles/ # SCSS partials and variables
+└── App.tsx # Main entry
+
+## Author
+
+👤 **Joel Chi**
+
+- GitHub: [@abongsjoel](https://github.com/abongsjoel)
+- Twitter: [@thierryjoel10](https://twitter.com/ThierryJoel10)
+- LinkedIn: [Joel Chi](https://www.linkedin.com/in/joel-chi-b4285a97/)
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+Feel free to check the [issues page](https://github.com/abongsjoel/omnihealth-dashboard/issues).
+
+## Show your support
+
+Give a ⭐️ if you like this project!
+
+## License
+
+  <p>This project is <a href="../main/LICENSE">MIT</a> licensed.</p>
