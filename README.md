@@ -8,13 +8,13 @@ This is the frontend dashboard for **OmniHealth**, a telehealth assistant built 
 
 ---
 
-<!-- ## ✅ CI/CD Status
+## ✅ CI/CD Status
 
-[![Vercel Deployment](https://vercel.com/api/button)](https://vercel.com/your-vercel-username/vercel-project-name)
+[![Vercel Deployment](https://vercel.com/api/button)](https://vercel.com/abongsjoel/omnihealth-dashboard)
 
-[![CI](https://github.com/your-username/omnihealth-dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/your-username/omnihealth-dashboard/actions)
+[![CI](https://github.com/abongsjoel/omnihealth-dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/abongsjoel/omnihealth-dashboard/actions)
 
---- -->
+---
 
 <!-- ## 🚀 Tech Stack
 
@@ -81,7 +81,7 @@ App will be available at http://localhost:5173
 
 Vercel
 
-## 📁 Project Structure
+<!-- ## 📁 Project Structure
 
 src/
 ├── components/ # UI: messages, users, forms
@@ -89,7 +89,7 @@ src/
 ├── hooks/ # Custom logic hooks
 ├── types/ # TypeScript interfaces/types
 ├── styles/ # SCSS partials and variables
-└── App.tsx # Main entry
+└── App.tsx # Main entry -->
 
 ## Author
 
