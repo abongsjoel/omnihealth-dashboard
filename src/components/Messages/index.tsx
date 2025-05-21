@@ -18,7 +18,9 @@ const Messages: React.FC<MessagesProps> = ({ selectedUserId }) => {
     isLoading,
     error,
   } = useGetUserMessagesQuery(selectedUserId, {
-    pollingInterval: 10000, // 5 seconds
+    pollingInterval: 5000,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
   });
 
   useEffect(() => {
