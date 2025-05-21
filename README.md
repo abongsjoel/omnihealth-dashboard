@@ -10,7 +10,7 @@ This is the frontend dashboard for **OmniHealth**, a telehealth assistant built 
 
 ## ✅ CI/CD Status
 
-[![Vercel Deployment](https://vercel.com/api/button)](https://vercel.com/abongsjoel/omnihealth-dashboard)
+[![Vercel](https://vercelbadge.vercel.app/api/abongsjoel/omnihealth-dashboard)](https://vercel.com/abongsjoel/omnihealth-dashboard)
 
 [![CI](https://github.com/abongsjoel/omnihealth-dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/abongsjoel/omnihealth-dashboard/actions)
 
