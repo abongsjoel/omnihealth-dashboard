@@ -2,6 +2,7 @@ import { Toaster } from "react-hot-toast";
 
 import Route from "./components/Route";
 import Dashboard from "./pages/Dashboard";
+import MenuBar from "./components/MenuBar";
 
 import "./App.scss";
 
@@ -18,6 +19,8 @@ function App() {
           },
         }}
       />
+
+      <MenuBar />
 
       <main>
         <Route path="/">
