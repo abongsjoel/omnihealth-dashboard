@@ -1,6 +1,6 @@
 import { Toaster } from "react-hot-toast";
 
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./pages/Dashboard";
 
 import "./App.scss";
 
