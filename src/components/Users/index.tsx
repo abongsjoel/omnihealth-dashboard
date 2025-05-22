@@ -84,7 +84,6 @@ const Users: React.FC<MessagesProps> = ({
   return (
     <>
       <section className="user-list">
-        <h1 className="logo">OmniHealth Dashboard</h1>
         <section className="user-list-header">
           <h2 className="title">Users</h2>
           <Button

@@ -1,0 +1,14 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  height: 95vh;
+  font-family: "Open Sans", sans-serif;
+
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    height: 95vh;
+  }
+}

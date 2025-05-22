@@ -1,21 +1,15 @@
-import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 
-import ReplyBox from "./components/Messages/ReplyBox";
-import Messages from "./components/Messages";
-import Users from "./components/Users";
-import EmptyChat from "./components/Messages/EmptyChat";
-import MessageHeader from "./components/Messages/MessageHeader";
-
-import type { UserId } from "./types";
+import Route from "./components/Route";
+import MenuBar from "./components/MenuBar";
+import Dashboard from "./pages/Dashboard";
+import Survey from "./pages/Survey";
 
 import "./App.scss";
 
 function App() {
-  const [selectedUserId, setSelectedUserId] = useState<UserId>(null);
-
   return (
-    <main className="dashboard">
+    <section className="app_container">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -27,23 +21,17 @@ function App() {
         }}
       />
 
-      <Users
-        selectedUserId={selectedUserId}
-        setSelectedUserId={setSelectedUserId}
-      />
+      <MenuBar />
 
-      <section className="chat-area">
-        {selectedUserId ? (
-          <>
-            <MessageHeader selectedUserId={selectedUserId} />
-            <Messages selectedUserId={selectedUserId} />
-            <ReplyBox selectedUserId={selectedUserId} />
-          </>
-        ) : (
-          <EmptyChat />
-        )}
-      </section>
-    </main>
+      <main className="app_main">
+        <Route path="/">
+          <Dashboard />
+        </Route>
+        <Route path="/survey">
+          <Survey />
+        </Route>
+      </main>
+    </section>
   );
 }
 
