@@ -1,8 +1,12 @@
+import { useState } from "react";
+import classNames from "classnames";
+
 import useNavigation from "../../hooks/useNavigation";
 
 import "./MenuBar.scss";
 
 const MenuBar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const { currentPath, navigate } = useNavigation();
 
   const menuItems = [
@@ -11,12 +15,18 @@ const MenuBar: React.FC = () => {
   ];
 
   return (
-    <nav className="menu-bar">
+    <nav className="menu_bar">
       <h1 className="logo" onClick={() => navigate("/")}>
-        OmniHealth Dashboard
+        OmniHealth
       </h1>
 
-      <div className="menu_items">
+      <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
+        <span className={classNames({ open: isOpen })} />
+        <span className={classNames({ open: isOpen })} />
+        <span className={classNames({ open: isOpen })} />
+      </div>
+
+      <div className={classNames("menu_items", { open: isOpen })}>
         {menuItems.map(({ label, path }) => (
           <button
             key={path}

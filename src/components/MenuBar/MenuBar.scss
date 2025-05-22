@@ -1,4 +1,4 @@
-.menu-bar {
+.menu_bar {
   position: sticky;
   top: 0;
   z-index: 100;
@@ -15,6 +15,19 @@
     font-weight: bold;
     color: var(--primary);
     cursor: pointer;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+    span {
+      width: 20px;
+      height: 2px;
+      background-color: #333;
+      transition: 0.3s;
+    }
   }
 
   .menu_items {
@@ -45,5 +58,31 @@
 
   .loggedin_user {
     font-size: 0.5rem;
+  }
+
+  @media (max-width: $mobile-breakpoint) {
+    .hamburger {
+      display: flex;
+    }
+
+    .menu_items {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      padding: 1rem;
+
+      &.open {
+        display: flex;
+      }
+    }
+
+    .loggedin_user {
+      display: none;
+    }
   }
 }
