@@ -7,7 +7,6 @@ const MenuBar: React.FC = () => {
 
   const menuItems = [
     { label: "Dashboard", path: "/" },
-    { label: "Messages", path: "/messages" },
     { label: "Survey", path: "/survey" },
   ];
 

@@ -1,7 +1,7 @@
 .dashboard {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  height: 100vh;
+  height: 95vh;
   font-family: "Open Sans", sans-serif;
 
   .chat-area {
@@ -9,6 +9,6 @@
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
-    height: 100vh;
+    height: 95vh;
   }
 }

@@ -52,7 +52,7 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ selectedUserId }) => {
         onChange={(e) => setReply(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Type your reply..."
-        rows={4}
+        rows={2}
       />
       <footer className="btn-container">
         <Button onClick={handleSend} disabled={isSending}>

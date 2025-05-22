@@ -136,7 +136,7 @@ input,
 button,
 textarea,
 select {
-  font: inherit;
+  /* font: inherit; */
   margin: 0;
 }
 

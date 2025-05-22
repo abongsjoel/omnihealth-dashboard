@@ -1,7 +1,7 @@
 .input-box {
   position: sticky;
   bottom: 0;
-  padding: 1rem;
+  padding: 0.5rem;
   border-top: 1px solid #ddd;
   background-color: #fff;
   z-index: 10;
@@ -20,7 +20,7 @@
     min-height: 40px;
     line-height: 20px;
     max-height: 400px;
-    font: inherit;
+    font-size: 0.75rem;
     width: 100%;
     box-sizing: border-box;
   }
