@@ -1,8 +1,9 @@
 import { Toaster } from "react-hot-toast";
 
 import Route from "./components/Route";
-import Dashboard from "./pages/Dashboard";
 import MenuBar from "./components/MenuBar";
+import Dashboard from "./pages/Dashboard";
+import Survey from "./pages/Survey";
 
 import "./App.scss";
 
@@ -25,6 +26,9 @@ function App() {
       <main className="app_main">
         <Route path="/">
           <Dashboard />
+        </Route>
+        <Route path="/survey">
+          <Survey />
         </Route>
       </main>
     </section>

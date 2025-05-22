@@ -12,7 +12,9 @@ const MenuBar: React.FC = () => {
 
   return (
     <nav className="menu-bar">
-      <h1 className="logo">OmniHealth Dashboard</h1>
+      <h1 className="logo" onClick={() => navigate("/")}>
+        OmniHealth Dashboard
+      </h1>
 
       <div className="menu_items">
         {menuItems.map(({ label, path }) => (
