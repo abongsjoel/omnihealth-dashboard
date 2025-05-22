@@ -36,6 +36,15 @@
   background-color: #323232;
 }
 
+.tableScroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tableScroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
 .table {
   border: 1px solid #444;
   border-radius: 8px;
@@ -46,6 +55,17 @@
   font-size: 12px;
   table-layout: fixed;
 }
+
+// .tableScroll {
+//   overflow-x: auto;
+//   width: 100%;
+// }
+
+// .table {
+//   width: max-content; // allows table to grow beyond viewport width
+//   min-width: 100%; // ensures it still fills the container
+//   border-collapse: collapse;
+// }
 
 .table th,
 .table td {

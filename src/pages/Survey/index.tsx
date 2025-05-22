@@ -1,8 +1,10 @@
 import React from "react";
 
 import { useGetAllSurveysQuery } from "../../redux/apis/surveysApi";
-import Table from "../../components/common/Table";
+import Table from "../../components/common/Table2";
 import type { SurveyEntry } from "../../types";
+
+import "./Survey.scss";
 
 const Survey: React.FC = () => {
   const { data: surveys = [], isLoading, error } = useGetAllSurveysQuery();
@@ -90,8 +92,8 @@ const Survey: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Survey Results</h1>
+    <div className="survey_container">
+      <h1 className="title">Survey Results</h1>
       <Table data={data} config={config} keyFn={keyFn} />
     </div>
   );
