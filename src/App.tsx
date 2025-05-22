@@ -22,7 +22,7 @@ function App() {
 
       <MenuBar />
 
-      <main>
+      <main className="app_main">
         <Route path="/">
           <Dashboard />
         </Route>

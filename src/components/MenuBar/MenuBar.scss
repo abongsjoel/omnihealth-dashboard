@@ -1,0 +1,48 @@
+.menu-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--white);
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+
+  .logo {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--primary);
+  }
+
+  .menu_items {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex: 1;
+
+    button {
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      color: var(--text-500);
+
+      &.active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+      }
+
+      &:hover {
+        color: var(--primary-hover);
+      }
+    }
+  }
+
+  .loggedin_user {
+    font-size: 0.5rem;
+  }
+}

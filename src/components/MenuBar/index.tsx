@@ -1,28 +1,35 @@
-import React from "react";
+import useNavigation from "../../hooks/useNavigation";
 
-interface MenuBarProps {
-  title?: string;
-  children?: React.ReactNode;
-}
+import "./MenuBar.scss";
 
-const MenuBar: React.FC<MenuBarProps> = ({
-  title = "OmniHealth Dashboard",
-  children,
-}) => (
-  <header
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: "1rem 2rem",
-      background: "#fff",
-      borderBottom: "1px solid #eaeaea",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.03)",
-    }}
-  >
-    <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 600 }}>{title}</h1>
-    <div>{children}</div>
-  </header>
-);
+const MenuBar: React.FC = () => {
+  const { currentPath, navigate } = useNavigation();
+
+  const menuItems = [
+    { label: "Dashboard", path: "/" },
+    { label: "Messages", path: "/messages" },
+    { label: "Survey", path: "/survey" },
+  ];
+
+  return (
+    <nav className="menu-bar">
+      <h1 className="logo">OmniHealth Dashboard</h1>
+
+      <div className="menu_items">
+        {menuItems.map(({ label, path }) => (
+          <button
+            key={path}
+            onClick={() => navigate(path)}
+            className={currentPath === path ? "active" : ""}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="loggedin_user">LoggedIn User</div>
+    </nav>
+  );
+};
 
 export default MenuBar;
