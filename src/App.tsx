@@ -1,12 +1,13 @@
 import { Toaster } from "react-hot-toast";
 
+import Route from "./components/Route";
 import Dashboard from "./pages/Dashboard";
 
 import "./App.scss";
 
 function App() {
   return (
-    <>
+    <section className="app_container">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -17,8 +18,13 @@ function App() {
           },
         }}
       />
-      <Dashboard />
-    </>
+
+      <main>
+        <Route path="/">
+          <Dashboard />
+        </Route>
+      </main>
+    </section>
   );
 }
 
