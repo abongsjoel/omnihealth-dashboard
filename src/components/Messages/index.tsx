@@ -51,6 +51,12 @@ const Messages: React.FC<MessagesProps> = ({
               {msg.role === "user" ? userName : "Assistant"}:
             </strong>{" "}
             {msg.content}
+            <div className="msg-time">
+              {new Date(msg.timestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </div>
           </article>
         ))
       )}
