@@ -32,12 +32,29 @@
         @include mixins.bubble-tail(right, #c7f0d9);
       }
     }
-  }
 
-  .msg-sender {
-    display: block;
-    font-weight: bold;
-    font-style: italic;
-    margin-bottom: 0.25rem;
+    .msg-sender {
+      display: block;
+      font-weight: bold;
+      font-size: 0.75rem;
+      font-style: italic;
+      margin-bottom: 0.25rem;
+
+      &.user_name {
+        color: var(--tertiary);
+      }
+
+      &.assistant_name {
+        color: var(--quinary);
+      }
+    }
+
+    .msg-time {
+      font-size: 0.6rem;
+      color: var(--text-100);
+      font-style: italic;
+      margin-top: 0.25rem;
+      text-align: right;
+    }
   }
 }
