@@ -3,13 +3,6 @@ export interface ChatMessage {
   content: string;
 }
 
-export type UserId = string | null;
-
-export interface UserFormValues {
-  username: string;
-  userId: string;
-}
-
 export interface User {
   userId: string;
   username: string;

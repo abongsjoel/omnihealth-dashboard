@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { ChatMessage, UserId } from "../../types";
+import type { ChatMessage } from "../../types";
 
 export const messagesApi = createApi({
   reducerPath: "messagesApi",
@@ -8,12 +8,12 @@ export const messagesApi = createApi({
   }),
   tagTypes: ["Messages"],
   endpoints: (builder) => ({
-    getUserMessages: builder.query<ChatMessage[], UserId>({
+    getUserMessages: builder.query<ChatMessage[], string>({
       query: (userId) => `/api/messages/${userId}`,
       providesTags: (_, __, userId) =>
         userId ? [{ type: "Messages", id: userId }] : [],
     }),
-    sendMessage: builder.mutation<void, { to: UserId; message: string }>({
+    sendMessage: builder.mutation<void, { to: string; message: string }>({
       query: ({ to, message }) => ({
         url: "/api/send-message",
         method: "POST",

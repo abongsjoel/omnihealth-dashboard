@@ -5,7 +5,7 @@ import Input from "../../common/Input";
 import Button from "../../common/Button";
 import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
-import type { UserFormValues } from "../../../types";
+import type { User } from "../../../types";
 
 import "./UserForm.scss";
 
@@ -22,7 +22,7 @@ interface FormErrors {
 }
 
 const validate = (
-  form: UserFormValues,
+  form: User,
   setErrors: React.Dispatch<React.SetStateAction<FormErrors>>
 ): boolean => {
   const newErrors: FormErrors = {};
