@@ -12,7 +12,7 @@ interface MessagesProps {
 }
 
 const Messages: React.FC<MessagesProps> = ({
-  selectedUser: { userId, username },
+  selectedUser: { userId, userName },
 }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +48,7 @@ const Messages: React.FC<MessagesProps> = ({
             }`}
           >
             <strong className="msg-sender">
-              {msg.role === "user" ? username : "Assistant"}:
+              {msg.role === "user" ? userName : "Assistant"}:
             </strong>{" "}
             {msg.content}
           </article>

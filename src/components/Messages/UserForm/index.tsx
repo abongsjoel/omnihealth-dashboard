@@ -12,12 +12,12 @@ import "./UserForm.scss";
 interface UserFormProps {
   title?: string;
   userId?: string;
-  username?: string;
+  userName?: string;
   handleCloseModal?: () => void;
 }
 
 interface FormErrors {
-  username?: string;
+  userName?: string;
   userId?: string;
 }
 
@@ -27,8 +27,8 @@ const validate = (
 ): boolean => {
   const newErrors: FormErrors = {};
 
-  if (!form.username) {
-    newErrors.username = "User name is required.";
+  if (!form.userName) {
+    newErrors.userName = "User name is required.";
   }
 
   if (!form.userId) {
@@ -44,15 +44,16 @@ const validate = (
 const UserForm: React.FC<UserFormProps> = ({
   title = "",
   userId = "",
-  username = "",
+  userName = "",
   handleCloseModal,
 }) => {
   const [assignName, { isLoading }] = useAssignNameMutation();
 
-  const [form, setForm] = useState({ username, userId });
+  const [form, setForm] = useState({ userName, userId });
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log({ name: e.target.name, value: e.target.value });
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
@@ -75,7 +76,7 @@ const UserForm: React.FC<UserFormProps> = ({
         }
 
         toast.success(
-          `Assigned "${result.user.username}" to ${result.user.userId}`
+          `Assigned "${result.user.userName}" to ${result.user.userId}`
         );
       }
     } catch (err) {
@@ -89,16 +90,16 @@ const UserForm: React.FC<UserFormProps> = ({
       <h2 className="title">{title}</h2>
       <main className="main">
         <Input
-          id="username"
-          name="username"
+          id="userName"
+          name="userName"
           type="text"
           label="User Name"
           placeholder="Ngwa Lum"
-          value={form.username}
+          value={form.userName}
           onChange={handleChange}
-          error={errors.username}
+          error={errors.userName}
           required
-          autoComplete="username"
+          autoComplete="userName"
           className="user_input"
         />
         <Input

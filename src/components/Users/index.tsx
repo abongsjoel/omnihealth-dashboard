@@ -45,12 +45,12 @@ const Users: React.FC = () => {
   const usersList = useMemo(() => {
     const userMap = new Map<string, string>();
 
-    // Add all known users (with username)
+    // Add all known users (with userName)
     for (const user of users || []) {
-      userMap.set(user.userId, user.username);
+      userMap.set(user.userId, user.userName);
     }
 
-    // Add all userIds (preserve existing usernames, or add blank)
+    // Add all userIds (preserve existing userNames, or add blank)
     for (const id of userIds || []) {
       if (!userMap.has(id)) {
         userMap.set(id, "");
@@ -58,17 +58,17 @@ const Users: React.FC = () => {
     }
 
     // Convert to array
-    const merged = Array.from(userMap.entries()).map(([userId, username]) => ({
+    const merged = Array.from(userMap.entries()).map(([userId, userName]) => ({
       userId,
-      username,
+      userName,
     }));
 
     // Sort: named users A–Z, unnamed at the end
     return merged.sort((a, b) => {
-      if (!a.username && !b.username) return 0;
-      if (!a.username) return 1;
-      if (!b.username) return -1;
-      return a.username.localeCompare(b.username);
+      if (!a.userName && !b.userName) return 0;
+      if (!a.userName) return 1;
+      if (!b.userName) return -1;
+      return a.userName.localeCompare(b.userName);
     });
   }, [userIds, users]);
 
@@ -111,9 +111,9 @@ const Users: React.FC = () => {
                   selectedUser?.userId === usr.userId ? "selected" : ""
                 }`}
               >
-                {usr.username ? (
+                {usr.userName ? (
                   <div className="user-details">
-                    <span className="user_name">{usr.username}</span>
+                    <span className="user_name">{usr.userName}</span>
                     <span className="user_id">{usr.userId}</span>
                   </div>
                 ) : (

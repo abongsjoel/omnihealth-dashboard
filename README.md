@@ -51,7 +51,7 @@ This is the frontend dashboard for **OmniHealth**, a telehealth assistant built 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/omnihealth-dashboard.git
+git clone https://github.com/abongsjoel/omnihealth-dashboard.git
 cd omnihealth-dashboard
 ```
 

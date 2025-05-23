@@ -20,7 +20,10 @@ const Dashboard: React.FC = () => {
       <section className="chat-area">
         {selectedUser ? (
           <>
-            <MessageHeader selectedUser={selectedUser} />
+            <MessageHeader
+              selectedUserId={selectedUser.userId}
+              key={selectedUser.userId}
+            />
             <Messages selectedUser={selectedUser} />
             <ReplyBox selectedUserId={selectedUser.userId} />
           </>
