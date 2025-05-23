@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { UserFormValues } from "../../types";
+import type { User } from "../../types";
 
 export const usersApi = createApi({
   reducerPath: "usersApi",
@@ -8,7 +8,7 @@ export const usersApi = createApi({
   }),
   tagTypes: ["Users"],
   endpoints: (builder) => ({
-    getUsers: builder.query<UserFormValues[], void>({
+    getUsers: builder.query<User[], void>({
       query: () => "/api/users",
       providesTags: ["Users"],
     }),
@@ -16,10 +16,7 @@ export const usersApi = createApi({
       query: () => "/api/user-ids",
       providesTags: ["Users"],
     }),
-    assignName: builder.mutation<
-      { success: boolean; user: UserFormValues },
-      UserFormValues
-    >({
+    assignName: builder.mutation<{ success: boolean; user: User }, User>({
       query: (body) => ({
         url: "/api/users/assign-name",
         method: "POST",

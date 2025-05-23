@@ -1,31 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 
+import { selectSelectedUser } from "../../redux/slices/usersSlice";
 import Users from "../../components/Users";
 import MessageHeader from "../../components/Messages/MessageHeader";
 import Messages from "../../components/Messages";
 import ReplyBox from "../../components/Messages/ReplyBox";
 import EmptyChat from "../../components/Messages/EmptyChat";
 
-import type { UserId } from "../../types";
-
 import "./Dashboard.scss";
 
 const Dashboard: React.FC = () => {
-  const [selectedUserId, setSelectedUserId] = useState<UserId>(null);
+  const selectedUser = useSelector(selectSelectedUser);
 
   return (
     <main className="dashboard">
-      <Users
-        selectedUserId={selectedUserId}
-        setSelectedUserId={setSelectedUserId}
-      />
+      <Users />
 
       <section className="chat-area">
-        {selectedUserId ? (
+        {selectedUser ? (
           <>
-            <MessageHeader selectedUserId={selectedUserId} />
-            <Messages selectedUserId={selectedUserId} />
-            <ReplyBox selectedUserId={selectedUserId} />
+            <MessageHeader
+              selectedUserId={selectedUser.userId}
+              key={selectedUser.userId}
+            />
+            <Messages selectedUser={selectedUser} />
+            <ReplyBox selectedUserId={selectedUser.userId} />
           </>
         ) : (
           <EmptyChat />

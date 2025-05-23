@@ -1,28 +1,27 @@
 import React, { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   useGetUserIdsQuery,
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
+import {
+  selectSelectedUser,
+  updateSelectedUser,
+} from "../../redux/slices/usersSlice";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
 import UserForm from "../Messages/UserForm";
 
-import type { UserId } from "../../types";
-
 import "./Users.scss";
 
-interface MessagesProps {
-  selectedUserId: UserId;
-  setSelectedUserId: React.Dispatch<React.SetStateAction<UserId>>;
-}
+const Users: React.FC = () => {
+  const dispatch = useDispatch();
 
-const Users: React.FC<MessagesProps> = ({
-  selectedUserId,
-  setSelectedUserId,
-}) => {
+  const selectedUser = useSelector(selectSelectedUser);
+
   const {
     data: userIds = [],
     isLoading: isLoadingIds,
@@ -46,12 +45,12 @@ const Users: React.FC<MessagesProps> = ({
   const usersList = useMemo(() => {
     const userMap = new Map<string, string>();
 
-    // Add all known users (with username)
+    // Add all known users (with userName)
     for (const user of users || []) {
-      userMap.set(user.userId, user.username);
+      userMap.set(user.userId, user.userName);
     }
 
-    // Add all userIds (preserve existing usernames, or add blank)
+    // Add all userIds (preserve existing userNames, or add blank)
     for (const id of userIds || []) {
       if (!userMap.has(id)) {
         userMap.set(id, "");
@@ -59,21 +58,21 @@ const Users: React.FC<MessagesProps> = ({
     }
 
     // Convert to array
-    const merged = Array.from(userMap.entries()).map(([userId, username]) => ({
+    const merged = Array.from(userMap.entries()).map(([userId, userName]) => ({
       userId,
-      username,
+      userName,
     }));
 
     // Sort: named users A–Z, unnamed at the end
     return merged.sort((a, b) => {
-      if (!a.username && !b.username) return 0;
-      if (!a.username) return 1;
-      if (!b.username) return -1;
-      return a.username.localeCompare(b.username);
+      if (!a.userName && !b.userName) return 0;
+      if (!a.userName) return 1;
+      if (!b.userName) return -1;
+      return a.userName.localeCompare(b.userName);
     });
   }, [userIds, users]);
 
-  const handleUserClick = () => {
+  const handleAddUserClick = () => {
     setIsModalOpen(true);
   };
 
@@ -88,7 +87,7 @@ const Users: React.FC<MessagesProps> = ({
           <h2 className="title">Users</h2>
           <Button
             label="Add User"
-            onClick={handleUserClick}
+            onClick={handleAddUserClick}
             className="add_user_btn"
           />
         </section>
@@ -105,14 +104,16 @@ const Users: React.FC<MessagesProps> = ({
             .map((usr) => (
               <div
                 key={usr.userId}
-                onClick={() => setSelectedUserId(usr.userId)}
+                onClick={() => {
+                  dispatch(updateSelectedUser(usr));
+                }}
                 className={`user ${
-                  selectedUserId === usr.userId ? "selected" : ""
+                  selectedUser?.userId === usr.userId ? "selected" : ""
                 }`}
               >
-                {usr.username ? (
+                {usr.userName ? (
                   <div className="user-details">
-                    <span className="user_name">{usr.username}</span>
+                    <span className="user_name">{usr.userName}</span>
                     <span className="user_id">{usr.userId}</span>
                   </div>
                 ) : (

@@ -17,7 +17,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
 
   const user = users.find((u) => u.userId === selectedUserId);
 
-  const username = user?.username || "";
+  const userName = user?.userName || "";
 
   const handleAssignName = () => {
     setIsModalOpen(true);
@@ -27,13 +27,13 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
-  const label = `${username ? "Edit" : "Assign"} Name`;
+  const label = `${userName ? "Edit" : "Assign"} Name`;
 
   return (
     <>
       <header className="message-header">
         <section className="user-info">
-          <h3 className="display-name">{username}</h3>
+          <h3 className="display-name">{userName}</h3>
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
         <Button onClick={handleAssignName} className="btn-add-user">
@@ -44,7 +44,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
         <UserForm
           title={label}
           userId={selectedUserId ?? ""}
-          username={username}
+          userName={userName}
           handleCloseModal={handleCloseModal}
         />
       </Modal>

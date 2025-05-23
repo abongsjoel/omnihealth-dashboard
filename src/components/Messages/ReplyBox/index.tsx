@@ -3,12 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../../../redux/apis/messagesApi";
 import Button from "../../common/Button";
 
-import type { UserId } from "../../../types";
-
 import "./ReplyBox.scss";
 
 interface ReplyBoxProps {
-  selectedUserId: UserId;
+  selectedUserId: string;
 }
 
 const ReplyBox: React.FC<ReplyBoxProps> = ({ selectedUserId }) => {
