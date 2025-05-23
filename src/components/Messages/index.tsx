@@ -74,17 +74,13 @@ const Messages: React.FC<MessagesProps> = ({
               msg.role === "user" ? "user-msg" : "assistant-msg"
             }`}
           >
-            <strong className="msg-sender">
-              {msg.role === "user" ? userName : "Assistant"}:
-            </strong>{" "}
+            {msg.role === "user" ? (
+              <strong className="msg-sender user_name">{userName}</strong>
+            ) : (
+              <strong className="msg-sender assistant_name">Assistant</strong>
+            )}
             {msg.content}
-            <div className="msg-time">
-              {/* {new Date(msg.timestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })} */}
-              {getFormattedTime(msg.timestamp)}
-            </div>
+            <div className="msg-time">{getFormattedTime(msg.timestamp)}</div>
           </article>
         ))
       )}
