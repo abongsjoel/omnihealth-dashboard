@@ -1,28 +1,27 @@
 import React, { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   useGetUserIdsQuery,
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
+import {
+  selectSelectedUser,
+  updateSelectedUser,
+} from "../../redux/slices/usersSlice";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
 import UserForm from "../Messages/UserForm";
 
-import type { UserId } from "../../types";
-
 import "./Users.scss";
 
-interface MessagesProps {
-  selectedUserId: UserId;
-  setSelectedUserId: React.Dispatch<React.SetStateAction<UserId>>;
-}
+const Users: React.FC = () => {
+  const dispatch = useDispatch();
 
-const Users: React.FC<MessagesProps> = ({
-  selectedUserId,
-  setSelectedUserId,
-}) => {
+  const selectedUser = useSelector(selectSelectedUser);
+
   const {
     data: userIds = [],
     isLoading: isLoadingIds,
@@ -73,7 +72,7 @@ const Users: React.FC<MessagesProps> = ({
     });
   }, [userIds, users]);
 
-  const handleUserClick = () => {
+  const handleAddUserClick = () => {
     setIsModalOpen(true);
   };
 
@@ -88,7 +87,7 @@ const Users: React.FC<MessagesProps> = ({
           <h2 className="title">Users</h2>
           <Button
             label="Add User"
-            onClick={handleUserClick}
+            onClick={handleAddUserClick}
             className="add_user_btn"
           />
         </section>
@@ -105,9 +104,11 @@ const Users: React.FC<MessagesProps> = ({
             .map((usr) => (
               <div
                 key={usr.userId}
-                onClick={() => setSelectedUserId(usr.userId)}
+                onClick={() => {
+                  dispatch(updateSelectedUser(usr));
+                }}
                 className={`user ${
-                  selectedUserId === usr.userId ? "selected" : ""
+                  selectedUser?.userId === usr.userId ? "selected" : ""
                 }`}
               >
                 {usr.username ? (

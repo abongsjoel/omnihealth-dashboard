@@ -1,23 +1,20 @@
 import React, { useState } from "react";
 
-import { useGetUsersQuery } from "../../../redux/apis/usersApi";
 import Button from "../../common/Button";
 import Modal from "../../common/Modal";
 import UserForm from "../UserForm";
+import type { User } from "../../../types";
 
 import "./MessageHeader.scss";
 
 interface MessageHeaderProps {
-  selectedUserId: string;
+  selectedUser: User;
 }
 
-const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
-  const { data: users = [] } = useGetUsersQuery();
+const MessageHeader: React.FC<MessageHeaderProps> = ({
+  selectedUser: { username, userId },
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const user = users.find((u) => u.userId === selectedUserId);
-
-  const username = user?.username || "";
 
   const handleAssignName = () => {
     setIsModalOpen(true);
@@ -34,7 +31,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
       <header className="message-header">
         <section className="user-info">
           <h3 className="display-name">{username}</h3>
-          <h2 className="phone-number">{selectedUserId}</h2>
+          <h2 className="phone-number">{userId}</h2>
         </section>
         <Button onClick={handleAssignName} className="btn-add-user">
           {label}
@@ -43,7 +40,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <UserForm
           title={label}
-          userId={selectedUserId ?? ""}
+          userId={userId ?? ""}
           username={username}
           handleCloseModal={handleCloseModal}
         />

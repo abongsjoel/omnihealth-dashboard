@@ -3,21 +3,24 @@ import React, { useEffect, useRef } from "react";
 import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
 import MessagesSkeleton from "./MessagesSkeleton";
 import Error from "../common/Error";
+import type { User } from "../../types";
 
 import "./Messages.scss";
 
 interface MessagesProps {
-  selectedUserId: string;
+  selectedUser: User;
 }
 
-const Messages: React.FC<MessagesProps> = ({ selectedUserId }) => {
+const Messages: React.FC<MessagesProps> = ({
+  selectedUser: { userId, username },
+}) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const {
     data: messages = [],
     isLoading,
     error,
-  } = useGetUserMessagesQuery(selectedUserId, {
+  } = useGetUserMessagesQuery(userId, {
     pollingInterval: 5000,
     refetchOnFocus: true,
     refetchOnReconnect: true,
@@ -45,7 +48,7 @@ const Messages: React.FC<MessagesProps> = ({ selectedUserId }) => {
             }`}
           >
             <strong className="msg-sender">
-              {msg.role === "user" ? "User" : "Assistant"}:
+              {msg.role === "user" ? username : "Assistant"}:
             </strong>{" "}
             {msg.content}
           </article>

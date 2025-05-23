@@ -10,6 +10,11 @@ export interface UserFormValues {
   userId: string;
 }
 
+export interface User {
+  userId: string;
+  username: string;
+}
+
 export interface SurveyEntry {
   _id: string;
   age: string;
