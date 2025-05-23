@@ -1,0 +1,19 @@
+$size: -15px;
+
+@mixin bubble-tail($side, $color) {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+
+  @if $side == left {
+    left: $size;
+    border-right-color: $color;
+  } @else if $side == right {
+    right: $size;
+    border-left-color: $color;
+  }
+}
