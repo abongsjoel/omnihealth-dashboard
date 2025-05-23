@@ -26,7 +26,11 @@ const Users: React.FC = () => {
     data: userIds = [],
     isLoading: isLoadingIds,
     error: errorIds,
-  } = useGetUserIdsQuery();
+  } = useGetUserIdsQuery(undefined, {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
 
   const {
     data: users = [],
