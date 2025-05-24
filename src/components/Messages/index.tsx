@@ -53,8 +53,6 @@ const Messages: React.FC<MessagesProps> = ({
     refetchOnReconnect: true,
   });
 
-  console.log("Messages", messages);
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);

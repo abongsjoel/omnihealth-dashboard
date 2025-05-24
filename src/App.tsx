@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
 
 import "./App.scss";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
         </Route>
         <Route path="/survey">
           <Survey />
+        </Route>
+        <Route path="/login">
+          <LoginPage />
         </Route>
       </main>
     </section>
