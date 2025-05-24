@@ -3,6 +3,8 @@ import { Toaster } from "react-hot-toast";
 
 import Route from "./components/Route";
 import MenuBar from "./components/MenuBar";
+import PrivateRoute from "./components/Route/PrivateRoute";
+
 import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
 import LoginPage from "./pages/LoginPage";
@@ -35,18 +37,20 @@ function App() {
 
       <main className={`app_main ${!isAuthenticated ? "full_screen" : ""}`}>
         <Route path="/">
-          {isAuthenticated ? (
+          <PrivateRoute
+            isAuthenticated={isAuthenticated}
+            onLoginSuccess={() => setIsAuthenticated(true)}
+          >
             <Dashboard />
-          ) : (
-            <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
-          )}
+          </PrivateRoute>
         </Route>
         <Route path="/survey">
-          {isAuthenticated ? (
+          <PrivateRoute
+            isAuthenticated={isAuthenticated}
+            onLoginSuccess={() => setIsAuthenticated(true)}
+          >
             <Survey />
-          ) : (
-            <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
-          )}
+          </PrivateRoute>
         </Route>
         <Route path="/login">
           <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
