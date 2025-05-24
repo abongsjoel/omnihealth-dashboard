@@ -7,16 +7,12 @@ import Login from "./Login";
 
 import "./LoginPage.scss";
 
-interface LoginPageProps {
-  onLoginSuccess: () => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+const LoginPage: React.FC = () => {
   const images = [loginPic, loginPic2];
 
   return (
     <section className="loginPage_container">
-      <Login onLoginSuccess={onLoginSuccess} />
+      <Login />
       <LoginImg images={images} />
     </section>
   );

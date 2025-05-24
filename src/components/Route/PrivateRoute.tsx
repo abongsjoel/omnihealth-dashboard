@@ -3,20 +3,14 @@ import LoginPage from "../../pages/LoginPage";
 
 interface PrivateRouteProps {
   isAuthenticated: boolean;
-  onLoginSuccess: () => void;
   children: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({
   isAuthenticated,
-  onLoginSuccess,
   children,
 }) => {
-  return isAuthenticated ? (
-    <>{children}</>
-  ) : (
-    <LoginPage onLoginSuccess={onLoginSuccess} />
-  );
+  return isAuthenticated ? <>{children}</> : <LoginPage />;
 };
 
 export default PrivateRoute;

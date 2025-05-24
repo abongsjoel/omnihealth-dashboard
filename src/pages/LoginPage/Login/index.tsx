@@ -1,16 +1,16 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
 import Logo from "../../../components/common/Logo";
 
 import "./Login.scss";
+import { login } from "../../../redux/slices/authSlice";
 
-interface LoginProps {
-  onLoginSuccess: () => void;
-}
+const Login: React.FC = () => {
+  const dispatch = useDispatch();
 
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
@@ -45,8 +45,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     event.preventDefault();
     if (validate()) {
       console.log("Login submitted", form);
+
       // Proceed with actual login
-      onLoginSuccess();
+      dispatch(login());
     }
   };
 

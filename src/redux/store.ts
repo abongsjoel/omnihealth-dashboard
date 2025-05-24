@@ -5,10 +5,12 @@ import { usersApi } from "./apis/usersApi";
 import { messagesApi } from "./apis/messagesApi";
 import { surveyApi } from "./apis/surveysApi";
 import usersReducer from "./slices/usersSlice";
+import authReducer from "./slices/authSlice";
 
 export const store = configureStore({
   reducer: {
     users: usersReducer,
+    auth: authReducer,
     [usersApi.reducerPath]: usersApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,
     [surveyApi.reducerPath]: surveyApi.reducer,
