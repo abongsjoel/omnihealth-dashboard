@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 
-// import Logo from "../../atoms/Logo";
-// import Input from "../../atoms/Input";
-// import Button from "../../atoms/Button";
-
-import "./Login.scss";
 import Input from "../common/Input";
 import Button from "../common/Button";
+import Logo from "../common/Logo";
+
+import "./Login.scss";
 
 const Login: React.FC = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -49,7 +47,7 @@ const Login: React.FC = () => {
 
   return (
     <section className="login_container">
-      {/* <Logo /> */}
+      <Logo />
       <form onSubmit={handleSubmit} className="login_form">
         <header className="login_header">
           <h2 className="login_title">Login</h2>

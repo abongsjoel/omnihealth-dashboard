@@ -2,6 +2,7 @@ import { useState } from "react";
 import classNames from "classnames";
 
 import useNavigation from "../../hooks/useNavigation";
+import Logo from "../common/Logo";
 
 import "./MenuBar.scss";
 
@@ -16,9 +17,7 @@ const MenuBar: React.FC = () => {
 
   return (
     <nav className="menu_bar">
-      <h1 className="logo" onClick={() => navigate("/")}>
-        OmniHealth
-      </h1>
+      <Logo />
 
       <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
         <span className={classNames({ open: isOpen })} />
