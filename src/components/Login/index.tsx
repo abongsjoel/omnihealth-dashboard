@@ -50,11 +50,12 @@ const Login: React.FC = () => {
       <Logo />
       <form onSubmit={handleSubmit} className="login_form">
         <header className="login_header">
-          <h2 className="login_title">Login</h2>
+          <h2 className="login_title">Welcome to the OmniHealth Dashboard</h2>
           <p className="login_description">
-            Log in to discover and book unforgettable events near you. Your next
-            great experience is just a click away!
+            Built for doctors and specialists to seamlessly engage with
+            patients, review conversations, and deliver expert care.
           </p>
+          <p className="login_cta">Login to get started</p>
         </header>
         <main className="login_main">
           <Input
