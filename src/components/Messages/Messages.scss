@@ -46,6 +46,14 @@
 
       &.assistant_name {
         color: var(--quinary);
+
+        .assistant_ai {
+          color: var(--error);
+        }
+
+        .assistant_human {
+          color: var(--senary);
+        }
       }
     }
 

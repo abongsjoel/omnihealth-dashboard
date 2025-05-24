@@ -53,6 +53,8 @@ const Messages: React.FC<MessagesProps> = ({
     refetchOnReconnect: true,
   });
 
+  console.log("Messages", messages);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -77,7 +79,18 @@ const Messages: React.FC<MessagesProps> = ({
             {msg.role === "user" ? (
               <strong className="msg-sender user_name">{userName}</strong>
             ) : (
-              <strong className="msg-sender assistant_name">Assistant</strong>
+              <strong className="msg-sender assistant_name">
+                Assistant{" "}
+                {msg.agent ? (
+                  msg.agent === "openai" ? (
+                    <span className="assistant_ai">(AI)</span>
+                  ) : (
+                    <span className="assistant_human">(Human)</span>
+                  )
+                ) : (
+                  ""
+                )}
+              </strong>
             )}
             {msg.content}
             <div className="msg-time">{getFormattedTime(msg.timestamp)}</div>
