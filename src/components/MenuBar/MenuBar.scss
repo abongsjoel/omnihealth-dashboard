@@ -49,7 +49,7 @@
     }
   }
 
-  .loggedin_user {
+  .logout {
     font-size: 0.5rem;
   }
 
@@ -72,10 +72,6 @@
       &.open {
         display: flex;
       }
-    }
-
-    .loggedin_user {
-      display: none;
     }
   }
 }

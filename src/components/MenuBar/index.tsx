@@ -1,12 +1,16 @@
 import { useState } from "react";
 import classNames from "classnames";
 
+import { useAppDispatch } from "../../redux/hooks";
+import { logout } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
 import Logo from "../common/Logo";
+import Button from "../common/Button";
 
 import "./MenuBar.scss";
 
 const MenuBar: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const { currentPath, navigate } = useNavigation();
 
@@ -14,6 +18,10 @@ const MenuBar: React.FC = () => {
     { label: "Dashboard", path: "/" },
     { label: "Survey", path: "/survey" },
   ];
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <nav className="menu_bar">
@@ -37,7 +45,9 @@ const MenuBar: React.FC = () => {
         ))}
       </div>
 
-      <div className="loggedin_user">LoggedIn User</div>
+      <Button plain onClick={handleLogout}>
+        Logout
+      </Button>
     </nav>
   );
 };

@@ -16,7 +16,6 @@ import "./App.scss";
 function App() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  console.log({ isAuthenticated });
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated");
