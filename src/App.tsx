@@ -1,14 +1,23 @@
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 import Route from "./components/Route";
 import MenuBar from "./components/MenuBar";
 import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
-
-import "./App.scss";
 import LoginPage from "./pages/LoginPage";
 
+import "./App.scss";
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  console.log({ isAuthenticated });
+
+  useEffect(() => {
+    const auth = localStorage.getItem("isAuthenticated");
+    if (auth === "true") setIsAuthenticated(true);
+  }, []);
+
   return (
     <section className="app_container">
       <Toaster
@@ -26,13 +35,21 @@ function App() {
 
       <main className="app_main">
         <Route path="/">
-          <Dashboard />
+          {isAuthenticated ? (
+            <Dashboard />
+          ) : (
+            <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
+          )}
         </Route>
         <Route path="/survey">
-          <Survey />
+          {isAuthenticated ? (
+            <Survey />
+          ) : (
+            <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
+          )}
         </Route>
         <Route path="/login">
-          <LoginPage />
+          <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
         </Route>
       </main>
     </section>

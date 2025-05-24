@@ -6,7 +6,11 @@ import Logo from "../common/Logo";
 
 import "./Login.scss";
 
-const Login: React.FC = () => {
+interface LoginProps {
+  onLoginSuccess: () => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
@@ -42,6 +46,7 @@ const Login: React.FC = () => {
     if (validate()) {
       console.log("Login submitted", form);
       // Proceed with actual login
+      onLoginSuccess();
     }
   };
 
