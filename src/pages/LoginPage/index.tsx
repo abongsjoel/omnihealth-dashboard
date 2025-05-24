@@ -2,8 +2,8 @@ import React from "react";
 
 import loginPic from "../../assets/login-pic.jpg";
 import loginPic2 from "../../assets/login-pic3.jpg";
-import LoginImg from "../../components/Login/LoginImg";
-import Login from "../../components/Login";
+import LoginImg from "./Login/LoginImg";
+import Login from "./Login";
 
 import "./LoginPage.scss";
 

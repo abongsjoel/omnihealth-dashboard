@@ -31,9 +31,9 @@ function App() {
         }}
       />
 
-      <MenuBar />
+      {isAuthenticated && <MenuBar />}
 
-      <main className="app_main">
+      <main className={`app_main ${!isAuthenticated ? "full_screen" : ""}`}>
         <Route path="/">
           {isAuthenticated ? (
             <Dashboard />
