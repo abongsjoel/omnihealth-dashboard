@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 
+import { login } from "../../../redux/slices/authSlice";
+import { useAppDispatch } from "../../../redux/hooks";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
 import Logo from "../../../components/common/Logo";
 
 import "./Login.scss";
-import { login } from "../../../redux/slices/authSlice";
 
 const Login: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 
 import { login, selectIsAuthenticated } from "./redux/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import Route from "./components/Route";
 import MenuBar from "./components/MenuBar";
 import PrivateRoute from "./components/Route/PrivateRoute";
@@ -14,8 +14,8 @@ import LoginPage from "./pages/LoginPage";
 import "./App.scss";
 
 function App() {
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   console.log({ isAuthenticated });
 
   useEffect(() => {
