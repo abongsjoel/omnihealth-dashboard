@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   clearReturnTo,
   login,
+  selectIsAuthenticated,
   selectReturnTo,
 } from "../../redux/slices/authSlice";
 import Logo from "../../components/common/Logo";
@@ -15,6 +16,7 @@ import "./Login.scss";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const returnTo = useAppSelector(selectReturnTo);
   const { navigate } = useNavigation();
 
@@ -59,6 +61,13 @@ const Login: React.FC = () => {
       dispatch(clearReturnTo());
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(returnTo || "/");
+      dispatch(clearReturnTo());
+    }
+  }, [isAuthenticated, navigate, returnTo, dispatch]);
 
   return (
     <section className="login_container">
