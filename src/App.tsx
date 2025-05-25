@@ -51,6 +51,9 @@ function App() {
         <Route path="/login">
           <Auth />
         </Route>
+        <Route path="/signup">
+          <Auth />
+        </Route>
       </main>
     </section>
   );
