@@ -9,7 +9,7 @@ import PrivateRoute from "./components/Route/PrivateRoute";
 
 import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
-import LoginPage from "./pages/LoginPage";
+import Auth from "./Auth";
 
 import "./App.scss";
 
@@ -49,7 +49,7 @@ function App() {
           </PrivateRoute>
         </Route>
         <Route path="/login">
-          <LoginPage />
+          <Auth />
         </Route>
       </main>
     </section>

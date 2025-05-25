@@ -1,5 +1,5 @@
 import React from "react";
-import LoginPage from "../../pages/LoginPage";
+import LoginPage from "../../Auth";
 
 interface PrivateRouteProps {
   isAuthenticated: boolean;

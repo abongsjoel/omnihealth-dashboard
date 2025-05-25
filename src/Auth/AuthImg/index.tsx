@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import "./LoginImg.scss";
+import "./AuthImg.scss";
 
-interface LoginImgProps {
+interface AuthImgProps {
   images: string[];
 }
 
-const LoginImg: React.FC<LoginImgProps> = ({ images, ...props }) => {
+const AuthImg: React.FC<AuthImgProps> = ({ images, ...props }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -32,4 +32,4 @@ const LoginImg: React.FC<LoginImgProps> = ({ images, ...props }) => {
   );
 };
 
-export default LoginImg;
+export default AuthImg;

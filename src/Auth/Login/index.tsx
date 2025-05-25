@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-import { login } from "../../../redux/slices/authSlice";
-import { useAppDispatch } from "../../../redux/hooks";
-import Input from "../../../components/common/Input";
-import Button from "../../../components/common/Button";
-import Logo from "../../../components/common/Logo";
+import { useAppDispatch } from "../../redux/hooks";
+import { login } from "../../redux/slices/authSlice";
+import Logo from "../../components/common/Logo";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
 
 import "./Login.scss";
 
