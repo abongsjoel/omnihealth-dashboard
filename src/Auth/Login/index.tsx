@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 
-import { useAppDispatch } from "../../redux/hooks";
-import { login } from "../../redux/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  clearReturnTo,
+  login,
+  selectReturnTo,
+} from "../../redux/slices/authSlice";
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import useNavigation from "../../hooks/useNavigation";
 
 import "./Login.scss";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
+  const returnTo = useAppSelector(selectReturnTo);
+  const { navigate } = useNavigation();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -48,6 +55,8 @@ const Login: React.FC = () => {
 
       // Proceed with actual login
       dispatch(login());
+      navigate(returnTo || "/");
+      dispatch(clearReturnTo());
     }
   };
 
