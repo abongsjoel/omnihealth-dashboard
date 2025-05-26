@@ -18,6 +18,27 @@ import useNavigation from "../../hooks/useNavigation";
 
 import "./Login.scss";
 
+interface FormValues {
+  email: string;
+  password: string;
+}
+type FormErrors = Partial<FormValues>;
+
+const validate = (form: FormValues): FormErrors => {
+  const newErrors: FormErrors = {};
+  if (!form.email) {
+    newErrors.email = "Email is required.";
+  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+    newErrors.email = "Enter a valid email address.";
+  }
+
+  if (!form.password) {
+    newErrors.password = "Password is required.";
+  }
+
+  return newErrors;
+};
+
 const Login: React.FC = () => {
   const [loginCareTeam, { isLoading }] = useLoginCareTeamMutation();
   const dispatch = useAppDispatch();
@@ -25,27 +46,8 @@ const Login: React.FC = () => {
   const returnTo = useAppSelector(selectReturnTo);
   const { navigate } = useNavigation();
 
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
-
-  const validate = () => {
-    const newErrors: { email?: string; password?: string } = {};
-
-    if (!form.email) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "Enter a valid email address.";
-    }
-
-    if (!form.password) {
-      newErrors.password = "Password is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const [form, setForm] = useState<FormValues>({ email: "", password: "" });
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
@@ -57,28 +59,31 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (validate()) {
-      try {
-        const teammember = await loginCareTeam({
-          email: form.email,
-          password: form.password,
-        }).unwrap();
 
-        dispatch(login(teammember));
-        navigate(returnTo || "/");
-        dispatch(clearReturnTo());
-      } catch (err) {
-        const error = err as FetchBaseQueryError;
+    const newErrors = validate(form);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
-        if (error?.status === 401) {
-          setErrors({
-            email: "Invalid email or password.",
-            password: "Invalid email or password.",
-          });
-        } else {
-          console.error("Unexpected login error:", error);
-          toast.error("Unexpected login error. Please try again.");
-        }
+    try {
+      const teammember = await loginCareTeam({
+        email: form.email,
+        password: form.password,
+      }).unwrap();
+
+      dispatch(login(teammember));
+      navigate(returnTo || "/");
+      dispatch(clearReturnTo());
+    } catch (err) {
+      const error = err as FetchBaseQueryError;
+
+      if (error?.status === 401) {
+        setErrors({
+          email: "Invalid email or password.",
+          password: "Invalid email or password.",
+        });
+      } else {
+        console.error("Unexpected login error:", error);
+        toast.error("Unexpected login error. Please try again.");
       }
     }
   };
