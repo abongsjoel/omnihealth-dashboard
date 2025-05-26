@@ -92,8 +92,8 @@ const Signup: React.FC = () => {
       try {
         const result = await signupCareTeam(cleanForm).unwrap();
         console.log(result.message);
-        navigate("/login");
 
+        navigate("/login");
         toast.success(result.message || "Signup successful!");
       } catch (err) {
         console.error("Signup failed:", err);
@@ -177,7 +177,7 @@ const Signup: React.FC = () => {
             required
           />
 
-          <Button label="Sing Up" onClick={handleSubmit} />
+          <Button label="Sing Up" onClick={handleSubmit} disabled={isLoading} />
         </main>
       </form>
     </section>
