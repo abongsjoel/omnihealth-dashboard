@@ -2,14 +2,18 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface CareTeamSignupPayload {
   fullName: string;
+  displayName: string;
+  speciality: string;
   email: string;
   phone: string;
   password: string;
 }
 
-interface CareTeamResponse {
+export interface CareTeamMember {
   _id: string;
   fullName: string;
+  displayName: string;
+  speciality: string;
   email: string;
   phone: string;
   message: string;
@@ -23,7 +27,7 @@ export const careTeamApi = createApi({
     baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
   }),
   endpoints: (builder) => ({
-    signupCareTeam: builder.mutation<CareTeamResponse, CareTeamSignupPayload>({
+    signupCareTeam: builder.mutation<CareTeamMember, CareTeamSignupPayload>({
       query: (payload) => ({
         url: "/careteam/signup",
         method: "POST",
@@ -31,7 +35,7 @@ export const careTeamApi = createApi({
       }),
     }),
     loginCareTeam: builder.mutation<
-      CareTeamResponse,
+      CareTeamMember,
       { email: string; password: string }
     >({
       query: (credentials) => ({
@@ -40,8 +44,14 @@ export const careTeamApi = createApi({
         body: credentials,
       }),
     }),
+    getCareTeamMembers: builder.query<CareTeamMember[], void>({
+      query: () => "/careteam",
+    }),
   }),
 });
 
-export const { useSignupCareTeamMutation, useLoginCareTeamMutation } =
-  careTeamApi;
+export const {
+  useSignupCareTeamMutation,
+  useLoginCareTeamMutation,
+  useGetCareTeamMembersQuery,
+} = careTeamApi;
