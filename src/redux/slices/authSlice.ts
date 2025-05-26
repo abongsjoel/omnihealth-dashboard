@@ -21,6 +21,8 @@ export const selectIsAuthenticated = (state: RootState) =>
   selectAuthState(state).isAuthenticated;
 export const selectReturnTo = (state: RootState) =>
   selectAuthState(state).returnTo;
+export const selectLoggedInMember = (state: RootState) =>
+  selectAuthState(state).careteamMember;
 
 const authSlice = createSlice({
   name: "auth",

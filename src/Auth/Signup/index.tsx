@@ -91,12 +91,10 @@ const Signup: React.FC = () => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    const { fullName, phone, email, password } = form;
-    const cleanForm = { fullName, phone, email, password };
+    const { re_password: _, ...cleanForm } = form;
 
     try {
       const result = await signupCareTeam(cleanForm).unwrap();
-      console.log(result.message);
 
       navigate("/login");
       toast.success(result.message || "Signup successful!");

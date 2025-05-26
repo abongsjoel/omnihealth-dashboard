@@ -1,8 +1,8 @@
 import { useState } from "react";
 import classNames from "classnames";
 
-import { useAppDispatch } from "../../redux/hooks";
-import { logout } from "../../redux/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
 import Logo from "../common/Logo";
 import Button from "../common/Button";
@@ -14,6 +14,10 @@ const MenuBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { currentPath, navigate } = useNavigation();
 
+  const member = useAppSelector(selectLoggedInMember);
+  const displayName = member?.displayName;
+  const fullName = member?.fullName;
+
   const menuItems = [
     { label: "Dashboard", path: "/" },
     { label: "Survey", path: "/survey" },
@@ -21,6 +25,11 @@ const MenuBar: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleMenuClick = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
   };
 
   return (
@@ -33,21 +42,31 @@ const MenuBar: React.FC = () => {
         <span className={classNames({ open: isOpen })} />
       </div>
 
-      <div className={classNames("menu_items", { open: isOpen })}>
+      <ul className={classNames("menu_items", { open: isOpen })}>
         {menuItems.map(({ label, path }) => (
-          <button
+          <li
             key={path}
-            onClick={() => navigate(path)}
-            className={currentPath === path ? "active" : ""}
+            onClick={() => handleMenuClick(path)}
+            className={classNames("menu_item", {
+              active: currentPath === path,
+            })}
           >
             {label}
-          </button>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <Button plain onClick={handleLogout}>
-        Logout
-      </Button>
+      <section className="welcome_container">
+        <p className="welcome_message">
+          Welcome{" "}
+          <span className="display_name">
+            {displayName ?? fullName ?? "Care Member"}
+          </span>
+        </p>
+        <Button plain onClick={handleLogout} className="logout">
+          Logout
+        </Button>
+      </section>
     </nav>
   );
 };
