@@ -28,3 +28,12 @@ export interface SurveyEntry {
   interested: string;
   userId: string;
 }
+
+export interface CareTeamMember {
+  _id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+}

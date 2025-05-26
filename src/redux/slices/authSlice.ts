@@ -1,13 +1,18 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
+import type { CareTeamMember } from "../../types";
 
 interface AuthState {
   isAuthenticated: boolean;
   returnTo: string | null;
+  careteamMember: CareTeamMember | null;
 }
 
+const cachedMember = localStorage.getItem("careteamMember");
+
 const initialState: AuthState = {
-  isAuthenticated: localStorage.getItem("isAuthenticated") === "true",
+  isAuthenticated: !!cachedMember,
+  careteamMember: cachedMember ? JSON.parse(cachedMember) : null,
   returnTo: null,
 };
 
@@ -21,13 +26,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login(state) {
+    login: (state, action: PayloadAction<CareTeamMember>) => {
       state.isAuthenticated = true;
-      localStorage.setItem("isAuthenticated", "true");
+      state.careteamMember = action.payload;
+      localStorage.setItem("careteamMember", JSON.stringify(action.payload));
     },
     logout(state) {
       state.isAuthenticated = false;
-      localStorage.removeItem("isAuthenticated");
+      state.careteamMember = null;
+      localStorage.removeItem("careteamMember");
     },
     setReturnTo: (state, action: PayloadAction<string>) => {
       state.returnTo = action.payload;

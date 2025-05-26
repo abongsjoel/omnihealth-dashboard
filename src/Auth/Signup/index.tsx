@@ -11,11 +11,11 @@ import "./Signup.scss";
 import toast from "react-hot-toast";
 
 interface FormValues {
-  fullName?: string;
-  phone?: string;
-  email?: string;
-  password?: string;
-  re_password?: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  password: string;
+  re_password: string;
 }
 
 type FormErrors = Partial<FormValues>;
@@ -177,7 +177,11 @@ const Signup: React.FC = () => {
             required
           />
 
-          <Button label="Sing Up" onClick={handleSubmit} disabled={isLoading} />
+          <Button
+            label={isLoading ? "Signing in..." : "Sign Up"}
+            onClick={handleSubmit}
+            disabled={isLoading}
+          />
         </main>
       </form>
     </section>

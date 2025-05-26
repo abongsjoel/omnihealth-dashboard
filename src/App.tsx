@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
-import { login, selectIsAuthenticated } from "./redux/slices/authSlice";
+import {
+  clearReturnTo,
+  login,
+  logout,
+  selectIsAuthenticated,
+} from "./redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import Route from "./components/Route";
 import MenuBar from "./components/MenuBar";
@@ -18,8 +23,19 @@ function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   useEffect(() => {
-    const auth = localStorage.getItem("isAuthenticated");
-    if (auth === "true") dispatch(login());
+    const careteamMember = localStorage.getItem("careteamMember");
+
+    if (careteamMember) {
+      try {
+        dispatch(login(JSON.parse(careteamMember)));
+      } catch (err) {
+        console.error("Invalid careteamMember in localStorage", err);
+        dispatch(logout());
+      }
+    } else {
+      dispatch(logout());
+      dispatch(clearReturnTo());
+    }
   }, [dispatch]);
 
   return (

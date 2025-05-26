@@ -63,9 +63,8 @@ const Login: React.FC = () => {
           email: form.email,
           password: form.password,
         }).unwrap();
-        console.log("Logged in teammember:", teammember);
 
-        dispatch(login());
+        dispatch(login(teammember));
         navigate(returnTo || "/");
         dispatch(clearReturnTo());
       } catch (err) {
@@ -125,7 +124,11 @@ const Login: React.FC = () => {
             required
           />
 
-          <Button label="Login" onClick={handleSubmit} disabled={isLoading} />
+          <Button
+            label={isLoading ? "Logging in..." : "Login"}
+            onClick={handleSubmit}
+            disabled={isLoading}
+          />
         </main>
       </form>
     </section>
