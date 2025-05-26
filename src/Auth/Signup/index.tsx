@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 
-// import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-// import {
-//   clearReturnTo,
-//   login,
-//   selectIsAuthenticated,
-//   selectReturnTo,
-// } from "../../redux/slices/authSlice";
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-// import useNavigation from "../../hooks/useNavigation";
+import useNavigation from "../../hooks/useNavigation";
 
 import "./Signup.scss";
 
@@ -64,10 +57,7 @@ const validate = (
 };
 
 const Signup: React.FC = () => {
-  // const dispatch = useAppDispatch();
-  // const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  // const returnTo = useAppSelector(selectReturnTo);
-  // const { navigate } = useNavigation();
+  const { navigate } = useNavigation();
 
   const [form, setForm] = useState({
     fullName: "",
@@ -92,19 +82,9 @@ const Signup: React.FC = () => {
     if (validate(form, setErrors)) {
       console.log("Sigup submitted", form);
 
-      // Proceed with actual login
-      // dispatch(login());
-      // navigate(returnTo || "/");
-      // dispatch(clearReturnTo());
+      navigate("/login");
     }
   };
-
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate(returnTo || "/");
-  //     dispatch(clearReturnTo());
-  //   }
-  // }, [isAuthenticated, navigate, returnTo, dispatch]);
 
   return (
     <section className="signup_container">
