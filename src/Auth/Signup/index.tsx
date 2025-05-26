@@ -14,35 +14,72 @@ import Button from "../../components/common/Button";
 
 import "./Signup.scss";
 
+interface FormValues {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  password?: string;
+  re_password?: string;
+}
+
+type FormErrors = Partial<FormValues>;
+
+const validate = (
+  form: FormValues,
+  setErrors: React.Dispatch<React.SetStateAction<FormErrors>>
+) => {
+  const newErrors: FormErrors = {};
+
+  if (!form.fullName) {
+    newErrors.fullName = "Full Name is required.";
+  }
+
+  if (!form.phone) {
+    newErrors.phone = "Phone Number is required.";
+  } else if (form.phone.length < 9 || form.phone.length > 15) {
+    newErrors.phone = "Phone number must be between 9 and 15 digits.";
+  }
+
+  if (!form.email) {
+    newErrors.email = "Email is required.";
+  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+    newErrors.email = "Enter a valid email address.";
+  }
+
+  if (!form.password) {
+    newErrors.password = "Password is required.";
+  }
+
+  if (!form.re_password) {
+    newErrors.re_password = "Re-enter Password is required.";
+  }
+
+  if (form.password !== form.re_password) {
+    newErrors.password = "Passwords do not match.";
+    newErrors.re_password = "Passwords do not match.";
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 const Signup: React.FC = () => {
   // const dispatch = useAppDispatch();
   // const isAuthenticated = useAppSelector(selectIsAuthenticated);
   // const returnTo = useAppSelector(selectReturnTo);
   // const { navigate } = useNavigation();
 
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
-
-  const validate = () => {
-    const newErrors: { email?: string; password?: string } = {};
-
-    if (!form.email) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "Enter a valid email address.";
-    }
-
-    if (!form.password) {
-      newErrors.password = "Password is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const [form, setForm] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    password: "",
+    re_password: "",
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log({ name: e.target.name, value: e.target.value });
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
@@ -52,7 +89,7 @@ const Signup: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (validate()) {
+    if (validate(form, setErrors)) {
       console.log("Sigup submitted", form);
 
       // Proceed with actual login
@@ -83,11 +120,36 @@ const Signup: React.FC = () => {
         </header>
         <main className="signup_main">
           <Input
+            id="fullName"
+            name="fullName"
+            type="text"
+            label="Full Name"
+            placeholder="e.g. Dr. Ngwa Desmond"
+            value={form.fullName}
+            onChange={handleChange}
+            error={errors.fullName}
+            autoComplete="full-name"
+            required
+          />
+          <Input
+            id="phone"
+            name="phone"
+            type="number"
+            label="Phone Number"
+            placeholder="e.g. 237670312288"
+            value={form.phone}
+            onChange={handleChange}
+            error={errors.phone}
+            autoComplete="phone-number"
+            pattern="[0-9]{9,15}"
+            required
+          />
+          <Input
             id="email"
             name="email"
-            type="email"
+            type="text"
             label="Email"
-            placeholder="abc@xyz.com"
+            placeholder="e.g. ngwades@gmail.com"
             value={form.email}
             onChange={handleChange}
             error={errors.email}
@@ -106,8 +168,20 @@ const Signup: React.FC = () => {
             autoComplete="current-password"
             required
           />
+          <Input
+            id="re_password"
+            name="re_password"
+            type="password"
+            label="Re-enter Password"
+            placeholder="••••••••"
+            value={form.re_password}
+            onChange={handleChange}
+            error={errors.re_password}
+            autoComplete="current-password"
+            required
+          />
 
-          <Button label="Login" onClick={handleSubmit} />
+          <Button label="Sing Up" onClick={handleSubmit} />
         </main>
       </form>
     </section>

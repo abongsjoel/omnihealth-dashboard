@@ -53,7 +53,6 @@ const UserForm: React.FC<UserFormProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log({ name: e.target.name, value: e.target.value });
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
@@ -64,8 +63,6 @@ const UserForm: React.FC<UserFormProps> = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!validate(form, setErrors)) return;
-
-    console.log({ form });
 
     try {
       const result = await assignName(form).unwrap();
@@ -111,7 +108,7 @@ const UserForm: React.FC<UserFormProps> = ({
           value={form.userId}
           onChange={handleChange}
           error={errors.userId}
-          autoComplete="current-password"
+          autoComplete="phone-number"
           pattern="[0-9]{9,15}"
           required
           disabled={!!userId}
