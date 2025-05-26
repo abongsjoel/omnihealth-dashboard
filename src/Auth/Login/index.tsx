@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import toast from "react-hot-toast";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
@@ -17,13 +19,11 @@ import useNavigation from "../../hooks/useNavigation";
 import "./Login.scss";
 
 const Login: React.FC = () => {
-  const [loginCareTeam, { isLoading, error }] = useLoginCareTeamMutation();
+  const [loginCareTeam, { isLoading }] = useLoginCareTeamMutation();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const returnTo = useAppSelector(selectReturnTo);
   const { navigate } = useNavigation();
-
-  console.log({ isLoading, error });
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -68,13 +68,17 @@ const Login: React.FC = () => {
         navigate(returnTo || "/");
         dispatch(clearReturnTo());
       } catch (err) {
-        console.error("Login failed:", err);
+        const error = err as FetchBaseQueryError;
 
-        const inValidErrors = {
-          email: "Invalid email or password.",
-          password: "Invalid email or password.",
-        };
-        setErrors(inValidErrors);
+        if (error?.status === 401) {
+          setErrors({
+            email: "Invalid email or password.",
+            password: "Invalid email or password.",
+          });
+        } else {
+          console.error("Unexpected login error:", error);
+          toast.error("Unexpected login error. Please try again.");
+        }
       }
     }
   };
