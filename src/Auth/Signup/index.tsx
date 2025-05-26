@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
+import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
+import useNavigation from "../../hooks/useNavigation";
+
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-import useNavigation from "../../hooks/useNavigation";
 
 import "./Signup.scss";
 
@@ -57,7 +59,11 @@ const validate = (
 };
 
 const Signup: React.FC = () => {
+  const [signupCareTeam, { isLoading, error, isSuccess }] =
+    useSignupCareTeamMutation();
   const { navigate } = useNavigation();
+
+  console.log({ isLoading, error, isSuccess });
 
   const [form, setForm] = useState({
     fullName: "",
@@ -69,7 +75,6 @@ const Signup: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log({ name: e.target.name, value: e.target.value });
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
@@ -77,12 +82,22 @@ const Signup: React.FC = () => {
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (validate(form, setErrors)) {
-      console.log("Sigup submitted", form);
+      const { fullName, phone, email, password } = form;
+      const cleanForm = { fullName, phone, email, password };
 
-      navigate("/login");
+      console.log("Signup submitted", cleanForm);
+
+      try {
+        const result = await signupCareTeam(cleanForm).unwrap();
+        console.log("Signup successful:", result);
+        navigate("/login");
+      } catch (err) {
+        console.error("Signup failed:", err);
+        // Optionally show user-friendly error
+      }
     }
   };
 
