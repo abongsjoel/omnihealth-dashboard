@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 import {
   useGetUserIdsQuery,
@@ -18,9 +18,8 @@ import UserForm from "../Messages/UserForm";
 import "./Users.scss";
 
 const Users: React.FC = () => {
-  const dispatch = useDispatch();
-
-  const selectedUser = useSelector(selectSelectedUser);
+  const dispatch = useAppDispatch();
+  const selectedUser = useAppSelector(selectSelectedUser);
 
   const {
     data: userIds = [],

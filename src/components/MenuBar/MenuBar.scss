@@ -10,13 +10,6 @@
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 
-  .logo {
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: var(--primary);
-    cursor: pointer;
-  }
-
   .hamburger {
     display: none;
     flex-direction: column;
@@ -36,7 +29,7 @@
     justify-content: center;
     flex: 1;
 
-    button {
+    .menu_item {
       font-size: 0.75rem;
       font-weight: 500;
       background: none;
@@ -56,8 +49,29 @@
     }
   }
 
-  .loggedin_user {
-    font-size: 0.5rem;
+  .welcome_container {
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+
+    .welcome_message {
+      font-size: 0.5rem;
+      color: var(--secondary);
+
+      .display_name {
+        color: var(--quinary);
+        cursor: pointer;
+
+        &:hover {
+          color: var(--quinary-hover);
+        }
+      }
+    }
+
+    .logout {
+      font-size: 0.5rem;
+      padding: 0;
+    }
   }
 
   @media (max-width: $mobile-breakpoint) {
@@ -79,10 +93,6 @@
       &.open {
         display: flex;
       }
-    }
-
-    .loggedin_user {
-      display: none;
     }
   }
 }

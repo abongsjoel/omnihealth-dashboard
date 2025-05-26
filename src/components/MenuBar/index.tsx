@@ -1,24 +1,40 @@
 import { useState } from "react";
 import classNames from "classnames";
 
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
+import Logo from "../common/Logo";
+import Button from "../common/Button";
 
 import "./MenuBar.scss";
 
 const MenuBar: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const { currentPath, navigate } = useNavigation();
+
+  const member = useAppSelector(selectLoggedInMember);
+  const displayName = member?.displayName;
+  const fullName = member?.fullName;
 
   const menuItems = [
     { label: "Dashboard", path: "/" },
     { label: "Survey", path: "/survey" },
   ];
 
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  const handleMenuClick = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
+  };
+
   return (
     <nav className="menu_bar">
-      <h1 className="logo" onClick={() => navigate("/")}>
-        OmniHealth
-      </h1>
+      <Logo />
 
       <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
         <span className={classNames({ open: isOpen })} />
@@ -26,19 +42,31 @@ const MenuBar: React.FC = () => {
         <span className={classNames({ open: isOpen })} />
       </div>
 
-      <div className={classNames("menu_items", { open: isOpen })}>
+      <ul className={classNames("menu_items", { open: isOpen })}>
         {menuItems.map(({ label, path }) => (
-          <button
+          <li
             key={path}
-            onClick={() => navigate(path)}
-            className={currentPath === path ? "active" : ""}
+            onClick={() => handleMenuClick(path)}
+            className={classNames("menu_item", {
+              active: currentPath === path,
+            })}
           >
             {label}
-          </button>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <div className="loggedin_user">LoggedIn User</div>
+      <section className="welcome_container">
+        <p className="welcome_message">
+          Welcome{" "}
+          <span className="display_name">
+            {displayName ?? fullName ?? "Care Member"}
+          </span>
+        </p>
+        <Button plain onClick={handleLogout} className="logout">
+          Logout
+        </Button>
+      </section>
     </nav>
   );
 };

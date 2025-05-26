@@ -10,6 +10,7 @@ interface ButtonProps {
   disabled?: boolean;
   secondary?: boolean;
   outline?: boolean;
+  plain?: boolean;
   className?: string;
   children?: ReactNode;
 }
@@ -20,6 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   className = "",
   secondary = false,
   outline = false,
+  plain = false,
   children,
   ...rest
 }) => {
@@ -31,6 +33,7 @@ const Button: React.FC<ButtonProps> = ({
         disabled,
         secondary,
         outline,
+        plain,
       })}
     >
       {children || label}

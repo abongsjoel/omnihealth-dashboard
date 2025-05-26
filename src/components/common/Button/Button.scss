@@ -35,4 +35,14 @@ button {
       color: var(--white);
     }
   }
+
+  &.plain {
+    background-color: transparent;
+    color: var(--text-100);
+    border: none;
+
+    &:hover {
+      color: var(--text-500);
+    }
+  }
 }

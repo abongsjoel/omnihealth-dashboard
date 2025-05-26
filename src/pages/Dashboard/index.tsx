@@ -1,6 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
+import { useAppSelector } from "../../redux/hooks";
 import { selectSelectedUser } from "../../redux/slices/usersSlice";
 import Users from "../../components/Users";
 import MessageHeader from "../../components/Messages/MessageHeader";
@@ -11,7 +11,7 @@ import EmptyChat from "../../components/Messages/EmptyChat";
 import "./Dashboard.scss";
 
 const Dashboard: React.FC = () => {
-  const selectedUser = useSelector(selectSelectedUser);
+  const selectedUser = useAppSelector(selectSelectedUser);
 
   return (
     <main className="dashboard">

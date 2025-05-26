@@ -9,6 +9,8 @@ import {
 } from "date-fns";
 
 import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
+import { useGetCareTeamMembersQuery } from "../../redux/apis/careTeamApi";
+
 import MessagesSkeleton from "./MessagesSkeleton";
 import Error from "../common/Error";
 import type { User } from "../../types";
@@ -45,15 +47,60 @@ const Messages: React.FC<MessagesProps> = ({
 
   const {
     data: messages = [],
-    isLoading,
-    error,
+    isLoading: isLoadingMessages,
+    error: messagesError,
   } = useGetUserMessagesQuery(userId, {
     pollingInterval: 5000,
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
 
-  console.log("Messages", messages);
+  const {
+    data: careteam = [],
+    isLoading: isLoadingCareTeam,
+    error: careTeamError,
+  } = useGetCareTeamMembersQuery();
+
+  const isLoading = isLoadingMessages || isLoadingCareTeam;
+  const error = messagesError || careTeamError;
+
+  const messageDisplay = messages.map((msg, i) => {
+    const teamMember = careteam.find((member) => member._id === msg.agent);
+
+    return (
+      <article
+        key={i}
+        className={`message ${
+          msg.role === "user" ? "user-msg" : "assistant-msg"
+        }`}
+      >
+        {msg.role === "user" ? (
+          <strong className="msg-sender user_name">{userName}</strong>
+        ) : (
+          <strong className="msg-sender assistant_name">
+            Assistant{" "}
+            {msg.agent ? (
+              msg.agent === "openai" ? (
+                <span className="assistant_ai">(AI)</span>
+              ) : (
+                <span className="assistant_human">
+                  (
+                  {teamMember?.displayName ??
+                    teamMember?.fullName ??
+                    "Care Member"}
+                  )
+                </span>
+              )
+            ) : (
+              ""
+            )}
+          </strong>
+        )}
+        {msg.content}
+        <div className="msg-time">{getFormattedTime(msg.timestamp)}</div>
+      </article>
+    );
+  });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -69,33 +116,7 @@ const Messages: React.FC<MessagesProps> = ({
           message="Please check your connection or try again shortly."
         />
       ) : (
-        messages.map((msg, i) => (
-          <article
-            key={i}
-            className={`message ${
-              msg.role === "user" ? "user-msg" : "assistant-msg"
-            }`}
-          >
-            {msg.role === "user" ? (
-              <strong className="msg-sender user_name">{userName}</strong>
-            ) : (
-              <strong className="msg-sender assistant_name">
-                Assistant{" "}
-                {msg.agent ? (
-                  msg.agent === "openai" ? (
-                    <span className="assistant_ai">(AI)</span>
-                  ) : (
-                    <span className="assistant_human">(Human)</span>
-                  )
-                ) : (
-                  ""
-                )}
-              </strong>
-            )}
-            {msg.content}
-            <div className="msg-time">{getFormattedTime(msg.timestamp)}</div>
-          </article>
-        ))
+        messageDisplay
       )}
       <div ref={bottomRef} />
     </section>

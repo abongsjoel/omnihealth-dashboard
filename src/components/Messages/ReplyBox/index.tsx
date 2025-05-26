@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { useSendMessageMutation } from "../../../redux/apis/messagesApi";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectLoggedInMember } from "../../../redux/slices/authSlice";
 import Button from "../../common/Button";
 
 import "./ReplyBox.scss";
@@ -12,6 +14,9 @@ interface ReplyBoxProps {
 const ReplyBox: React.FC<ReplyBoxProps> = ({ selectedUserId }) => {
   const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
 
+  const member = useAppSelector(selectLoggedInMember);
+  console.log({ member });
+
   const [reply, setReply] = useState<string>("");
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -20,9 +25,15 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ selectedUserId }) => {
     if (!reply.trim() || isSending) return;
 
     try {
-      await sendMessage({ to: selectedUserId, message: reply });
+      if (member?._id) {
+        await sendMessage({
+          to: selectedUserId,
+          message: reply,
+          agent: member._id,
+        });
 
-      setReply("");
+        setReply("");
+      }
     } catch (err) {
       console.error("Failed to send message:", err);
     }
