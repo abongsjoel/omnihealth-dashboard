@@ -9,6 +9,7 @@ import {
 } from "date-fns";
 
 import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
+
 import MessagesSkeleton from "./MessagesSkeleton";
 import Error from "../common/Error";
 import type { User } from "../../types";
@@ -53,6 +54,8 @@ const Messages: React.FC<MessagesProps> = ({
     refetchOnReconnect: true,
   });
 
+  console.log({ messages });
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -83,7 +86,7 @@ const Messages: React.FC<MessagesProps> = ({
                   msg.agent === "openai" ? (
                     <span className="assistant_ai">(AI)</span>
                   ) : (
-                    <span className="assistant_human">(Human)</span>
+                    <span className="assistant_human">(Care Member)</span>
                   )
                 ) : (
                   ""
