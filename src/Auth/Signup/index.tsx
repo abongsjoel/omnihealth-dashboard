@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
@@ -8,10 +9,11 @@ import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 
 import "./Signup.scss";
-import toast from "react-hot-toast";
 
 interface FormValues {
   fullName: string;
+  displayName: string;
+  speciality: string;
   phone: string;
   email: string;
   password: string;
@@ -20,14 +22,15 @@ interface FormValues {
 
 type FormErrors = Partial<FormValues>;
 
-const validate = (
-  form: FormValues,
-  setErrors: React.Dispatch<React.SetStateAction<FormErrors>>
-) => {
+const validate = (form: FormValues) => {
   const newErrors: FormErrors = {};
 
   if (!form.fullName) {
     newErrors.fullName = "Full Name is required.";
+  }
+
+  if (!form.speciality) {
+    newErrors.speciality = "Speciality is required.";
   }
 
   if (!form.phone) {
@@ -55,19 +58,17 @@ const validate = (
     newErrors.re_password = "Passwords do not match.";
   }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
+  return newErrors;
 };
 
 const Signup: React.FC = () => {
-  const [signupCareTeam, { isLoading, error, isSuccess }] =
-    useSignupCareTeamMutation();
+  const [signupCareTeam, { isLoading }] = useSignupCareTeamMutation();
   const { navigate } = useNavigation();
 
-  console.log({ isLoading, error, isSuccess });
-
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormValues>({
     fullName: "",
+    displayName: "",
+    speciality: "",
     phone: "",
     email: "",
     password: "",
@@ -85,20 +86,23 @@ const Signup: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (validate(form, setErrors)) {
-      const { fullName, phone, email, password } = form;
-      const cleanForm = { fullName, phone, email, password };
 
-      try {
-        const result = await signupCareTeam(cleanForm).unwrap();
-        console.log(result.message);
+    const newErrors = validate(form);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
-        navigate("/login");
-        toast.success(result.message || "Signup successful!");
-      } catch (err) {
-        console.error("Signup failed:", err);
-        toast.error("Signup failed. Please try again!");
-      }
+    const { fullName, phone, email, password } = form;
+    const cleanForm = { fullName, phone, email, password };
+
+    try {
+      const result = await signupCareTeam(cleanForm).unwrap();
+      console.log(result.message);
+
+      navigate("/login");
+      toast.success(result.message || "Signup successful!");
+    } catch (err) {
+      console.error("Signup failed:", err);
+      toast.error("Signup failed. Please try again!");
     }
   };
 
@@ -120,11 +124,34 @@ const Signup: React.FC = () => {
             name="fullName"
             type="text"
             label="Full Name"
-            placeholder="e.g. Dr. Ngwa Desmond"
+            placeholder="e.g. Dr. Ngwa Desmond Muluh"
             value={form.fullName}
             onChange={handleChange}
             error={errors.fullName}
-            autoComplete="full-name"
+            autoComplete="fullName"
+            required
+          />
+          <Input
+            id="displayName"
+            name="displayName"
+            type="text"
+            label="Display Name"
+            placeholder="e.g. Dr. Ngwa"
+            value={form.displayName}
+            onChange={handleChange}
+            error={errors.displayName}
+            autoComplete="displayName"
+          />
+          <Input
+            id="speciality"
+            name="speciality"
+            type="text"
+            label="Speciality"
+            placeholder="e.g. Nutritionist, Cardiologist, etc."
+            value={form.speciality}
+            onChange={handleChange}
+            error={errors.speciality}
+            autoComplete="speciality"
             required
           />
           <Input
@@ -136,7 +163,7 @@ const Signup: React.FC = () => {
             value={form.phone}
             onChange={handleChange}
             error={errors.phone}
-            autoComplete="phone-number"
+            autoComplete="phone"
             pattern="[0-9]{9,15}"
             required
           />
@@ -149,7 +176,7 @@ const Signup: React.FC = () => {
             value={form.email}
             onChange={handleChange}
             error={errors.email}
-            autoComplete="username"
+            autoComplete="email"
             required
           />
           <Input
