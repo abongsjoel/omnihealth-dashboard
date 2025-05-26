@@ -7,6 +7,8 @@ import {
   selectIsAuthenticated,
   selectReturnTo,
 } from "../../redux/slices/authSlice";
+import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
+
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
@@ -15,10 +17,13 @@ import useNavigation from "../../hooks/useNavigation";
 import "./Login.scss";
 
 const Login: React.FC = () => {
+  const [loginCareTeam, { isLoading, error }] = useLoginCareTeamMutation();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const returnTo = useAppSelector(selectReturnTo);
   const { navigate } = useNavigation();
+
+  console.log({ isLoading, error });
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -50,15 +55,22 @@ const Login: React.FC = () => {
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (validate()) {
-      console.log("Login submitted", form);
+      try {
+        const teammember = await loginCareTeam({
+          email: form.email,
+          password: form.password,
+        }).unwrap();
+        console.log("Logged in teammember:", teammember);
 
-      // Proceed with actual login
-      dispatch(login());
-      navigate(returnTo || "/");
-      dispatch(clearReturnTo());
+        dispatch(login());
+        navigate(returnTo || "/");
+        dispatch(clearReturnTo());
+      } catch (err) {
+        console.error("Login failed:", err);
+      }
     }
   };
 

@@ -30,7 +30,18 @@ export const careTeamApi = createApi({
         body: payload,
       }),
     }),
+    loginCareTeam: builder.mutation<
+      CareTeamResponse,
+      { email: string; password: string }
+    >({
+      query: (credentials) => ({
+        url: "/careteam/login",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
   }),
 });
 
-export const { useSignupCareTeamMutation } = careTeamApi;
+export const { useSignupCareTeamMutation, useLoginCareTeamMutation } =
+  careTeamApi;
