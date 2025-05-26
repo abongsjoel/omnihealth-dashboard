@@ -25,7 +25,7 @@ const AuthImg: React.FC<AuthImgProps> = ({ images, ...props }) => {
       {...props}
       src={images[currentImageIndex]}
       key={images[currentImageIndex]}
-      className={`login_img transition-img ${loading ? "loading" : ""}`}
+      className={`auth_img transition-img ${loading ? "loading" : ""}`}
       onLoad={() => setLoading(false)}
       alt="Login visual"
     />

@@ -19,10 +19,10 @@
 }
 
 @media (max-width: 768px) {
-  .loginPage_container {
+  .auth_container {
     flex-direction: column;
 
-    .login_img {
+    .auth_img {
       display: none;
     }
 

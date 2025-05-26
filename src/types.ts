@@ -28,10 +28,3 @@ export interface SurveyEntry {
   interested: string;
   userId: string;
 }
-
-export interface CareTeamSignupRequest {
-  fullName: string;
-  phone: string;
-  email: string;
-  password: string;
-}

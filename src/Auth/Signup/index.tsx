@@ -8,6 +8,7 @@ import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 
 import "./Signup.scss";
+import toast from "react-hot-toast";
 
 interface FormValues {
   fullName?: string;
@@ -88,15 +89,15 @@ const Signup: React.FC = () => {
       const { fullName, phone, email, password } = form;
       const cleanForm = { fullName, phone, email, password };
 
-      console.log("Signup submitted", cleanForm);
-
       try {
         const result = await signupCareTeam(cleanForm).unwrap();
-        console.log("Signup successful:", result);
+        console.log(result.message);
         navigate("/login");
+
+        toast.success(result.message || "Signup successful!");
       } catch (err) {
         console.error("Signup failed:", err);
-        // Optionally show user-friendly error
+        toast.error("Signup failed. Please try again!");
       }
     }
   };
