@@ -70,6 +70,12 @@ const Login: React.FC = () => {
         dispatch(clearReturnTo());
       } catch (err) {
         console.error("Login failed:", err);
+
+        const inValidErrors = {
+          email: "Invalid email or password.",
+          password: "Invalid email or password.",
+        };
+        setErrors(inValidErrors);
       }
     }
   };
@@ -119,7 +125,7 @@ const Login: React.FC = () => {
             required
           />
 
-          <Button label="Login" onClick={handleSubmit} />
+          <Button label="Login" onClick={handleSubmit} disabled={isLoading} />
         </main>
       </form>
     </section>
