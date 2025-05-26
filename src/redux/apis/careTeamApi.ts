@@ -24,12 +24,12 @@ export interface CareTeamMember {
 export const careTeamApi = createApi({
   reducerPath: "careTeamApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
   }),
   endpoints: (builder) => ({
     signupCareTeam: builder.mutation<CareTeamMember, CareTeamSignupPayload>({
       query: (payload) => ({
-        url: "/careteam/signup",
+        url: "/api/careteam/signup",
         method: "POST",
         body: payload,
       }),
@@ -39,13 +39,13 @@ export const careTeamApi = createApi({
       { email: string; password: string }
     >({
       query: (credentials) => ({
-        url: "/careteam/login",
+        url: "/api/careteam/login",
         method: "POST",
         body: credentials,
       }),
     }),
     getCareTeamMembers: builder.query<CareTeamMember[], void>({
-      query: () => "/careteam",
+      query: () => "/api/careteam",
     }),
   }),
 });
