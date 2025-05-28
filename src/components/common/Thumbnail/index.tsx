@@ -35,12 +35,20 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ name, imageUrl, onLogout }) => {
       </div>
 
       {isOpen && (
-        <div className="dropdown_menu">
-          <p className="dropdown_item">{name}</p>
-          <button className="dropdown_item" onClick={onLogout}>
-            Logout
-          </button>
-        </div>
+        <ul className="dropdown_menu">
+          <header>
+            <li className="dropdown_item">{name}</li>
+          </header>
+          <main>
+            <li className="dropdown_item">Profile</li>
+            <li className="dropdown_item">settings</li>
+          </main>
+          <footer>
+            <li className="dropdown_item" onClick={onLogout}>
+              Logout
+            </li>
+          </footer>
+        </ul>
       )}
     </div>
   );
