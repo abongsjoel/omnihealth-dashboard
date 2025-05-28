@@ -4,8 +4,10 @@ import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
+
 import Logo from "../common/Logo";
-import Button from "../common/Button";
+// import Button from "../common/Button";
+import Thumbnail from "../common/Thumbnail";
 
 import "./MenuBar.scss";
 
@@ -17,6 +19,7 @@ const MenuBar: React.FC = () => {
   const member = useAppSelector(selectLoggedInMember);
   const displayName = member?.displayName;
   const fullName = member?.fullName;
+  const careMemberName = displayName ?? fullName ?? "Care Member";
 
   const menuItems = [
     { label: "Dashboard", path: "/" },
@@ -58,14 +61,12 @@ const MenuBar: React.FC = () => {
 
       <section className="welcome_container">
         <p className="welcome_message">
-          Welcome{" "}
-          <span className="display_name">
-            {displayName ?? fullName ?? "Care Member"}
-          </span>
+          Welcome <span className="display_name">{careMemberName}</span>
         </p>
-        <Button plain onClick={handleLogout} className="logout">
+        <Thumbnail name={careMemberName} />
+        {/* <Button plain onClick={handleLogout} className="logout">
           Logout
-        </Button>
+        </Button> */}
       </section>
     </nav>
   );
