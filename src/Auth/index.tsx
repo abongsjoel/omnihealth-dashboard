@@ -16,8 +16,6 @@ const Auth: React.FC = () => {
 
   return (
     <section className="auth_container">
-      {/* {currentPath === "/signup" ? <Signup /> : <Login />}
-      <AuthImg images={images} /> */}
       <div className="auth_content">
         {currentPath === "/signup" ? <Signup /> : <Login />}
       </div>
