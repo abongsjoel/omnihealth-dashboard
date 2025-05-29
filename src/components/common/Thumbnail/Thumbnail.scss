@@ -1,5 +1,5 @@
-$thumbnail_size: 24px;
-$border_spacing: 0.125rem;
+$thumbnail_size: 28px;
+$border_spacing: 0.5rem;
 
 .thumbnail_wrapper {
   position: relative;
@@ -18,7 +18,7 @@ $border_spacing: 0.125rem;
   place-items: center;
   user-select: none;
   overflow: hidden;
-  font-size: 0.75rem;
+  font-size: 1rem;
 }
 
 .thumbnail_img {
@@ -35,7 +35,7 @@ $border_spacing: 0.125rem;
   background: white;
   border: 1px solid var(--gray-100);
   border-radius: 8px;
-  min-width: 150px;
+  min-width: 200px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 
@@ -44,28 +44,28 @@ $border_spacing: 0.125rem;
     padding-bottom: $border_spacing;
     margin-bottom: $border_spacing;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     padding: 0.5rem;
 
     .dropdown_email {
-      font-size: 0.5rem;
+      font-size: 0.65rem;
       padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
     }
   }
 
   .dropdown_footer {
     border-top: 1px solid var(--gray-100);
-    padding-top: $border_spacing;
     margin-top: $border_spacing;
   }
 
   .dropdown_main {
-    margin-left: $border_spacing * 4;
+    margin-left: $border_spacing * 2;
   }
 
   .dropdown_item {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.675rem;
+    padding: 0.75rem 0.75rem;
+    font-size: 0.85rem;
     color: var(--text-200);
     text-align: left;
     background: transparent;

@@ -11,7 +11,7 @@ interface ThumbnailProps {
     label: string;
     path: string;
   }[];
-  handleMenuClick: (path: string) => void;
+  onMenuClick: (path: string) => void;
   currentPath: string;
   member: CareTeamMember | null;
   onLogout: () => void;
@@ -23,7 +23,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   imageUrl,
   currentPath,
   onLogout,
-  handleMenuClick,
+  onMenuClick,
   member,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +38,11 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 
   const initials = getInitials(name);
 
+  const handleMenuClick = (path: string) => {
+    onMenuClick(path);
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -48,9 +53,21 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [currentPath]);
+
   return (
     <div className="thumbnail_wrapper" ref={ref}>
-      <div className="thumbnail" onClick={() => setIsOpen(!isOpen)}>
+      <div
+        className="thumbnail"
+        onClick={() => setIsOpen((prev) => !prev)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            setIsOpen((prev) => !prev);
+          }
+        }}
+      >
         {imageUrl ? (
           <img
             src={imageUrl}

@@ -42,12 +42,12 @@
     gap: 0.5rem;
 
     .welcome_message {
-      font-size: 0.5rem;
+      font-size: 0.625rem;
       color: var(--secondary);
 
       .display_name {
         color: var(--quinary);
-        cursor: pointer;
+        font-weight: bold;
 
         &:hover {
           color: var(--quinary-hover);
