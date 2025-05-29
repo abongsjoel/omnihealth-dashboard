@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import classNames from "classnames";
 import type { CareTeamMember } from "../../../types";
 
 import "./Thumbnail.scss";
@@ -6,14 +7,23 @@ import "./Thumbnail.scss";
 interface ThumbnailProps {
   name: string;
   imageUrl?: string;
+  menuItems: {
+    label: string;
+    path: string;
+  }[];
+  handleMenuClick: (path: string) => void;
+  currentPath: string;
   member: CareTeamMember | null;
   onLogout: () => void;
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({
   name,
+  menuItems,
   imageUrl,
+  currentPath,
   onLogout,
+  handleMenuClick,
   member,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +69,17 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
             <p className="dropdown_email">{member?.email}</p>
           </header>
           <ul className="dropdown_main">
+            {menuItems.map(({ label, path }) => (
+              <li
+                key={path}
+                onClick={() => handleMenuClick(path)}
+                className={classNames("dropdown_item", {
+                  active: currentPath === path,
+                })}
+              >
+                {label}
+              </li>
+            ))}
             <li className="dropdown_item">Your profile</li>
             <li className="dropdown_item">Settings</li>
           </ul>

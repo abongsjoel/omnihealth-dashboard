@@ -67,6 +67,9 @@ const MenuBar: React.FC = () => {
           name={careMemberName}
           member={member}
           onLogout={handleLogout}
+          menuItems={menuItems}
+          handleMenuClick={handleMenuClick}
+          currentPath={currentPath}
         />
       </section>
     </nav>
