@@ -63,7 +63,11 @@ const MenuBar: React.FC = () => {
         <p className="welcome_message">
           Welcome <span className="display_name">{careMemberName}</span>
         </p>
-        <Thumbnail name={careMemberName} onLogout={handleLogout} />
+        <Thumbnail
+          name={careMemberName}
+          member={member}
+          onLogout={handleLogout}
+        />
       </section>
     </nav>
   );
