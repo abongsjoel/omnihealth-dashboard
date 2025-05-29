@@ -10,19 +10,6 @@
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    gap: 4px;
-    span {
-      width: 20px;
-      height: 2px;
-      background-color: #333;
-      transition: 0.3s;
-    }
-  }
-
   .menu_items {
     display: flex;
     gap: 1rem;
@@ -70,10 +57,6 @@
   }
 
   @media (max-width: $mobile-breakpoint) {
-    .hamburger {
-      display: flex;
-    }
-
     .menu_items {
       display: none;
       flex-direction: column;
@@ -84,10 +67,6 @@
       width: 100%;
       background: #ffffff;
       padding: 1rem;
-
-      &.open {
-        display: flex;
-      }
     }
   }
 }

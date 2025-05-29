@@ -6,14 +6,12 @@ import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
 
 import Logo from "../common/Logo";
-// import Button from "../common/Button";
 import Thumbnail from "../common/Thumbnail";
 
 import "./MenuBar.scss";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [isOpen, setIsOpen] = useState(false);
   const { currentPath, navigate } = useNavigation();
 
   const member = useAppSelector(selectLoggedInMember);
@@ -32,20 +30,13 @@ const MenuBar: React.FC = () => {
 
   const handleMenuClick = (path: string) => {
     navigate(path);
-    setIsOpen(false);
   };
 
   return (
     <nav className="menu_bar">
       <Logo />
 
-      <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
-        <span className={classNames({ open: isOpen })} />
-        <span className={classNames({ open: isOpen })} />
-        <span className={classNames({ open: isOpen })} />
-      </div>
-
-      <ul className={classNames("menu_items", { open: isOpen })}>
+      <ul className="menu_items">
         {menuItems.map(({ label, path }) => (
           <li
             key={path}
