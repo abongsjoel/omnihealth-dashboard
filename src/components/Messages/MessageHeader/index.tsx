@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
+import UserForm from "../UserForm";
 import Button from "../../common/Button";
 import Modal from "../../common/Modal";
-import UserForm from "../UserForm";
+import Icon from "../../common/Icon";
+import Tooltip from "../../common/Tooltip";
 
 import "./MessageHeader.scss";
 
@@ -27,7 +29,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
-  const label = `${userName ? "Edit" : "Assign"} Name`;
+  const action = userName ? "Edit" : "Assign";
 
   return (
     <>
@@ -36,13 +38,27 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           <h3 className="display-name">{userName}</h3>
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
-        <Button onClick={handleAssignName} className="btn-add-user">
-          {label}
-        </Button>
+        <section className="action">
+          {action === "Edit" ? (
+            <Tooltip message="Edit User Name" position="left">
+              <Icon
+                title="edit"
+                size="sm"
+                showOriginal
+                onClick={handleAssignName}
+              />
+            </Tooltip>
+          ) : (
+            <Button onClick={handleAssignName} className="btn-add-user">
+              Assign Name
+            </Button>
+          )}
+        </section>
       </header>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <UserForm
-          title={label}
+          title={`${action} Name`}
+          action={action}
           userId={selectedUserId ?? ""}
           userName={userName}
           handleCloseModal={handleCloseModal}
