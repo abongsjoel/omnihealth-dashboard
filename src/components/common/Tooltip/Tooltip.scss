@@ -4,17 +4,19 @@
 
   .tooltip_message {
     visibility: hidden;
-    background-color: var(--gray-800, #333);
-    color: var(--white, #fff);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    background-color: var(--dark);
+    color: var(--white);
     text-align: center;
     padding: 0.4rem 0.6rem;
     border-radius: 4px;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     white-space: nowrap;
     position: absolute;
-    z-index: 5000;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    z-index: 1000;
+    transform: translateY(0);
+    pointer-events: none;
   }
 
   &:hover .tooltip_message {
@@ -22,27 +24,43 @@
     opacity: 1;
   }
 
+  // Top
   &.top .tooltip_message {
     bottom: 125%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(0);
+  }
+  &.top:hover .tooltip_message {
+    transform: translateX(-50%) translateY(-4px);
   }
 
+  // Bottom
   &.bottom .tooltip_message {
     top: 125%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(0);
+  }
+  &.bottom:hover .tooltip_message {
+    transform: translateX(-50%) translateY(4px);
   }
 
+  // Left
   &.left .tooltip_message {
     right: 125%;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) translateX(0);
+  }
+  &.left:hover .tooltip_message {
+    transform: translateY(-50%) translateX(-4px);
   }
 
+  // Right
   &.right .tooltip_message {
     left: 125%;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) translateX(0);
+  }
+  &.right:hover .tooltip_message {
+    transform: translateY(-50%) translateX(4px);
   }
 }
