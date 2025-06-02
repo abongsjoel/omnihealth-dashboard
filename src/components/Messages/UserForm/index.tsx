@@ -13,6 +13,7 @@ interface UserFormProps {
   title?: string;
   userId?: string;
   userName?: string;
+  action?: "Assign" | "Add" | "Edit";
   handleCloseModal?: () => void;
 }
 
@@ -45,6 +46,7 @@ const UserForm: React.FC<UserFormProps> = ({
   title = "",
   userId = "",
   userName = "",
+  action = "Assign",
   handleCloseModal,
 }) => {
   const [assignName, { isLoading }] = useAssignNameMutation();
@@ -111,7 +113,7 @@ const UserForm: React.FC<UserFormProps> = ({
           autoComplete="phone-number"
           pattern="[0-9]{9,15}"
           required
-          disabled={!!userId}
+          disabled={action === "Assign"}
           className="user_input"
         />
         <footer className="btn_container">
@@ -122,7 +124,7 @@ const UserForm: React.FC<UserFormProps> = ({
             outline
           />
           <Button
-            label={isLoading ? "Assigning..." : "Assign"}
+            label={isLoading ? `${action}ing` : action}
             onClick={handleSubmit}
             className="user_btn"
             disabled={isLoading}

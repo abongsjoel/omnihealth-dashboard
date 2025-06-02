@@ -130,7 +130,11 @@ const Users: React.FC = () => {
         )}
       </section>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <UserForm title="Add User" handleCloseModal={handleCloseModal} />
+        <UserForm
+          title="Add User"
+          handleCloseModal={handleCloseModal}
+          action="Add"
+        />
       </Modal>
     </>
   );

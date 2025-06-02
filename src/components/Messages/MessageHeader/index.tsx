@@ -27,7 +27,9 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
-  const label = `${userName ? "Edit" : "Assign"} Name`;
+  const action = userName ? "Edit" : "Assign";
+
+  const label = `${action} Name`;
 
   return (
     <>
@@ -43,6 +45,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <UserForm
           title={label}
+          action={action}
           userId={selectedUserId ?? ""}
           userName={userName}
           handleCloseModal={handleCloseModal}
