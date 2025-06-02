@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useGetAllSurveysQuery } from "../../redux/apis/surveysApi";
-import Table from "../../components/common/Table2";
+import Table from "../../components/common/Table";
 import type { SurveyEntry } from "../../types";
 
 import "./Survey.scss";

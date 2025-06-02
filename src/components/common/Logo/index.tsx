@@ -1,5 +1,4 @@
 import useNavigation from "../../../hooks/useNavigation";
-
 import "./Logo.scss";
 
 const Logo: React.FC = () => {

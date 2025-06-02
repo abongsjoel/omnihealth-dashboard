@@ -5,6 +5,28 @@
   display: flex;
   overflow: auto;
 
+  .auth_content {
+    width: 100%;
+    overflow-y: auto;
+    height: auto;
+    margin-right: 50%;
+    padding: 4rem;
+    box-sizing: border-box;
+    background: var(--background-100);
+    z-index: 2;
+
+    display: flex;
+    justify-content: center;
+
+    // Hide scrollbar
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
   .auth_img {
     position: fixed;
     left: 50%;
@@ -21,31 +43,20 @@
       display: block;
     }
   }
-
-  .auth_content {
-    width: 100%;
-    overflow-y: auto;
-    height: auto;
-    margin-right: 50%;
-    padding: 4rem;
-    box-sizing: border-box;
-    background: var(--background-100);
-    z-index: 2;
-  }
 }
 
 @media (max-width: $mobile-breakpoint) {
   .auth_container {
     flex-direction: column;
 
-    .auth_img {
-      display: none;
-    }
-
     .auth_content {
       margin-left: 0;
       width: 100%;
       height: auto;
+    }
+
+    .auth_img {
+      display: none;
     }
   }
 }

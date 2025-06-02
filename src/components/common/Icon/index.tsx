@@ -1,5 +1,4 @@
 import type { ImgHTMLAttributes } from "react";
-
 import "./Icon.scss";
 
 interface IconProps extends ImgHTMLAttributes<HTMLImageElement> {

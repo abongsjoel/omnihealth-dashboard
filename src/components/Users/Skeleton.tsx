@@ -4,7 +4,7 @@ import "./Users.scss";
 const Skeleton: React.FC = () => {
   return (
     <>
-      {Array.from({ length: 15 }).map((_, index) => (
+      {Array.from({ length: 25 }).map((_, index) => (
         <div key={index} className="user skeleton" />
       ))}
     </>

@@ -1,6 +1,6 @@
 import React from "react";
-import type { ReactNode } from "react";
 import classNames from "classnames";
+import type { ReactNode } from "react";
 
 import "./Button.scss";
 
@@ -12,6 +12,7 @@ interface ButtonProps {
   outline?: boolean;
   plain?: boolean;
   className?: string;
+  title?: string;
   children?: ReactNode;
 }
 

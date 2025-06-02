@@ -9,11 +9,12 @@ import {
   selectSelectedUser,
   updateSelectedUser,
 } from "../../redux/slices/usersSlice";
+import UserForm from "../Messages/UserForm";
 import Skeleton from "./Skeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
-import UserForm from "../Messages/UserForm";
+import Tooltip from "../common/Tooltip";
 
 import "./Users.scss";
 
@@ -88,11 +89,13 @@ const Users: React.FC = () => {
       <section className="user-list">
         <section className="user-list-header">
           <h2 className="title">Users</h2>
-          <Button
-            label="Add User"
-            onClick={handleAddUserClick}
-            className="add_user_btn"
-          />
+          <Tooltip message="Add a new user" position="left">
+            <Button
+              label="+"
+              onClick={handleAddUserClick}
+              className="add_user_btn"
+            />
+          </Tooltip>
         </section>
         {isLoading ? (
           <Skeleton />
