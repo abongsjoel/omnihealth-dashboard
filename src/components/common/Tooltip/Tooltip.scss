@@ -1,0 +1,48 @@
+.tooltip_wrapper {
+  position: relative;
+  display: inline-block;
+
+  .tooltip_message {
+    visibility: hidden;
+    background-color: var(--gray-800, #333);
+    color: var(--white, #fff);
+    text-align: center;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    position: absolute;
+    z-index: 5000;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  &:hover .tooltip_message {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &.top .tooltip_message {
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.bottom .tooltip_message {
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.left .tooltip_message {
+    right: 125%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.right .tooltip_message {
+    left: 125%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
