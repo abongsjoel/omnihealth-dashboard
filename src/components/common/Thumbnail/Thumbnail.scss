@@ -8,7 +8,7 @@ $border_spacing: 0.5rem;
 }
 
 .thumbnail {
-  background-color: var(--secondary);
+  background-color: var(--primary);
   color: var(--white);
   width: $thumbnail_size;
   height: $thumbnail_size;
@@ -59,26 +59,23 @@ $border_spacing: 0.5rem;
     margin-top: $border_spacing;
   }
 
-  .dropdown_main {
-    margin-left: $border_spacing * 2;
-  }
-
   .dropdown_item {
-    padding: 0.75rem 0.75rem;
+    padding: $border_spacing $border_spacing * 2;
+    margin: $border_spacing 0;
     font-size: 0.85rem;
     color: var(--text-200);
     text-align: left;
     background: transparent;
     border: none;
-    width: 100%;
     cursor: pointer;
+    box-sizing: border-box;
 
     &:hover {
-      color: var(--primary-hover);
+      background-color: var(--gray-200);
     }
 
     &.active {
-      color: var(--primary);
+      background-color: var(--gray-100);
     }
   }
 }
