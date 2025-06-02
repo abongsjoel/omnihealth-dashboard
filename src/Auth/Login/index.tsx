@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import toast from "react-hot-toast";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {

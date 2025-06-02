@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import classNames from "classnames";
 
 import eyeIcon from "../../../assets/svgs/ep_view.svg";
