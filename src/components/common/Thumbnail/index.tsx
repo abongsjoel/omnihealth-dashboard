@@ -3,6 +3,7 @@ import classNames from "classnames";
 import type { CareTeamMember } from "../../../types";
 
 import "./Thumbnail.scss";
+import Icon from "../Icon";
 
 interface ThumbnailProps {
   name: string;
@@ -102,6 +103,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
           </ul>
           <footer className="dropdown_footer">
             <div className="dropdown_item" onClick={onLogout}>
+              <Icon title="logout" size="sm" />
               Logout
             </div>
           </footer>
