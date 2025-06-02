@@ -3,12 +3,12 @@ import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
+import type { MenuItem } from "../../types";
 
 import Logo from "../common/Logo";
 import Thumbnail from "../common/Thumbnail";
 
 import "./MenuBar.scss";
-import type { MenuItem } from "../../types";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();

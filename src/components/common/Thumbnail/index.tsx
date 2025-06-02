@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
+
 import type { CareTeamMember, MenuItem } from "../../../types";
+import Icon from "../Icon";
 
 import "./Thumbnail.scss";
-import Icon from "../Icon";
 
 interface ThumbnailProps {
   name: string;
