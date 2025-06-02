@@ -26,7 +26,7 @@
 
   // Top
   &.top .tooltip_message {
-    bottom: 125%;
+    bottom: 105%;
     left: 50%;
     transform: translateX(-50%) translateY(0);
   }
@@ -36,7 +36,7 @@
 
   // Bottom
   &.bottom .tooltip_message {
-    top: 125%;
+    top: 105%;
     left: 50%;
     transform: translateX(-50%) translateY(0);
   }
@@ -46,7 +46,7 @@
 
   // Left
   &.left .tooltip_message {
-    right: 125%;
+    right: 105%;
     top: 50%;
     transform: translateY(-50%) translateX(0);
   }
@@ -56,7 +56,7 @@
 
   // Right
   &.right .tooltip_message {
-    left: 125%;
+    left: 105%;
     top: 50%;
     transform: translateY(-50%) translateX(0);
   }
