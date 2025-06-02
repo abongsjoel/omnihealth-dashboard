@@ -12,6 +12,7 @@ interface ButtonProps {
   outline?: boolean;
   plain?: boolean;
   className?: string;
+  title?: string;
   children?: ReactNode;
 }
 

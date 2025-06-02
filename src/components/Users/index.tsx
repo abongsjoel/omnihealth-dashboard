@@ -89,9 +89,10 @@ const Users: React.FC = () => {
         <section className="user-list-header">
           <h2 className="title">Users</h2>
           <Button
-            label="Add User"
+            label="+"
             onClick={handleAddUserClick}
             className="add_user_btn"
+            title="Add a new user"
           />
         </section>
         {isLoading ? (
