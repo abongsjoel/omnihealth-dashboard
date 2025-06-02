@@ -113,7 +113,7 @@ const UserForm: React.FC<UserFormProps> = ({
           autoComplete="phone-number"
           pattern="[0-9]{9,15}"
           required
-          disabled={action === "Assign"}
+          disabled={action !== "Add"}
           className="user_input"
         />
         <footer className="btn_container">

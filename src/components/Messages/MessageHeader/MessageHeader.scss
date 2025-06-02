@@ -28,6 +28,13 @@
     }
   }
 
+  .action {
+    display: inline-flex;
+    align-items: end;
+    justify-content: end;
+    cursor: pointer;
+  }
+
   .btn-add-user {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
