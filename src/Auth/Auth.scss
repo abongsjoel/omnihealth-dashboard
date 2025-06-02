@@ -17,6 +17,14 @@
 
     display: flex;
     justify-content: center;
+
+    // Hide scrollbar
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .auth_img {
