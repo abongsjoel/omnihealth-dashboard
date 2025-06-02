@@ -8,6 +8,7 @@ import Logo from "../common/Logo";
 import Thumbnail from "../common/Thumbnail";
 
 import "./MenuBar.scss";
+import type { MenuItem } from "../../types";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,9 +19,9 @@ const MenuBar: React.FC = () => {
   const fullName = member?.fullName;
   const careMemberName = displayName ?? fullName ?? "Care Member";
 
-  const menuItems = [
-    { label: "Dashboard", path: "/" },
-    { label: "Survey", path: "/survey" },
+  const menuItems: MenuItem[] = [
+    { label: "Dashboard", path: "/", iconTitle: "dashboard" },
+    { label: "Survey", path: "/survey", iconTitle: "engaged" },
   ];
 
   const handleLogout = () => {

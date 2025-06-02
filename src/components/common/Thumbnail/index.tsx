@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
-import type { CareTeamMember } from "../../../types";
+import type { CareTeamMember, MenuItem } from "../../../types";
 
 import "./Thumbnail.scss";
 import Icon from "../Icon";
@@ -8,10 +8,7 @@ import Icon from "../Icon";
 interface ThumbnailProps {
   name: string;
   imageUrl?: string;
-  menuItems: {
-    label: string;
-    path: string;
-  }[];
+  menuItems: MenuItem[];
   onMenuClick: (path: string) => void;
   currentPath: string;
   member: CareTeamMember | null;
@@ -87,7 +84,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
             <p className="dropdown_email">{member?.email}</p>
           </header>
           <ul className="dropdown_main">
-            {menuItems.map(({ label, path }) => (
+            {menuItems.map(({ label, path, iconTitle }) => (
               <li
                 key={path}
                 onClick={() => handleMenuClick(path)}
@@ -95,11 +92,18 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
                   active: currentPath === path,
                 })}
               >
+                <Icon title={iconTitle} size="sm" />
                 {label}
               </li>
             ))}
-            <li className="dropdown_item">Your profile</li>
-            <li className="dropdown_item">Settings</li>
+            <li className="dropdown_item">
+              <Icon title="user" size="sm" />
+              Your profile
+            </li>
+            <li className="dropdown_item">
+              <Icon title="settings" size="sm" />
+              Settings
+            </li>
           </ul>
           <footer className="dropdown_footer">
             <div className="dropdown_item" onClick={onLogout}>
