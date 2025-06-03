@@ -99,6 +99,7 @@ const Login: React.FC = () => {
           email: "Invalid email or password.",
           password: "Invalid email or password.",
         });
+        document.getElementById("email")?.focus();
       } else {
         console.error("Unexpected login error:", error);
         toast.error("Unexpected login error. Please try again.");
@@ -125,7 +126,7 @@ const Login: React.FC = () => {
           </p>
           <p className="login_cta">Login to get started</p>
         </header>
-        <main className="login_main">
+        <fieldset className="login_main" disabled={isLoading}>
           <Input
             id="email"
             name="email"
@@ -166,7 +167,7 @@ const Login: React.FC = () => {
               </span>
             </p>
           </div>
-        </main>
+        </fieldset>
       </form>
     </section>
   );

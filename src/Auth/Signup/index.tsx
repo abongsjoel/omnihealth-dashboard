@@ -146,7 +146,7 @@ const Signup: React.FC = () => {
           </p>
           <p className="signup_cta">Sign Up Now</p>
         </header>
-        <main className="signup_main">
+        <fieldset className="signup_main" disabled={isLoading}>
           <Input
             id="fullName"
             name="fullName"
@@ -251,7 +251,7 @@ const Signup: React.FC = () => {
               </span>
             </p>
           </div>
-        </main>
+        </fieldset>
       </form>
     </section>
   );
