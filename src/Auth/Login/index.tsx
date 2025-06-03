@@ -25,19 +25,23 @@ interface FormValues {
 }
 type FormErrors = Partial<FormValues>;
 
+const getValidationError = (field: string, value: string): string => {
+  if (!value) return `${formatField(field)} is required`;
+
+  if (field === "email" && !/\S+@\S+\.\S+/.test(value)) {
+    return "Enter a valid email address";
+  }
+
+  return "";
+};
+
 const validate = (form: FormValues): FormErrors => {
-  const newErrors: FormErrors = {};
-  if (!form.email) {
-    newErrors.email = "Email is required.";
-  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-    newErrors.email = "Enter a valid email address.";
-  }
-
-  if (!form.password) {
-    newErrors.password = "Password is required.";
-  }
-
-  return newErrors;
+  const errors: FormErrors = {};
+  Object.entries(form).forEach(([field, value]) => {
+    const error = getValidationError(field, value);
+    if (error) errors[field as keyof FormValues] = error;
+  });
+  return errors;
 };
 
 const Login: React.FC = () => {
@@ -59,19 +63,10 @@ const Login: React.FC = () => {
   };
 
   const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    let errorContent = "";
-
-    if (field === "email" && value !== "" && !/\S+@\S+\.\S+/.test(value)) {
-      errorContent = "Enter a valid email address";
-    } else if (value === "") {
-      errorContent = `${formatField(field)} is required`;
-    }
-
+    const { name, value } = e.target;
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [field]: errorContent,
+      [name]: getValidationError(name, value),
     }));
   };
 
