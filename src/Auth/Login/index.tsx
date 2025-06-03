@@ -10,11 +10,11 @@ import {
   selectReturnTo,
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
+import useNavigation from "../../hooks/useNavigation";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-import useNavigation from "../../hooks/useNavigation";
 
 import "./Login.scss";
 
@@ -48,6 +48,25 @@ const Login: React.FC = () => {
 
   const [form, setForm] = useState<FormValues>({ email: "", password: "" });
   const [errors, setErrors] = useState<FormErrors>({});
+
+  function handleInputBlur(e: React.ChangeEvent<HTMLInputElement>) {
+    const field = e.target.name;
+    const value = e.target.value;
+    let errorContent = "";
+
+    if (field === "email" && value !== "" && !/\S+@\S+\.\S+/.test(value)) {
+      errorContent = "Enter a valid email address";
+    } else if (value === "") {
+      errorContent = `${field.charAt(0).toUpperCase()}${field.slice(
+        1
+      )} is required`;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: errorContent,
+    }));
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
@@ -116,6 +135,7 @@ const Login: React.FC = () => {
             placeholder="abc@xyz.com"
             value={form.email}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.email}
             autoComplete="username"
             required
@@ -128,6 +148,7 @@ const Login: React.FC = () => {
             placeholder="••••••••"
             value={form.password}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.password}
             autoComplete="current-password"
             required
@@ -142,7 +163,7 @@ const Login: React.FC = () => {
             <p>
               Not yet a member.{" "}
               <span className="signup_link" onClick={() => navigate("/signup")}>
-                Signup Instead
+                Signup&nbsp;Instead
               </span>
             </p>
           </div>

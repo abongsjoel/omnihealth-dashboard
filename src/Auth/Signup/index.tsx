@@ -211,7 +211,7 @@ const Signup: React.FC = () => {
             <p>
               Already signed up.{" "}
               <span className="login_link" onClick={() => navigate("/login")}>
-                Login Instead
+                Login&nbsp;Instead
               </span>
             </p>
           </div>

@@ -13,6 +13,7 @@ interface InputProps {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   autoComplete?: string;
   pattern?: string;
