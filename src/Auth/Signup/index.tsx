@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
+import { formatField } from "../../utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
@@ -84,6 +85,23 @@ const Signup: React.FC = () => {
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   };
 
+  const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    let errorContent = "";
+
+    if (field === "email" && value !== "" && !/\S+@\S+\.\S+/.test(value)) {
+      errorContent = "Enter a valid email address";
+    } else if (value === "") {
+      errorContent = `${formatField(field)} is required`;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: errorContent,
+    }));
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -125,6 +143,7 @@ const Signup: React.FC = () => {
             placeholder="e.g. Dr. Ngwa Desmond Muluh"
             value={form.fullName}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.fullName}
             autoComplete="fullName"
             required
@@ -148,6 +167,7 @@ const Signup: React.FC = () => {
             placeholder="e.g. Nutritionist, Cardiologist, etc."
             value={form.speciality}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.speciality}
             autoComplete="speciality"
             required
@@ -160,6 +180,7 @@ const Signup: React.FC = () => {
             placeholder="e.g. 237670312288"
             value={form.phone}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.phone}
             autoComplete="phone"
             pattern="[0-9]{9,15}"
@@ -173,6 +194,7 @@ const Signup: React.FC = () => {
             placeholder="e.g. ngwades@gmail.com"
             value={form.email}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.email}
             autoComplete="email"
             required
@@ -185,6 +207,7 @@ const Signup: React.FC = () => {
             placeholder="••••••••"
             value={form.password}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.password}
             autoComplete="current-password"
             required
@@ -197,6 +220,7 @@ const Signup: React.FC = () => {
             placeholder="••••••••"
             value={form.re_password}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.re_password}
             autoComplete="current-password"
             required

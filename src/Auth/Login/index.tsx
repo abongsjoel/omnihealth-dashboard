@@ -11,6 +11,7 @@ import {
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
+import { formatField } from "../../utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
@@ -49,7 +50,15 @@ const Login: React.FC = () => {
   const [form, setForm] = useState<FormValues>({ email: "", password: "" });
   const [errors, setErrors] = useState<FormErrors>({});
 
-  function handleInputBlur(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prevValues) => ({
+      ...prevValues,
+      [e.target.name]: e.target.value,
+    }));
+    setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
+  };
+
+  const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const field = e.target.name;
     const value = e.target.value;
     let errorContent = "";
@@ -57,23 +66,13 @@ const Login: React.FC = () => {
     if (field === "email" && value !== "" && !/\S+@\S+\.\S+/.test(value)) {
       errorContent = "Enter a valid email address";
     } else if (value === "") {
-      errorContent = `${field.charAt(0).toUpperCase()}${field.slice(
-        1
-      )} is required`;
+      errorContent = `${formatField(field)} is required`;
     }
 
     setErrors((prevErrors) => ({
       ...prevErrors,
       [field]: errorContent,
     }));
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prevValues) => ({
-      ...prevValues,
-      [e.target.name]: e.target.value,
-    }));
-    setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
