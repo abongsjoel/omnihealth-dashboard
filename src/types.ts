@@ -1,3 +1,5 @@
+import type { IconName } from "./assets/icons/iconLib";
+
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -8,6 +10,12 @@ export interface ChatMessage {
 export interface User {
   userId: string;
   userName: string;
+}
+
+export interface MenuItem {
+  label: string;
+  path: string;
+  iconTitle: IconName;
 }
 
 export interface SurveyEntry {
