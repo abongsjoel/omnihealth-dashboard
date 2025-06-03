@@ -1,12 +1,12 @@
 import React from "react";
 import classNames from "classnames";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from "react";
 
 import "./Button.scss";
 
 interface ButtonProps {
   label?: string;
-  onClick?: (event: React.FormEvent<HTMLButtonElement>) => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   secondary?: boolean;
   outline?: boolean;
