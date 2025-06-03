@@ -1,5 +1,4 @@
 .auth_container {
-  height: 100vh;
   height: 100%;
   width: 100%;
   display: flex;
@@ -15,8 +14,11 @@
     background: var(--background-100);
     z-index: 2;
 
-    display: flex;
-    justify-content: center;
+    .auth_form {
+      display: flex;
+      align-items: center;
+      justify-self: center;
+    }
 
     // Hide scrollbar
     &::-webkit-scrollbar {

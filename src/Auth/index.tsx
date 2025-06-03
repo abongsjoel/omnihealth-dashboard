@@ -16,12 +16,14 @@ const Auth: React.FC = () => {
 
   return (
     <section className="auth_container">
-      <div className="auth_content">
-        {currentPath === "/signup" ? <Signup /> : <Login />}
-      </div>
-      <div className="auth_img">
+      <article className="auth_content">
+        <div className="auth_form">
+          {currentPath === "/signup" ? <Signup /> : <Login />}
+        </div>
+      </article>
+      <article className="auth_img">
         <AuthImg images={images} />
-      </div>
+      </article>
     </section>
   );
 };
