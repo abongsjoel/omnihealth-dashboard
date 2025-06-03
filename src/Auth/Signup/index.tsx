@@ -92,6 +92,18 @@ const Signup: React.FC = () => {
 
     if (field === "email" && value !== "" && !/\S+@\S+\.\S+/.test(value)) {
       errorContent = "Enter a valid email address";
+    } else if (
+      field === "phone" &&
+      value !== "" &&
+      (value.length < 9 || value.length > 15)
+    ) {
+      errorContent = "Phone number must be between 9 and 15 digits.";
+    } else if (
+      field === "re_password" &&
+      value !== "" &&
+      value !== form.password
+    ) {
+      errorContent = "Passwords do not match.";
     } else if (value === "") {
       errorContent = `${formatField(field)} is required`;
     }
