@@ -205,6 +205,7 @@ const Signup: React.FC = () => {
           <Button
             label={isLoading ? "Signing in..." : "Sign Up"}
             onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
           />
           <div className="signup_footer">

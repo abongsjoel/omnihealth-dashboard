@@ -136,6 +136,7 @@ const Login: React.FC = () => {
           <Button
             label={isLoading ? "Logging in..." : "Login"}
             onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
           />
           <div className="login_footer">
