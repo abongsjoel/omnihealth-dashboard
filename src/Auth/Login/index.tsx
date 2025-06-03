@@ -57,7 +57,7 @@ const Login: React.FC = () => {
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const newErrors = validate(form);
@@ -98,7 +98,7 @@ const Login: React.FC = () => {
   return (
     <section className="login_container">
       <Logo />
-      <form onSubmit={handleSubmit} className="login_form">
+      <form onSubmit={handleSubmit} noValidate className="login_form">
         <header className="login_header">
           <h2 className="login_title">Welcome to the OmniHealth Dashboard</h2>
           <p className="login_description">
@@ -135,7 +135,6 @@ const Login: React.FC = () => {
 
           <Button
             label={isLoading ? "Logging in..." : "Login"}
-            onClick={handleSubmit}
             type="submit"
             disabled={isLoading}
           />
