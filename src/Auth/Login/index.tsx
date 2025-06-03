@@ -138,6 +138,14 @@ const Login: React.FC = () => {
             onClick={handleSubmit}
             disabled={isLoading}
           />
+          <div className="login_footer">
+            <p>
+              Not yet a member.{" "}
+              <span className="signup_link" onClick={() => navigate("/signup")}>
+                Signup Instead
+              </span>
+            </p>
+          </div>
         </main>
       </form>
     </section>
