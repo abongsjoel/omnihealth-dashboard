@@ -103,7 +103,12 @@ const Login: React.FC = () => {
   return (
     <section className="login_container">
       <Logo />
-      <form onSubmit={handleSubmit} noValidate className="login_form">
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="login_form"
+        data-testid="login_form"
+      >
         <header className="login_header">
           <h2 className="login_title">Welcome to the OmniHealth Dashboard</h2>
           <p className="login_description">
@@ -144,6 +149,7 @@ const Login: React.FC = () => {
             label={isLoading ? "Logging in..." : "Login"}
             type="submit"
             disabled={isLoading}
+            data-testid="login_submit"
           />
           <div className="login_footer">
             <p>
