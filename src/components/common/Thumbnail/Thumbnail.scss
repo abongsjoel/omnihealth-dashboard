@@ -8,7 +8,7 @@ $border_spacing: 0.5rem;
 }
 
 .thumbnail {
-  background-color: var(--primary);
+  background-color: var(--secondary);
   color: var(--white);
   width: $thumbnail_size;
   height: $thumbnail_size;
@@ -19,6 +19,10 @@ $border_spacing: 0.5rem;
   user-select: none;
   overflow: hidden;
   font-size: 1rem;
+
+  &:hover {
+    background-color: var(--secondary-hover);
+  }
 }
 
 .thumbnail_img {

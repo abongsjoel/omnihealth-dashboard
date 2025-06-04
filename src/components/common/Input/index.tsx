@@ -43,15 +43,18 @@ const Input: React.FC<InputProps> = ({
       </label>
       <input
         type={isPassword && showPassword ? "text" : type}
+        id={id}
         placeholder={placeholder}
         className={classNames("input", className, { error })}
+        aria-invalid={!!error}
+        data-testid={id}
         {...rest}
       />
       {isPassword && (
         <img
           onClick={() => setShowPassword((prev) => !prev)}
           src={showPassword ? eyeIconOff : eyeIcon}
-          alt="Eye"
+          alt="Toggle password visibility"
           className="eye_icon"
         />
       )}
