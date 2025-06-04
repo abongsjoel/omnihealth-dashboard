@@ -38,7 +38,7 @@ const config: UserConfigExport = defineConfig({
     exclude: [...configDefaults.exclude, "**/e2e/**"], // optional: exclude test folders
     coverage: {
       provider: "v8", // important: use v8 instead of c8
-      reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "lcov", "html"],
       exclude: ["**/test-utils/**", "**/*.d.ts", "vite.config.ts"],
     },
   },
