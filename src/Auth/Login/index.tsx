@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
@@ -54,21 +54,24 @@ const Login: React.FC = () => {
   const [form, setForm] = useState<FormValues>({ email: "", password: "" });
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
     }));
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
-  };
+  }, []);
 
-  const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: getValidationError(name, value),
-    }));
-  };
+  const handleInputBlur = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: getValidationError(name, value),
+      }));
+    },
+    []
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
