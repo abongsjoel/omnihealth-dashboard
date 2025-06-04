@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
@@ -10,11 +10,12 @@ import {
   selectReturnTo,
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
+import useNavigation from "../../hooks/useNavigation";
+import { getValidationError } from "../../utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-import useNavigation from "../../hooks/useNavigation";
 
 import "./Login.scss";
 
@@ -25,18 +26,12 @@ interface FormValues {
 type FormErrors = Partial<FormValues>;
 
 const validate = (form: FormValues): FormErrors => {
-  const newErrors: FormErrors = {};
-  if (!form.email) {
-    newErrors.email = "Email is required.";
-  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-    newErrors.email = "Enter a valid email address.";
-  }
-
-  if (!form.password) {
-    newErrors.password = "Password is required.";
-  }
-
-  return newErrors;
+  const errors: FormErrors = {};
+  Object.entries(form).forEach(([field, value]) => {
+    const error = getValidationError(field, value);
+    if (error) errors[field as keyof FormValues] = error;
+  });
+  return errors;
 };
 
 const Login: React.FC = () => {
@@ -49,13 +44,24 @@ const Login: React.FC = () => {
   const [form, setForm] = useState<FormValues>({ email: "", password: "" });
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
     }));
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
-  };
+  }, []);
+
+  const handleInputBlur = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: getValidationError(name, value),
+      }));
+    },
+    []
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,8 +77,6 @@ const Login: React.FC = () => {
       }).unwrap();
 
       dispatch(login(teammember));
-      navigate(returnTo || "/");
-      dispatch(clearReturnTo());
     } catch (err) {
       const error = err as FetchBaseQueryError;
 
@@ -81,6 +85,7 @@ const Login: React.FC = () => {
           email: "Invalid email or password.",
           password: "Invalid email or password.",
         });
+        document.getElementById("email")?.focus();
       } else {
         console.error("Unexpected login error:", error);
         toast.error("Unexpected login error. Please try again.");
@@ -107,7 +112,7 @@ const Login: React.FC = () => {
           </p>
           <p className="login_cta">Login to get started</p>
         </header>
-        <main className="login_main">
+        <fieldset className="login_main" disabled={isLoading}>
           <Input
             id="email"
             name="email"
@@ -116,6 +121,7 @@ const Login: React.FC = () => {
             placeholder="abc@xyz.com"
             value={form.email}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.email}
             autoComplete="username"
             required
@@ -128,6 +134,7 @@ const Login: React.FC = () => {
             placeholder="••••••••"
             value={form.password}
             onChange={handleChange}
+            onBlur={handleInputBlur}
             error={errors.password}
             autoComplete="current-password"
             required
@@ -142,11 +149,11 @@ const Login: React.FC = () => {
             <p>
               Not yet a member.{" "}
               <span className="signup_link" onClick={() => navigate("/signup")}>
-                Signup Instead
+                Signup&nbsp;Instead
               </span>
             </p>
           </div>
-        </main>
+        </fieldset>
       </form>
     </section>
   );
