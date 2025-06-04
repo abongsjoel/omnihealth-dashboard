@@ -1,12 +1,13 @@
-import { defineConfig } from "vite";
+import { defineConfig, type UserConfigExport } from "vite";
 import react from "@vitejs/plugin-react";
+import { configDefaults } from "vitest/config";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
-export default defineConfig({
+const config: UserConfigExport = defineConfig({
   plugins: [react()],
   server: {
     proxy: {
@@ -30,4 +31,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  test: {
+    globals: true, // enables global test APIs like describe(), it(), expect()
+    environment: "jsdom", // simulates browser-like environment
+    setupFiles: "./src/setupTests.ts", // optional, for extending expect()
+    exclude: [...configDefaults.exclude, "**/e2e/**"], // optional: exclude test folders
+  },
 });
+
+export default config;
