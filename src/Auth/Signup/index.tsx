@@ -47,13 +47,13 @@ const Signup: React.FC = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
     }));
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
-  };
+  }, []);
 
   const handleInputBlur = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,7 +191,7 @@ const Signup: React.FC = () => {
           />
 
           <Button
-            label={isLoading ? "Signing in..." : "Sign Up"}
+            label={isLoading ? "Signing up..." : "Sign Up"}
             type="submit"
             disabled={isLoading}
           />

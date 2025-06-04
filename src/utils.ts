@@ -3,7 +3,7 @@ export const formatField = (field: string) => {
     return "Re-enter Password";
   }
   return field
-    .replace(/([A-Z])/g, " $1") // insert space before capital letters
+    .replace(/([a-z])([A-Z])/g, "$1 $2") // camelCase to spaced
     .replace(/^./, (str) => str.toUpperCase()); // capitalize first letter
 };
 
@@ -12,7 +12,6 @@ export const getValidationError = (
   value: string,
   currentPassword?: string
 ): string => {
-  console.log({ field, value, currentPassword });
   if (!value) return `${formatField(field)} is required`;
 
   if (field === "email" && !/\S+@\S+\.\S+/.test(value)) {
