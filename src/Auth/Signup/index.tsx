@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-import { formatField } from "../../utils";
+import { getValidationError } from "../../utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
@@ -23,43 +23,13 @@ interface FormValues {
 
 type FormErrors = Partial<FormValues>;
 
-const validate = (form: FormValues) => {
-  const newErrors: FormErrors = {};
-
-  if (!form.fullName) {
-    newErrors.fullName = "Full Name is required.";
-  }
-
-  if (!form.speciality) {
-    newErrors.speciality = "Speciality is required.";
-  }
-
-  if (!form.phone) {
-    newErrors.phone = "Phone Number is required.";
-  } else if (form.phone.length < 9 || form.phone.length > 15) {
-    newErrors.phone = "Phone number must be between 9 and 15 digits.";
-  }
-
-  if (!form.email) {
-    newErrors.email = "Email is required.";
-  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-    newErrors.email = "Enter a valid email address.";
-  }
-
-  if (!form.password) {
-    newErrors.password = "Password is required.";
-  }
-
-  if (!form.re_password) {
-    newErrors.re_password = "Re-enter Password is required.";
-  }
-
-  if (form.password !== form.re_password) {
-    newErrors.password = "Passwords do not match.";
-    newErrors.re_password = "Passwords do not match.";
-  }
-
-  return newErrors;
+const validate = (form: FormValues): FormErrors => {
+  const errors: FormErrors = {};
+  Object.entries(form).forEach(([field, value]) => {
+    const error = getValidationError(field, value);
+    if (error) errors[field as keyof FormValues] = error;
+  });
+  return errors;
 };
 
 const Signup: React.FC = () => {
@@ -77,42 +47,24 @@ const Signup: React.FC = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
     }));
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
-  };
+  }, []);
 
-  const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    let errorContent = "";
-
-    if (field === "email" && value !== "" && !/\S+@\S+\.\S+/.test(value)) {
-      errorContent = "Enter a valid email address";
-    } else if (
-      field === "phone" &&
-      value !== "" &&
-      (value.length < 9 || value.length > 15)
-    ) {
-      errorContent = "Phone number must be between 9 and 15 digits.";
-    } else if (
-      field === "re_password" &&
-      value !== "" &&
-      value !== form.password
-    ) {
-      errorContent = "Passwords do not match.";
-    } else if (value === "") {
-      errorContent = `${formatField(field)} is required`;
-    }
-
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [field]: errorContent,
-    }));
-  };
+  const handleInputBlur = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: getValidationError(name, value, form.password),
+      }));
+    },
+    [form]
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -239,7 +191,7 @@ const Signup: React.FC = () => {
           />
 
           <Button
-            label={isLoading ? "Signing in..." : "Sign Up"}
+            label={isLoading ? "Signing up..." : "Sign Up"}
             type="submit"
             disabled={isLoading}
           />
