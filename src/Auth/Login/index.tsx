@@ -11,7 +11,7 @@ import {
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-import { formatField } from "../../utils";
+import { getValidationError } from "../../utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
@@ -24,16 +24,6 @@ interface FormValues {
   password: string;
 }
 type FormErrors = Partial<FormValues>;
-
-const getValidationError = (field: string, value: string): string => {
-  if (!value) return `${formatField(field)} is required`;
-
-  if (field === "email" && !/\S+@\S+\.\S+/.test(value)) {
-    return "Enter a valid email address";
-  }
-
-  return "";
-};
 
 const validate = (form: FormValues): FormErrors => {
   const errors: FormErrors = {};
