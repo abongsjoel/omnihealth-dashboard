@@ -43,6 +43,7 @@ const Input: React.FC<InputProps> = ({
       </label>
       <input
         type={isPassword && showPassword ? "text" : type}
+        id={id}
         placeholder={placeholder}
         className={classNames("input", className, { error })}
         {...rest}
