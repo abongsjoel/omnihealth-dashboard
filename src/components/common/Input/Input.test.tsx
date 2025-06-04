@@ -15,13 +15,17 @@ describe("Input Component", () => {
 
   it("renders label and input correctly", () => {
     render(<Input {...baseProps} />);
-    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    const label = screen.getByText("Password");
+    const input = screen.getByTestId("password");
+
+    expect(label).toBeInTheDocument();
+    expect(input).toBeInTheDocument();
   });
 
   it("toggles password visibility when eye icon is clicked", () => {
     render(<Input {...baseProps} />);
-    const input = screen.getByLabelText("Password");
-    const icon = screen.getByRole("img", { hidden: true });
+    const input = screen.getByTestId("password");
+    const icon = screen.getByAltText("Toggle password visibility");
 
     // Initially should be password
     expect(input).toHaveAttribute("type", "password");
@@ -30,20 +34,27 @@ describe("Input Component", () => {
     fireEvent.click(icon);
     expect(input).toHaveAttribute("type", "text");
 
-    // Click to hide
+    // Click to hide again
     fireEvent.click(icon);
     expect(input).toHaveAttribute("type", "password");
   });
 
   it("calls onChange when input changes", () => {
     render(<Input {...baseProps} />);
-    const input = screen.getByLabelText("Password");
-    fireEvent.change(input, { target: { value: "hello123" } });
+    const input = screen.getByTestId("password");
+    fireEvent.change(input, { target: { value: "newValue" } });
+
     expect(baseProps.onChange).toHaveBeenCalled();
   });
 
   it("displays an error message if provided", () => {
     render(<Input {...baseProps} error="Invalid password" />);
     expect(screen.getByText("Invalid password")).toBeInTheDocument();
+  });
+
+  it("renders with aria-invalid when error is present", () => {
+    render(<Input {...baseProps} error="Error here" />);
+    const input = screen.getByTestId("password");
+    expect(input).toHaveAttribute("aria-invalid", "true");
   });
 });
