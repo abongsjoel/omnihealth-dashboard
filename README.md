@@ -16,6 +16,12 @@ This is the frontend dashboard for **OmniHealth**, a telehealth assistant built 
 
 ---
 
+## CodeCov Coverage
+
+[![codecov](https://codecov.io/gh/abongsjoel/omnihealth-dashboard/branch/main/graph/badge.svg)](https://codecov.io/gh/abongsjoel/omnihealth-dashboard)
+
+---
+
 <!-- ## 🚀 Tech Stack
 
 - [React](https://reactjs.org/)
