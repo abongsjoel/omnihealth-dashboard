@@ -84,8 +84,6 @@ const Login: React.FC = () => {
       }).unwrap();
 
       dispatch(login(teammember));
-      navigate(returnTo || "/");
-      dispatch(clearReturnTo());
     } catch (err) {
       const error = err as FetchBaseQueryError;
 
