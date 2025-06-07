@@ -26,7 +26,10 @@ type FormErrors = Partial<FormValues>;
 const validate = (form: FormValues): FormErrors => {
   const errors: FormErrors = {};
   Object.entries(form).forEach(([field, value]) => {
-    const error = getValidationError(field, value);
+    const error =
+      field === "re_password"
+        ? getValidationError(field, value, form.password)
+        : getValidationError(field, value);
     if (error) errors[field as keyof FormValues] = error;
   });
   return errors;
@@ -55,16 +58,18 @@ const Signup: React.FC = () => {
     setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
   }, []);
 
-  const handleInputBlur = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
+  const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setForm((prevForm) => {
+      const newForm = { ...prevForm, [name]: value };
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: getValidationError(name, value, form.password),
+        [name]: getValidationError(name, value, newForm.password),
       }));
-    },
-    [form]
-  );
+      return newForm;
+    });
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
