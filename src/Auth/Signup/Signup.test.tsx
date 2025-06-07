@@ -20,9 +20,6 @@ const mockSignup = vi.fn(() => ({ unwrap: mockUnwrap }));
 vi.mock("react-hot-toast", () => ({
   default: { success: vi.fn(), error: vi.fn() },
 }));
-// vi.mock("../../../hooks/useNavigation", () => ({
-//   default: () => ({ navigate: vi.fn() }),
-// }));
 vi.mock("../../hooks/useNavigation", () => ({
   default: () => ({ navigate: mockNavigate }),
 }));
@@ -60,6 +57,22 @@ describe("Signup Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
+  const fillSignupForm = async () => {
+    await userEvent.type(screen.getByLabelText(/full name/i), "Dr. Ngwa Acho");
+    await userEvent.type(screen.getByLabelText(/display name/i), "Dr. Acho");
+    await userEvent.type(screen.getByLabelText(/speciality/i), "Nutritionist");
+    await userEvent.type(
+      screen.getByLabelText(/phone number/i),
+      "237670312288"
+    );
+    await userEvent.type(screen.getByLabelText(/^email$/i), "test@example.com");
+    await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
+    await userEvent.type(
+      screen.getByLabelText(/re-enter password/i),
+      "password123"
+    );
+  };
 
   it("renders all input fields and signup button", () => {
     renderWithStore();
@@ -122,19 +135,7 @@ describe("Signup Component", () => {
   it("submits successfully and navigates", async () => {
     renderWithStore();
 
-    await userEvent.type(screen.getByLabelText(/full name/i), "Dr. Ngwa Acho");
-    await userEvent.type(screen.getByLabelText(/display name/i), "Dr. Acho");
-    await userEvent.type(screen.getByLabelText(/speciality/i), "Nutritionist");
-    await userEvent.type(
-      screen.getByLabelText(/phone number/i),
-      "237670312288"
-    );
-    await userEvent.type(screen.getByLabelText(/^email$/i), "test@example.com");
-    await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
-    await userEvent.type(
-      screen.getByLabelText(/re-enter password/i),
-      "password123"
-    );
+    await fillSignupForm();
 
     await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
 
@@ -142,6 +143,25 @@ describe("Signup Component", () => {
       expect(mockSignup).toHaveBeenCalled();
       expect(mockUnwrap).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith("/login");
+    });
+  });
+
+  it("shows error toast when signup fails", async () => {
+    const toast = (await import("react-hot-toast")).default;
+    // Make unwrap reject instead of resolve
+    mockUnwrap.mockRejectedValueOnce(new Error("Signup failed"));
+
+    renderWithStore();
+
+    await fillSignupForm();
+    await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(mockSignup).toHaveBeenCalled();
+      expect(mockUnwrap).toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith(
+        "Signup failed. Please try again!"
+      );
     });
   });
 });
