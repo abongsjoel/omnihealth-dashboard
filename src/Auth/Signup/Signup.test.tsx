@@ -1,20 +1,42 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import userEvent from "@testing-library/user-event";
 
-import Signup from "../Signup";
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
+
+// MOCK VALIDATION BEFORE IMPORTING SIGNUP
+vi.mock("../../utils/getValidationError", () => ({
+  default: vi.fn(() => undefined),
+}));
+
+const mockNavigate = vi.fn();
+const mockUnwrap = vi.fn().mockResolvedValue({ message: "Signup successful!" });
+const mockSignup = vi.fn(() => ({ unwrap: mockUnwrap }));
 
 // Mocks
 vi.mock("react-hot-toast", () => ({
   default: { success: vi.fn(), error: vi.fn() },
 }));
-vi.mock("../../../hooks/useNavigation", () => ({
-  default: () => ({ navigate: vi.fn() }),
+// vi.mock("../../../hooks/useNavigation", () => ({
+//   default: () => ({ navigate: vi.fn() }),
+// }));
+vi.mock("../../hooks/useNavigation", () => ({
+  default: () => ({ navigate: mockNavigate }),
 }));
 vi.mock("../../../components/common/Logo", () => () => <div>Logo</div>);
+vi.mock("../../redux/apis/careTeamApi", async () => {
+  const actual = await vi.importActual<any>("../../redux/apis/careTeamApi");
+  return {
+    ...actual,
+    useSignupCareTeamMutation: () => [mockSignup, { isLoading: false }],
+  };
+});
+
+// Import Signup AFTER mocking
+import Signup from "../Signup";
 
 // Create store for testing
 const createStore = () =>
@@ -25,13 +47,6 @@ const createStore = () =>
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(careTeamApi.middleware),
-    preloadedState: {
-      auth: {
-        isAuthenticated: false,
-        returnTo: null,
-        careteamMember: null,
-      },
-    },
   });
 
 const renderWithStore = () =>
@@ -102,5 +117,31 @@ describe("Signup Component", () => {
     expect(emailInput).toHaveValue("test@example.com");
     expect(passwordInput).toHaveValue("password123");
     expect(reEnterPasswordInput).toHaveValue("password123");
+  });
+
+  it("submits successfully and navigates", async () => {
+    renderWithStore();
+
+    await userEvent.type(screen.getByLabelText(/full name/i), "Dr. Ngwa Acho");
+    await userEvent.type(screen.getByLabelText(/display name/i), "Dr. Acho");
+    await userEvent.type(screen.getByLabelText(/speciality/i), "Nutritionist");
+    await userEvent.type(
+      screen.getByLabelText(/phone number/i),
+      "237670312288"
+    );
+    await userEvent.type(screen.getByLabelText(/^email$/i), "test@example.com");
+    await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
+    await userEvent.type(
+      screen.getByLabelText(/re-enter password/i),
+      "password123"
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(mockSignup).toHaveBeenCalled();
+      expect(mockUnwrap).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith("/login");
+    });
   });
 });
