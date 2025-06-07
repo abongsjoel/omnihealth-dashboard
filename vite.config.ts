@@ -42,6 +42,12 @@ const config: UserConfigExport = defineConfig({
       exclude: ["**/test-utils/**", "**/*.d.ts", "vite.config.ts"],
     },
   },
+  build: {
+    rollupOptions: {
+      input: './index.html',
+      external: [/\.test\.(ts|tsx)$/],
+    },
+  },
 });
 
 export default config;
