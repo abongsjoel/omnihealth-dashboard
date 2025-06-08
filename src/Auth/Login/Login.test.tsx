@@ -6,6 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import Login from "../Login";
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
+import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 
 // Mock APIs
 vi.mock("react-hot-toast", () => ({ default: { error: vi.fn() } }));
@@ -85,6 +86,27 @@ describe("Login Component", () => {
 
     expect(emailInput).toHaveValue("test@example.com");
     expect(passwordInput).toHaveValue("password123");
+  });
+
+  it("validates fields on blur", async () => {
+    renderWithStore();
+
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+
+    // Trigger blur on empty email input
+    emailInput.focus();
+    passwordInput.focus(); // causes blur on email
+    await waitFor(() =>
+      expect(screen.getByText(/email is required/i)).toBeInTheDocument()
+    );
+
+    // Trigger blur on empty password input
+    passwordInput.focus();
+    emailInput.focus(); // causes blur on password
+    await waitFor(() =>
+      expect(screen.getByText(/password is required/i)).toBeInTheDocument()
+    );
   });
 
   it("logs in successfully and dispatches login", async () => {
