@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -10,7 +10,7 @@ import { careTeamApi } from "../../redux/apis/careTeamApi";
 // Mocks
 const mockNavigate = vi.fn();
 
-vi.mock("../../../hooks/useNavigation", () => ({
+vi.mock("../../hooks/useNavigation", () => ({
   default: () => ({
     currentPath: "/",
     navigate: mockNavigate,
@@ -72,5 +72,13 @@ describe("MenuBar Component", () => {
     renderWithStore();
     expect(screen.getByText("Dashboard")).toHaveClass("menu_item active");
     expect(screen.getByText("Survey")).toHaveClass("menu_item");
+  });
+
+  it("calls navigate when a top-level menu item is clicked", () => {
+    renderWithStore();
+
+    fireEvent.click(screen.getByTestId("menu_item_/survey"));
+
+    expect(mockNavigate).toHaveBeenCalledWith("/survey");
   });
 });

@@ -33,7 +33,7 @@ const MenuBar: React.FC = () => {
   };
 
   return (
-    <nav className="menu_bar">
+    <nav className="menu_bar" data-testid="menu_bar">
       <Logo />
 
       <ul className="menu_items">
@@ -44,6 +44,7 @@ const MenuBar: React.FC = () => {
             className={classNames("menu_item", {
               active: currentPath === path,
             })}
+            data-testid={`menu_item_${path}`}
           >
             {label}
           </li>
