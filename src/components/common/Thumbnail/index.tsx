@@ -57,7 +57,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   }, [currentPath]);
 
   return (
-    <div className="thumbnail_wrapper" ref={ref}>
+    <div className="thumbnail_wrapper" ref={ref} data-testid="thumbnail">
       <div
         className="thumbnail"
         onClick={() => setIsOpen((prev) => !prev)}

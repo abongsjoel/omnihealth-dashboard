@@ -5,7 +5,7 @@ const Logo: React.FC = () => {
   const { navigate } = useNavigation();
 
   return (
-    <h1 className="logo" onClick={() => navigate("/")}>
+    <h1 className="logo" data-testid="logo" onClick={() => navigate("/")}>
       OmniHealth
     </h1>
   );
