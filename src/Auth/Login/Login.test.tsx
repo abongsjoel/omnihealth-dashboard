@@ -6,7 +6,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import Login from "../Login";
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
-import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 
 // Mock APIs
 vi.mock("react-hot-toast", () => ({ default: { error: vi.fn() } }));
