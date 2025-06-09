@@ -23,16 +23,18 @@ vi.mock("react-hot-toast", () => {
   };
 });
 
-// --- MOCK assignName RTK Query Hook ---
-const mockAssignName = vi.fn();
-
-vi.mock("../../../redux/apis/usersApi", async () => {
-  const actual = await vi.importActual("../../../redux/apis/usersApi");
-  return {
-    ...actual,
-    useAssignNameMutation: () => [mockAssignName, { isLoading: false }],
-  };
-});
+const setupUsersApiMock = (unwrapImpl: () => Promise<any>) => {
+  vi.doMock("../../../redux/apis/usersApi", async () => {
+    const actual = await vi.importActual("../../../redux/apis/usersApi");
+    return {
+      ...actual,
+      useAssignNameMutation: () => [
+        vi.fn(() => ({ unwrap: unwrapImpl })),
+        { isLoading: false },
+      ],
+    };
+  });
+};
 
 const renderForm = (props = {}) => {
   const store = configureStore({
@@ -54,6 +56,7 @@ const renderForm = (props = {}) => {
 describe("UserForm Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
   });
 
   it("renders inputs and buttons", () => {
@@ -76,52 +79,61 @@ describe("UserForm Component", () => {
     ).toBeInTheDocument();
   });
 
-  /*TRouble test*/
-  //   it("submits valid form and shows success toast", async () => {
-  //     const toast = (await import("react-hot-toast")).default;
-  //     const mockClose = vi.fn();
-  //     mockAssignName.mockResolvedValueOnce({
-  //       unwrap: () =>
-  //         Promise.resolve({
-  //           success: true,
-  //           user: { userName: "Test", userId: "237670000000" },
-  //         }),
-  //     });
+  it("submits valid form and shows success toast", async () => {
+    setupUsersApiMock(() =>
+      Promise.resolve({
+        success: true,
+        user: { userName: "Test", userId: "237670000000" },
+      })
+    );
 
-  //     renderForm({
-  //       userName: "",
-  //       userId: "",
-  //       action: "Assign",
-  //       handleCloseModal: mockClose,
-  //     });
+    // Dynamically import after mocking
+    const { default: UserForm } = await import("../UserForm");
 
-  //     fireEvent.change(screen.getByLabelText("User Name"), {
-  //       target: { value: "Test" },
-  //     });
-  //     fireEvent.change(screen.getByLabelText("Phone Number"), {
-  //       target: { value: "237670000000" },
-  //     });
+    const mockClose = vi.fn();
 
-  //     fireEvent.click(screen.getByText("Assign"));
+    const store = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
 
-  //     await waitFor(() => {
-  //       expect(mockAssignName).toHaveBeenCalledWith({
-  //         userName: "Test",
-  //         userId: "237670000000",
-  //       });
-  //     });
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName=""
+          userId=""
+          action="Assign"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
 
-  //     // expect(toast.success).toHaveBeenCalled();
-  //     expect(toast.success).toHaveBeenCalledWith(
-  //       `Assigned "Test" to 237670000000`
-  //     );
-  //     // expect(mockClose).toHaveBeenCalled();
-  //   });
+    fireEvent.change(screen.getByLabelText("User Name"), {
+      target: { value: "Test" },
+    });
+    fireEvent.change(screen.getByLabelText("Phone Number"), {
+      target: { value: "237670000000" },
+    });
+
+    fireEvent.click(screen.getByText("Assign"));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("User Name")).toHaveValue("Test");
+      expect(screen.getByLabelText("Phone Number")).toHaveValue(237670000000);
+      expect(toast.success).toHaveBeenCalledWith(
+        `Assigned "Test" to 237670000000`
+      );
+    });
+
+    expect(mockClose).toHaveBeenCalled();
+  });
 
   it("shows error toast on failed request", async () => {
-    mockAssignName.mockReturnValueOnce({
-      unwrap: () => Promise.reject(new Error("Network error")),
-    });
+    setupUsersApiMock(() => Promise.reject(new Error("Network error")));
 
     renderForm({
       action: "Assign",
