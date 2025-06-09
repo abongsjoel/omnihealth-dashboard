@@ -98,16 +98,16 @@ describe("MessageHeader", () => {
     });
   });
 
-  //   it("opens modal on 'Assign Name' button click", async () => {
-  //     renderHeader("67890");
+  it("opens modal on 'Assign Name' button click", async () => {
+    renderHeader("67890");
 
-  //     fireEvent.click(screen.getByText("Assign Name"));
+    fireEvent.click(screen.getByRole("button", { name: "Assign Name" }));
 
-  //     await waitFor(() => {
-  //       expect(screen.getByTestId("modal")).toBeInTheDocument();
-  //       expect(screen.getByText(/Assign Name/i)).toBeInTheDocument();
-  //     });
-  //   });
+    await waitFor(() => {
+      expect(screen.getByTestId("modal")).toBeInTheDocument();
+      expect(screen.getAllByText("Assign Name")).toHaveLength(2);
+    });
+  });
 
   it("closes modal when close button is clicked", async () => {
     renderHeader("12345");
