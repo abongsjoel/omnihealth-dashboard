@@ -15,10 +15,7 @@ const ReplyBox: React.FC<ReplyBoxProps> = ({ selectedUserId }) => {
   const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
 
   const member = useAppSelector(selectLoggedInMember);
-  console.log({ member });
-
   const [reply, setReply] = useState<string>("");
-
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = async () => {
