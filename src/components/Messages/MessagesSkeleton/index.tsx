@@ -7,6 +7,7 @@ const MessagesSkeleton: React.FC = () => {
       {[...Array(10)].map((_, i) => (
         <div
           key={i}
+          role="presentation"
           className={`skeleton-bubble ${i % 2 === 0 ? "user" : "assistant"}`}
         />
       ))}
