@@ -6,6 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import ReplyBox from "../ReplyBox";
 import authReducer from "../../../redux/slices/authSlice";
 import { messagesApi } from "../../../redux/apis/messagesApi";
+import type { AuthState } from "../../../redux/slices/authSlice";
 
 // --- Mock useSendMessageMutation ---
 const mockSendMessage = vi.fn();
@@ -19,7 +20,7 @@ vi.mock("../../../redux/apis/messagesApi", async () => {
 });
 
 const renderReplyBox = (props = {}) => {
-  const preloadedState = {
+  const preloadedState: { auth: AuthState } = {
     auth: {
       isAuthenticated: true,
       returnTo: null,
