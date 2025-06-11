@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { Mock } from "vitest";
+import type { Mock } from "vitest";
 
 import Messages from "../Messages";
-import type { User } from "../../types";
+import type { CareTeamMember, User } from "../../types";
 
 // 👇 Use full mock and then override inside the test
 vi.mock("../../redux/apis/messagesApi", async () => {
@@ -94,7 +94,7 @@ describe("Messages Component", () => {
       },
     ];
 
-    const mockCareTeam = []; // No care team needed for openai
+    const mockCareTeam: CareTeamMember[] = []; // No care team needed for openai
 
     (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
       data: mockMessages,

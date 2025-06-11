@@ -10,7 +10,7 @@ import {
   updateSelectedUser,
 } from "../../redux/slices/usersSlice";
 import UserForm from "../Messages/UserForm";
-import Skeleton from "./Skeleton";
+import Skeleton from "./UsersSkeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
