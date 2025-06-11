@@ -18,23 +18,32 @@ vi.mock("../../../redux/apis/messagesApi", async () => {
   };
 });
 
-// --- Helper to render with store ---
 const renderReplyBox = (props = {}) => {
+  const preloadedState = {
+    auth: {
+      isAuthenticated: true,
+      returnTo: null,
+      careteamMember: {
+        _id: "agent-123",
+        fullName: "Dr. Reply Tester",
+        displayName: "Dr Reply",
+        speciality: "Therapist",
+        email: "reply@test.com",
+        phone: "1234567890",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  };
+
   const store = configureStore({
     reducer: {
       auth: authReducer,
       [messagesApi.reducerPath]: messagesApi.reducer,
     },
-    preloadedState: {
-      auth: {
-        isAuthenticated: true,
-        careteamMember: {
-          _id: "agent-123",
-          fullName: "Dr. Reply Tester",
-        },
-      },
-    },
-    middleware: (gDM) => gDM().concat(messagesApi.middleware),
+    preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(messagesApi.middleware),
   });
 
   return render(
