@@ -1,12 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import {
-  differenceInMinutes,
-  formatDistanceToNow,
-  format,
-  isToday,
-  isYesterday,
-  isThisWeek,
-} from "date-fns";
 
 import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
 import { useGetCareTeamMembersQuery } from "../../redux/apis/careTeamApi";
@@ -16,29 +8,11 @@ import Error from "../common/Error";
 import type { User } from "../../types";
 
 import "./Messages.scss";
+import { getFormattedTime } from "../../utils";
 
 interface MessagesProps {
   selectedUser: User;
 }
-
-const getFormattedTime = (timestamp: Date): string => {
-  const date = new Date(timestamp);
-  const minutesAgo = differenceInMinutes(new Date(), date);
-
-  if (minutesAgo < 1) {
-    return "Just now";
-  } else if (minutesAgo <= 5) {
-    return formatDistanceToNow(date, { addSuffix: true }); // e.g. "5 minutes ago"
-  } else if (isToday(date)) {
-    return format(date, "p"); // e.g. "2:14 PM"
-  } else if (isYesterday(date)) {
-    return `Yesterday at ${format(date, "p")}`;
-  } else if (isThisWeek(date)) {
-    return `${format(date, "EEEE")} at ${format(date, "p")}`; // e.g. Wednesday at 2:14 PM
-  } else {
-    return format(date, "PP 'at' p");
-  }
-};
 
 const Messages: React.FC<MessagesProps> = ({
   selectedUser: { userId, userName },

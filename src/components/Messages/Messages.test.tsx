@@ -123,4 +123,64 @@ describe("Messages Component", () => {
     expect(screen.getByText("Jan 1, 2024 at 11:00 AM")).toBeInTheDocument();
     expect(screen.getByText("Jan 1, 2024 at 11:01 AM")).toBeInTheDocument();
   });
+
+  it("renders assistant name from care team displayName, fullName, or fallback", () => {
+    const mockMessages = [
+      {
+        _id: "msg-1",
+        role: "assistant",
+        agent: "member-1",
+        content: "This is a human assistant.",
+        timestamp: "2024-01-01T10:00:00Z",
+      },
+      {
+        _id: "msg-2",
+        role: "assistant",
+        agent: "member-2",
+        content: "Another human assistant.",
+        timestamp: "2024-01-01T10:01:00Z",
+      },
+      {
+        _id: "msg-3",
+        role: "assistant",
+        agent: "member-3",
+        content: "Fallback assistant.",
+        timestamp: "2024-01-01T10:02:00Z",
+      },
+    ];
+
+    const mockCareTeam = [
+      {
+        _id: "member-1",
+        displayName: "Dr. Smith",
+      },
+      {
+        _id: "member-2",
+        fullName: "Dr. Jane Doe",
+      },
+      {
+        _id: "member-3",
+        // neither displayName nor fullName
+      },
+    ];
+
+    (useGetUserMessagesQuery as unknown as vi.Mock).mockReturnValue({
+      data: mockMessages,
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetCareTeamMembersQuery as unknown as vi.Mock).mockReturnValue({
+      data: mockCareTeam,
+      isLoading: false,
+      error: null,
+    });
+
+    render(<Messages selectedUser={mockedUser} />);
+
+    // Should render all 3 human assistant name variants
+    expect(screen.getByText("(Dr. Smith)")).toBeInTheDocument();
+    expect(screen.getByText("(Dr. Jane Doe)")).toBeInTheDocument();
+    expect(screen.getByText("(Care Member)")).toBeInTheDocument();
+  });
 });

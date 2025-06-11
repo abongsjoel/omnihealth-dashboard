@@ -1,3 +1,12 @@
+import {
+  differenceInMinutes,
+  formatDistanceToNow,
+  format,
+  isToday,
+  isYesterday,
+  isThisWeek,
+} from "date-fns";
+
 export const formatField = (field: string) => {
   if (field === "re_password") {
     return "Re-enter Password";
@@ -23,4 +32,23 @@ export const getValidationError = (
   }
 
   return "";
+};
+
+export const getFormattedTime = (timestamp: Date): string => {
+  const date = new Date(timestamp);
+  const minutesAgo = differenceInMinutes(new Date(), date);
+
+  if (minutesAgo < 1) {
+    return "Just now";
+  } else if (minutesAgo <= 5) {
+    return formatDistanceToNow(date, { addSuffix: true }); // e.g. "5 minutes ago"
+  } else if (isToday(date)) {
+    return format(date, "p"); // e.g. "2:14 PM"
+  } else if (isYesterday(date)) {
+    return `Yesterday at ${format(date, "p")}`;
+  } else if (isThisWeek(date)) {
+    return `${format(date, "EEEE")} at ${format(date, "p")}`; // e.g. Wednesday at 2:14 PM
+  } else {
+    return format(date, "PP 'at' p");
+  }
 };
