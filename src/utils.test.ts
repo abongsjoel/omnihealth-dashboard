@@ -50,7 +50,6 @@ describe("getFormattedTime", () => {
 
         const lessthanAminute = new Date(now.getTime() - 30 * 1000); // 3 minutes ago
 
-        // const date = new Date(base.getTime() - 30 * 1000);
         expect(getFormattedTime(lessthanAminute)).toBe("Just now");
 
         // Restore real timers after the test
