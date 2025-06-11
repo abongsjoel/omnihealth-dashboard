@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { Mock } from "vitest";
 
 import Messages from "../Messages";
 import type { User } from "../../types";
@@ -38,13 +39,13 @@ describe("Messages Component", () => {
   });
 
   it("shows loading skeleton", () => {
-    (useGetUserMessagesQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
       data: [],
       isLoading: false,
       error: null,
     });
 
-    (useGetCareTeamMembersQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetCareTeamMembersQuery as unknown as Mock).mockReturnValue({
       data: undefined,
       isLoading: true,
       error: null,
@@ -55,13 +56,13 @@ describe("Messages Component", () => {
   });
 
   it("renders error UI when user messages query fails", () => {
-    (useGetUserMessagesQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
       data: undefined,
       isLoading: false,
       error: { message: "Failed to fetch messages" },
     });
 
-    (useGetCareTeamMembersQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetCareTeamMembersQuery as unknown as Mock).mockReturnValue({
       data: [],
       isLoading: false,
       error: null,
@@ -95,13 +96,13 @@ describe("Messages Component", () => {
 
     const mockCareTeam = []; // No care team needed for openai
 
-    (useGetUserMessagesQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
       data: mockMessages,
       isLoading: false,
       error: null,
     });
 
-    (useGetCareTeamMembersQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetCareTeamMembersQuery as unknown as Mock).mockReturnValue({
       data: mockCareTeam,
       isLoading: false,
       error: null,
@@ -164,13 +165,13 @@ describe("Messages Component", () => {
       },
     ];
 
-    (useGetUserMessagesQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
       data: mockMessages,
       isLoading: false,
       error: null,
     });
 
-    (useGetCareTeamMembersQuery as unknown as vi.Mock).mockReturnValue({
+    (useGetCareTeamMembersQuery as unknown as Mock).mockReturnValue({
       data: mockCareTeam,
       isLoading: false,
       error: null,
