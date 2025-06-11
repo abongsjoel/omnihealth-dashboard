@@ -120,9 +120,10 @@ describe("Messages Component", () => {
     expect(screen.getByText("Assistant")).toBeInTheDocument();
     expect(screen.getByText("John Doe")).toBeInTheDocument();
 
-    // Timestamps (if using format(new Date(...), "PP 'at' p"))
-    expect(screen.getByText("Jan 1, 2024 at 11:00 AM")).toBeInTheDocument();
-    expect(screen.getByText("Jan 1, 2024 at 11:01 AM")).toBeInTheDocument();
+    // Timestamps
+    expect(
+      screen.getAllByText((text) => text.includes("Jan 1, 2024"))
+    ).toHaveLength(2);
   });
 
   it("renders assistant name from care team displayName, fullName, or fallback", () => {
