@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import type { User } from "../../types";
 
-interface UsersState {
+export interface UsersState {
   users: User[];
   selectedUser: User | null;
 }
