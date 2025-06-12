@@ -4,6 +4,7 @@ import authReducer, {
     logout,
     setReturnTo,
     clearReturnTo,
+    getInitialAuthState,
 } from "./authSlice";
 import type { AuthState } from "./authSlice";
 import type { CareTeamMember } from "../../types";
@@ -78,4 +79,25 @@ describe("authSlice", () => {
 
         expect(state.returnTo).toBeNull();
     });
+
+    it("should initialize from localStorage when careteamMember is cached", () => {
+        const cachedMember = {
+            _id: "cached",
+            fullName: "Cached Boss",
+            displayName: "CB",
+            speciality: "Neurology",
+            email: "cb@clinic.com",
+            phone: "123456789",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        };
+
+        localStorage.setItem("careteamMember", JSON.stringify(cachedMember));
+
+        const state = getInitialAuthState();
+
+        expect(state.isAuthenticated).toBe(true);
+        expect(state.careteamMember).toEqual(cachedMember);
+    });
+
 });
