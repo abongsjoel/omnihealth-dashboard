@@ -37,12 +37,11 @@ const withNavigation = (ui: React.ReactElement, currentPath = "/") => (
 );
 
 // ➕ Create typed test store helper
-const createTestStore = (preloadedState?: Partial<RootState>) =>
+const createTestStore = () =>
   configureStore({
     reducer: {
       auth: authReducer,
     },
-    preloadedState: preloadedState as RootState,
   });
 
 describe("App Component", () => {
@@ -60,12 +59,11 @@ describe("App Component", () => {
 
     render(<Provider store={store}>{withNavigation(<App />, "/")}</Provider>);
 
-    // Wait for the dashboard to appear (i.e. private route is open)
     await screen.findByText("Dashboard Page");
 
     const state = store.getState();
     expect(state.auth.isAuthenticated).toBe(true);
-    expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
+    expect(state.auth.careteamMember).toEqual(mockUser);
   });
 
   it("logs out and clears returnTo if no localStorage user", async () => {
