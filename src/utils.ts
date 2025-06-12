@@ -34,7 +34,7 @@ export const getValidationError = (
   return "";
 };
 
-export const getFormattedTime = (timestamp: Date): string => {
+export const getFormattedTime = (timestamp: Date | string): string => {
   const date = new Date(timestamp);
   const minutesAgo = differenceInMinutes(new Date(), date);
 

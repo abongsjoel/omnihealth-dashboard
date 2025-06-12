@@ -6,9 +6,9 @@ import { useGetCareTeamMembersQuery } from "../../redux/apis/careTeamApi";
 import MessagesSkeleton from "./MessagesSkeleton";
 import Error from "../common/Error";
 import type { User } from "../../types";
+import { getFormattedTime } from "../../utils";
 
 import "./Messages.scss";
-import { getFormattedTime } from "../../utils";
 
 interface MessagesProps {
   selectedUser: User;
