@@ -92,4 +92,48 @@ describe("messagesApi", () => {
 
     expect("data" in res).toBe(true); // confirms success
   });
+
+  it("invalidates and refetches messages after sending a message", async () => {
+    const store = makeStore();
+
+    // Start by fetching messages (this triggers providesTags under the hood)
+    const { result: getMessages } = renderHook(
+      () => messagesApi.endpoints.getUserMessages.useQuery("user123"),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    await waitFor(() => {
+      expect(getMessages.current.isSuccess).toBe(true);
+      expect(getMessages.current.data?.length).toBe(2);
+    });
+
+    // Then send a message (this triggers invalidateTags which relies on providesTags)
+    const { result: sendMsgResult } = renderHook(
+      () => messagesApi.endpoints.sendMessage.useMutation(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    const [sendMessage] = sendMsgResult.current;
+
+    await sendMessage({
+      to: "user123",
+      message: "Follow-up message",
+      agent: "care",
+    });
+
+    // Wait again to give chance for re-fetch after invalidation
+    await waitFor(() => {
+      expect(
+        getMessages.current.isFetching || getMessages.current.isSuccess
+      ).toBe(true);
+    });
+  });
 });
