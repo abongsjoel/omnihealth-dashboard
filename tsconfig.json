@@ -5,7 +5,7 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "types": ["node", "vitest"]
+    "types": ["node", "vitest", "msw"]
   },
   "exclude": ["**/*.test.ts", "**/*.test.tsx", "tests", "vitest.config.ts"]
 }
