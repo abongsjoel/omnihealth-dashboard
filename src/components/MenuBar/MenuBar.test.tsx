@@ -17,10 +17,19 @@ vi.mock("../../hooks/useNavigation", () => ({
   }),
 }));
 
-vi.mock("../../common/Logo", () => () => <div data-testid="logo">Logo</div>);
-vi.mock("../../common/Thumbnail", () => () => (
-  <div data-testid="thumbnail">Thumbnail</div>
-));
+vi.mock("../common/Logo", () => ({
+  __esModule: true,
+  default: () => <div data-testid="logo">Logo</div>,
+}));
+
+vi.mock("../common/Thumbnail", () => ({
+  __esModule: true,
+  default: ({ onLogout }: { onLogout: () => void }) => (
+    <button data-testid="logout-button" onClick={onLogout}>
+      Logout
+    </button>
+  ),
+}));
 
 const createStore = () =>
   configureStore({
@@ -65,7 +74,7 @@ describe("MenuBar Component", () => {
     expect(screen.getByTestId("logo")).toBeInTheDocument();
     expect(screen.getByText("Welcome")).toBeInTheDocument();
     expect(screen.getByText("Dr. Test")).toBeInTheDocument();
-    expect(screen.getByTestId("thumbnail")).toBeInTheDocument();
+    expect(screen.getByTestId("logout-button")).toBeInTheDocument();
   });
 
   it("renders menu items and highlights current path", () => {
@@ -80,5 +89,18 @@ describe("MenuBar Component", () => {
     fireEvent.click(screen.getByTestId("menu_item_/survey"));
 
     expect(mockNavigate).toHaveBeenCalledWith("/survey");
+  });
+
+  it("dispatches logout when logout button is clicked", () => {
+    const store = createStore();
+    const dispatchSpy = vi.spyOn(store, "dispatch");
+
+    renderWithStore(store);
+
+    fireEvent.click(screen.getByTestId("logout-button"));
+
+    expect(dispatchSpy).toHaveBeenCalledWith({
+      type: "auth/logout",
+    });
   });
 });
