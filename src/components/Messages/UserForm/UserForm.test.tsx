@@ -164,4 +164,24 @@ describe("UserForm Component", () => {
       );
     });
   });
+
+  it("shows error when phone number length is invalid", async () => {
+    await renderForm({ title: "Add New User", action: "Add" });
+
+    // Valid name
+    fireEvent.change(screen.getByLabelText("User Name"), {
+      target: { value: "Shorty" },
+    });
+
+    // Invalid phone number: too short
+    fireEvent.change(screen.getByLabelText("Phone Number"), {
+      target: { value: "123" },
+    });
+
+    fireEvent.click(screen.getByText("Add"));
+
+    expect(
+      await screen.findByText(/phone number must be between 9 and 15 digits/i)
+    ).toBeInTheDocument();
+  });
 });
