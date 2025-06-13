@@ -184,4 +184,33 @@ describe("UserForm Component", () => {
       await screen.findByText(/phone number must be between 9 and 15 digits/i)
     ).toBeInTheDocument();
   });
+
+  it("shows loading label on submit button when isLoading is true", async () => {
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: true }],
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm action="Assign" />
+      </Provider>
+    );
+
+    expect(screen.getByText("Assigning")).toBeInTheDocument();
+  });
 });
