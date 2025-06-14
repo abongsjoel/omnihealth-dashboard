@@ -4,11 +4,14 @@ import Survey from "../Survey";
 
 // Mock the Table component
 vi.mock("../../components/common/Table", () => ({
-  default: ({ data }: any) => (
+  default: ({ data, config, keyFn }: any) => (
     <div>
       Mocked Table
       {data.map((row: any) => (
-        <div key={row._id}>{row.userId}</div>
+        <div key={keyFn(row)}>
+          {row.userId} -{" "}
+          {config.find((c: any) => c.label === "Conditions")?.render(row)}
+        </div>
       ))}
     </div>
   ),
@@ -74,8 +77,11 @@ describe("Survey Component", () => {
 
     expect(screen.getByText("Survey Results")).toBeInTheDocument();
     expect(screen.getByText("Mocked Table")).toBeInTheDocument();
-    expect(screen.getByText("12345")).toBeInTheDocument(); // Rendered data
+    expect(
+      screen.getByText((content) => content.includes("12345"))
+    ).toBeInTheDocument();
     expect(screen.queryByText("WEB_SIMULATION")).not.toBeInTheDocument(); // Filtered
+    expect(screen.getByText("Hypertension")).toBeInTheDocument();
   });
 
   it("handles loading state", () => {

@@ -16,11 +16,13 @@ vi.mock("../../redux/apis/usersApi", async () => {
   };
 });
 
+const mockDispatch = vi.fn();
+
 vi.mock("../../redux/hooks", async () => {
   const actual = await vi.importActual("../../redux/hooks");
   return {
     ...actual,
-    useAppDispatch: () => vi.fn(),
+    useAppDispatch: () => mockDispatch, // 👈 reuse your mock
     useAppSelector: vi.fn(() => null),
   };
 });
@@ -30,6 +32,7 @@ import {
   useGetUserIdsQuery,
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
+// import { useAppDispatch } from "../../redux/hooks";
 
 const renderWithStore = (ui: React.ReactElement) => {
   const store = configureStore({
@@ -137,5 +140,90 @@ describe("Users Component", () => {
     renderWithStore(<Users />);
     fireEvent.click(screen.getByRole("button", { name: "+" }));
     expect(screen.getByText("Add User")).toBeInTheDocument();
+  });
+
+  it("closes modal when close button is clicked", () => {
+    (useGetUserIdsQuery as any).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetUsersQuery as any).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithStore(<Users />);
+
+    // Open modal
+    fireEvent.click(screen.getByRole("button", { name: "+" }));
+    expect(screen.getByText("Add User")).toBeInTheDocument();
+
+    // Close modal by clicking the "X" button
+    fireEvent.click(screen.getByRole("button", { name: "X" }));
+
+    // Modal should be closed
+    expect(screen.queryByText("Add User")).not.toBeInTheDocument();
+  });
+
+  it("dispatches updateSelectedUser when a user is clicked", () => {
+    (useGetUserIdsQuery as any).mockReturnValue({
+      data: ["1"],
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetUsersQuery as any).mockReturnValue({
+      data: [{ userId: "1", userName: "Test User" }],
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithStore(<Users />);
+    fireEvent.click(screen.getByText("Test User"));
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: "users/updateSelectedUser",
+      payload: { userId: "1", userName: "Test User" },
+    });
+  });
+  it("merges userIds and users correctly, handles sorting, and highlights selected user", async () => {
+    // Set selected user
+    const { useAppSelector } = await import("../../redux/hooks");
+    (useAppSelector as any).mockImplementation((selectorFn: any) =>
+      selectorFn({
+        users: {
+          selectedUser: { userId: "3", userName: "Charlie" },
+        },
+      })
+    );
+
+    (useGetUserIdsQuery as any).mockReturnValue({
+      data: ["2", "1", "3"],
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetUsersQuery as any).mockReturnValue({
+      data: [
+        { userId: "1", userName: "Bob" },
+        { userId: "2", userName: "" },
+        { userId: "3", userName: "Charlie" },
+      ],
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithStore(<Users />);
+
+    expect(screen.getByText("Charlie")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument(); // this is rendered under user_id
+
+    // ✅ this now works
+    const selectedDiv = screen.getByText("Charlie").closest(".user");
+    expect(selectedDiv?.classList.contains("selected")).toBe(true);
   });
 });

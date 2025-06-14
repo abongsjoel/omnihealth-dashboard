@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import { act } from "@testing-library/react";
 
 import Login from "../Login";
 import authReducer from "../../redux/slices/authSlice";
@@ -93,19 +94,19 @@ describe("Login Component", () => {
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
 
-    // Trigger blur on empty email input
-    emailInput.focus();
-    passwordInput.focus(); // causes blur on email
-    await waitFor(() =>
-      expect(screen.getByText(/email is required/i)).toBeInTheDocument()
-    );
+    await act(async () => {
+      emailInput.focus();
+      passwordInput.focus(); // triggers blur on email
+    });
 
-    // Trigger blur on empty password input
-    passwordInput.focus();
-    emailInput.focus(); // causes blur on password
-    await waitFor(() =>
-      expect(screen.getByText(/password is required/i)).toBeInTheDocument()
-    );
+    expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+
+    await act(async () => {
+      passwordInput.focus();
+      emailInput.focus(); // triggers blur on password
+    });
+
+    expect(screen.getByText(/password is required/i)).toBeInTheDocument();
   });
 
   it("logs in successfully and dispatches login", async () => {

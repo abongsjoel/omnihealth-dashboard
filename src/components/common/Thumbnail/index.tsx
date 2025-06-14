@@ -74,7 +74,9 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
             className="thumbnail_img"
           />
         ) : (
-          <span className="thumbnail_initial">{initials}</span>
+          <span className="thumbnail_initial" data-testid="thumbnail_initial">
+            {initials}
+          </span>
         )}
       </div>
 
