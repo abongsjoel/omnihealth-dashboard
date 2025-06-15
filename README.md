@@ -67,7 +67,7 @@ cd omnihealth-dashboard
 npm install
 ```
 
-### 3. Create a .env file
+### 3. Create an .env file
 
 ```bash
 VITE_API_BASE_URL=https://your-backend-server.com
