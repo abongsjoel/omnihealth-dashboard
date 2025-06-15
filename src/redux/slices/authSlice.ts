@@ -8,12 +8,14 @@ export interface AuthState {
   careteamMember: CareTeamMember | null;
 }
 
-const cachedMember = localStorage.getItem("careteamMember");
+export const getInitialAuthState = (): AuthState => {
+  const cached = localStorage.getItem("careteamMember");
 
-const initialState: AuthState = {
-  isAuthenticated: !!cachedMember,
-  careteamMember: cachedMember ? JSON.parse(cachedMember) : null,
-  returnTo: null,
+  return {
+    isAuthenticated: !!cached,
+    careteamMember: cached ? JSON.parse(cached) : null,
+    returnTo: null,
+  };
 };
 
 const selectAuthState = (state: RootState) => state.auth;
@@ -26,7 +28,7 @@ export const selectLoggedInMember = (state: RootState) =>
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: getInitialAuthState(),
   reducers: {
     login: (state, action: PayloadAction<CareTeamMember>) => {
       state.isAuthenticated = true;

@@ -118,6 +118,8 @@ describe("Messages Component", () => {
 
     // Sender labels
     expect(screen.getByText("Assistant")).toBeInTheDocument();
+    expect(screen.getByText("(AI)")).toBeInTheDocument();
+    expect(screen.getByText("(AI)").className).toContain("assistant_ai");
     expect(screen.getByText("John Doe")).toBeInTheDocument();
 
     // Timestamps
@@ -184,5 +186,38 @@ describe("Messages Component", () => {
     expect(screen.getByText("(Dr. Smith)")).toBeInTheDocument();
     expect(screen.getByText("(Dr. Jane Doe)")).toBeInTheDocument();
     expect(screen.getByText("(Care Member)")).toBeInTheDocument();
+  });
+
+  it("renders assistant without agent (no name shown)", () => {
+    const msgWithNoAgent = [
+      {
+        _id: "msg-1",
+        role: "assistant",
+        content: "I'm a system assistant.",
+        timestamp: "2024-01-01T11:00:00Z",
+        // agent is undefined
+      },
+    ];
+
+    (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
+      data: msgWithNoAgent,
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetCareTeamMembersQuery as unknown as Mock).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
+
+    render(<Messages selectedUser={mockedUser} />);
+
+    expect(screen.getByText("I'm a system assistant.")).toBeInTheDocument();
+    expect(screen.getByText("Assistant")).toBeInTheDocument();
+
+    // This ensures no (AI) or (Care Member) is shown
+    expect(screen.queryByText("(AI)")).not.toBeInTheDocument();
+    expect(screen.queryByText("(Care Member)")).not.toBeInTheDocument();
   });
 });

@@ -105,4 +105,25 @@ describe("App Component", () => {
 
     expect(screen.queryByText("MenuBar")).not.toBeInTheDocument();
   });
+
+  it("logs out when localStorage careteamMember is invalid JSON", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    localStorage.setItem("careteamMember", "not-valid-json");
+
+    render(<Provider store={store}>{withNavigation(<App />, "/")}</Provider>);
+
+    await waitFor(() => {
+      const state = store.getState();
+      expect(state.auth.isAuthenticated).toBe(false);
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Invalid careteamMember in localStorage",
+      expect.any(SyntaxError)
+    );
+
+    consoleErrorSpy.mockRestore();
+  });
 });
