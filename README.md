@@ -4,7 +4,7 @@ This is the frontend dashboard for **OmniHealth**, a telehealth assistant built 
 
 ## 🚀 Live Demo
 
-🔗 [https://omnihealth-dashboard.vercel.app](https://omnihealth-dashboard.vercel.app)
+🔗 [Visit App](https://omnihealth-dashboard.vercel.app)
 
 ---
 
