@@ -1,7 +1,7 @@
 import React from "react";
 
 import loginPic1 from "../assets/ai-images/omnihealth1.png";
-import loginPic2 from "../assets/ai-images/omnihealth2.png";
+import loginPic2 from "../assets/ai-images/omnihealth-ai2.png";
 
 import useNavigation from "../hooks/useNavigation";
 import AuthImg from "./AuthImg";
