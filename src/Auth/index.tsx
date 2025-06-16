@@ -1,7 +1,9 @@
 import React from "react";
 
-import loginPic from "../assets/login-pic.jpg";
-import loginPic2 from "../assets/login-pic3.jpg";
+import loginPic1 from "../assets/ai-images/omnihealth3.png";
+import loginPic2 from "../assets/ai-images/omnihealth1.png";
+// import loginPic1 from "../assets/login-pic.jpg";
+// import loginPic2 from "../assets/login-pic3.jpg";
 
 import useNavigation from "../hooks/useNavigation";
 import AuthImg from "./AuthImg";
@@ -12,7 +14,7 @@ import "./Auth.scss";
 
 const Auth: React.FC = () => {
   const { currentPath } = useNavigation();
-  const images = [loginPic, loginPic2];
+  const images = [loginPic1, loginPic2];
 
   return (
     <section className="auth_container">
