@@ -1,7 +1,7 @@
 import React from "react";
 
-import loginPic1 from "../assets/ai-images/omnihealth3.png";
-import loginPic2 from "../assets/ai-images/omnihealth1.png";
+import loginPic1 from "../assets/ai-images/omnihealth1.png";
+import loginPic2 from "../assets/ai-images/omnihealth2.png";
 // import loginPic1 from "../assets/login-pic.jpg";
 // import loginPic2 from "../assets/login-pic3.jpg";
 
