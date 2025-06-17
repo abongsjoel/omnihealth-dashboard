@@ -53,7 +53,10 @@ const Login: React.FC = () => {
       ...prevValues,
       [name]: value,
     }));
-    setErrors((preValues) => ({ ...preValues, [name]: undefined }));
+    setErrors((preValues) => ({
+      ...preValues,
+      [name]: getValidationError(name, value),
+    }));
   }, []);
 
   const handleInputBlur = useCallback(
