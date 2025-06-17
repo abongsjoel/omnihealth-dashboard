@@ -23,12 +23,12 @@ interface FormValues {
 
 type FormErrors = Partial<FormValues>;
 
-const validate = (form: FormValues): FormErrors => {
+const validate = (formValues: FormValues): FormErrors => {
   const errors: FormErrors = {};
-  Object.entries(form).forEach(([field, value]) => {
+  Object.entries(formValues).forEach(([field, value]) => {
     const error =
       field === "re_password"
-        ? getValidationError(field, value, form.password)
+        ? getValidationError(field, value, formValues.password)
         : getValidationError(field, value);
     if (error) errors[field as keyof FormValues] = error;
   });

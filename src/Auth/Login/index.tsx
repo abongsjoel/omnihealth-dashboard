@@ -25,9 +25,9 @@ interface FormValues {
 }
 type FormErrors = Partial<FormValues>;
 
-const validate = (form: FormValues): FormErrors => {
+const validate = (formValues: FormValues): FormErrors => {
   const errors: FormErrors = {};
-  Object.entries(form).forEach(([field, value]) => {
+  Object.entries(formValues).forEach(([field, value]) => {
     const error = getValidationError(field, value);
     if (error) errors[field as keyof FormValues] = error;
   });
@@ -41,11 +41,14 @@ const Login: React.FC = () => {
   const returnTo = useAppSelector(selectReturnTo);
   const { navigate } = useNavigation();
 
-  const [form, setForm] = useState<FormValues>({ email: "", password: "" });
+  const [formValues, setFormValues] = useState<FormValues>({
+    email: "",
+    password: "",
+  });
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prevValues) => ({
+    setFormValues((prevValues) => ({
       ...prevValues,
       [e.target.name]: e.target.value,
     }));
@@ -66,14 +69,14 @@ const Login: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newErrors = validate(form);
+    const newErrors = validate(formValues);
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
     try {
       const teammember = await loginCareTeam({
-        email: form.email,
-        password: form.password,
+        email: formValues.email,
+        password: formValues.password,
       }).unwrap();
 
       dispatch(login(teammember));
@@ -127,7 +130,7 @@ const Login: React.FC = () => {
             type="email"
             label="Email"
             placeholder="abc@xyz.com"
-            value={form.email}
+            value={formValues.email}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.email}
@@ -140,7 +143,7 @@ const Login: React.FC = () => {
             type="password"
             label="Password"
             placeholder="••••••••"
-            value={form.password}
+            value={formValues.password}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.password}
