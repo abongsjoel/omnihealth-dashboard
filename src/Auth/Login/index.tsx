@@ -48,11 +48,12 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
-    setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
+    setErrors((preValues) => ({ ...preValues, [name]: undefined }));
   }, []);
 
   const handleInputBlur = useCallback(
