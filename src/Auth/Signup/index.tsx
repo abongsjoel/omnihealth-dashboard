@@ -11,6 +11,7 @@ import Button from "../../components/common/Button";
 
 import "./Signup.scss";
 import DropdownInput from "../../components/common/DropdownInput";
+import { specialists } from "../../utils/constants";
 
 interface FormValues {
   fullName: string;
@@ -50,6 +51,11 @@ const Signup: React.FC = () => {
     re_password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+
+  const options = specialists.map((s) => ({
+    id: s.toLocaleLowerCase(),
+    value: s,
+  }));
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -142,11 +148,7 @@ const Signup: React.FC = () => {
             error={errors.speciality}
             autoComplete="speciality"
             required
-            options={[
-              { id: "nutritionist", value: "Nutritionist" },
-              { id: "cardiologist", value: "Cardiologist" },
-              { id: "other", value: "Other" },
-            ]}
+            options={[...options, { id: "other", value: "Other" }]}
           />
           <Input
             id="speciality"

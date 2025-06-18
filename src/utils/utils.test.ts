@@ -3,7 +3,7 @@ import {
     formatField,
     getValidationError,
     getFormattedTime,
-} from "./utils/utils";
+} from "./utils";
 
 describe("formatField", () => {
     it("capitalizes and formats camelCase", () => {
