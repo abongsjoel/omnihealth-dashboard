@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Thumbnail from "../Thumbnail";
-import type { CareTeamMember, MenuItem } from "../../../types";
+import type { CareTeamMember, MenuItem } from "../../../utils/types";
 
 // Mock Icon component
 vi.mock("../../Icon", () => ({

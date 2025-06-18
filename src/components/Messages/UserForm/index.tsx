@@ -5,7 +5,7 @@ import Input from "../../common/Input";
 import Button from "../../common/Button";
 import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
-import type { User } from "../../../types";
+import type { User } from "../../../utils/types";
 
 import "./UserForm.scss";
 

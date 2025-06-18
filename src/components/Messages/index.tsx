@@ -5,8 +5,8 @@ import { useGetCareTeamMembersQuery } from "../../redux/apis/careTeamApi";
 
 import MessagesSkeleton from "./MessagesSkeleton";
 import Error from "../common/Error";
-import type { User } from "../../types";
-import { getFormattedTime } from "../../utils";
+import type { User } from "../../utils/types";
+import { getFormattedTime } from "../../utils/utils";
 
 import "./Messages.scss";
 

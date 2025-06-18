@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import type { CareTeamMember } from "../../types";
+import type { CareTeamMember } from "../../utils/types";
 
 export interface AuthState {
   isAuthenticated: boolean;

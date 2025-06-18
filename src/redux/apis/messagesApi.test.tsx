@@ -5,7 +5,7 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { describe, it, expect, beforeAll, afterEach, afterAll } from "vitest";
 import { messagesApi, type Message } from "./messagesApi";
-import type { ChatMessage } from "../../types";
+import type { ChatMessage } from "../../utils/types";
 
 const mockMessages: ChatMessage[] = [
   {

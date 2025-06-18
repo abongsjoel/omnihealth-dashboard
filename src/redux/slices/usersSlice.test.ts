@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import usersReducer, { updateSelectedUser } from "./usersSlice";
 import type { UsersState } from "./usersSlice";
-import type { User } from "../../types";
+import type { User } from "../../utils/types";
 
 describe("usersSlice", () => {
     const mockUser: User = {

@@ -1,0 +1,1 @@
+export const specialists = ["Endocrinologist", "Cardiologist", "Nephrologist", "General Practitioner (GP)", "Ophthalmologist", "Neurologist", "Nutritionist / Dietitian", "Podiatrist"]

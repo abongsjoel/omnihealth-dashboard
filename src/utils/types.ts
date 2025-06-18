@@ -1,4 +1,4 @@
-import type { IconName } from "./assets/icons/iconLib";
+import type { IconName } from "../assets/icons/iconLib";
 
 export interface ChatMessage {
   role: "user" | "assistant";
