@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import userEvent from "@testing-library/user-event";
@@ -131,37 +131,4 @@ describe("Signup Component", () => {
     expect(passwordInput).toHaveValue("password123");
     expect(reEnterPasswordInput).toHaveValue("password123");
   });
-
-  // it("submits successfully and navigates", async () => {
-  //   renderWithStore();
-
-  //   await fillSignupForm();
-
-  //   await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
-
-  //   await waitFor(() => {
-  //     expect(mockSignup).toHaveBeenCalled();
-  //     expect(mockUnwrap).toHaveBeenCalled();
-  //     expect(mockNavigate).toHaveBeenCalledWith("/login");
-  //   });
-  // });
-
-  // it("shows error toast when signup fails", async () => {
-  //   const toast = (await import("react-hot-toast")).default;
-  //   // Make unwrap reject instead of resolve
-  //   mockUnwrap.mockRejectedValueOnce(new Error("Signup failed"));
-
-  //   renderWithStore();
-
-  //   await fillSignupForm();
-  //   await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
-
-  //   await waitFor(() => {
-  //     expect(mockSignup).toHaveBeenCalled();
-  //     expect(mockUnwrap).toHaveBeenCalled();
-  //     expect(toast.error).toHaveBeenCalledWith(
-  //       "Signup failed. Please try again!"
-  //     );
-  //   });
-  // });
 });
