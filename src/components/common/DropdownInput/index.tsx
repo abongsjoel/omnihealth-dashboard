@@ -28,6 +28,7 @@ interface DropdownInputProps {
 
 const DropdownInput: React.FC<DropdownInputProps> = ({
   id,
+  value,
   options,
   onChange,
   ...rest
@@ -96,6 +97,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     <div className="dropdown_input" ref={dropdownRef}>
       <Input
         id={id}
+        value={value}
         iconName={
           options && options?.length > 0
             ? showDropdown
