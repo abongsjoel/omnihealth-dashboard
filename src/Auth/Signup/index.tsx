@@ -23,12 +23,12 @@ interface FormValues {
 
 type FormErrors = Partial<FormValues>;
 
-const validate = (form: FormValues): FormErrors => {
+const validate = (formValues: FormValues): FormErrors => {
   const errors: FormErrors = {};
-  Object.entries(form).forEach(([field, value]) => {
+  Object.entries(formValues).forEach(([field, value]) => {
     const error =
       field === "re_password"
-        ? getValidationError(field, value, form.password)
+        ? getValidationError(field, value, formValues.password)
         : getValidationError(field, value);
     if (error) errors[field as keyof FormValues] = error;
   });
@@ -39,7 +39,7 @@ const Signup: React.FC = () => {
   const [signupCareTeam, { isLoading }] = useSignupCareTeamMutation();
   const { navigate } = useNavigation();
 
-  const [form, setForm] = useState<FormValues>({
+  const [formValues, setFormValues] = useState<FormValues>({
     fullName: "",
     displayName: "",
     speciality: "",
@@ -51,17 +51,18 @@ const Signup: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prevValues) => ({
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
       ...prevValues,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
-    setErrors((preValues) => ({ ...preValues, [e.target.name]: undefined }));
+    setErrors((preValues) => ({ ...preValues, [name]: undefined }));
   }, []);
 
   const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setForm((prevForm) => {
+    setFormValues((prevForm) => {
       const newForm = { ...prevForm, [name]: value };
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -74,11 +75,11 @@ const Signup: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newErrors = validate(form);
+    const newErrors = validate(formValues);
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    const { re_password: _, ...cleanForm } = form;
+    const { re_password: _, ...cleanForm } = formValues;
 
     try {
       const result = await signupCareTeam(cleanForm).unwrap();
@@ -110,7 +111,7 @@ const Signup: React.FC = () => {
             type="text"
             label="Full Name"
             placeholder="e.g. Dr. Ngwa Desmond Muluh"
-            value={form.fullName}
+            value={formValues.fullName}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.fullName}
@@ -123,7 +124,7 @@ const Signup: React.FC = () => {
             type="text"
             label="Display Name"
             placeholder="e.g. Dr. Ngwa"
-            value={form.displayName}
+            value={formValues.displayName}
             onChange={handleChange}
             error={errors.displayName}
             autoComplete="displayName"
@@ -134,7 +135,7 @@ const Signup: React.FC = () => {
             type="text"
             label="Speciality"
             placeholder="e.g. Nutritionist, Cardiologist, etc."
-            value={form.speciality}
+            value={formValues.speciality}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.speciality}
@@ -147,7 +148,7 @@ const Signup: React.FC = () => {
             type="number"
             label="Phone Number"
             placeholder="e.g. 237670312288"
-            value={form.phone}
+            value={formValues.phone}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.phone}
@@ -161,7 +162,7 @@ const Signup: React.FC = () => {
             type="text"
             label="Email"
             placeholder="e.g. ngwades@gmail.com"
-            value={form.email}
+            value={formValues.email}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.email}
@@ -174,7 +175,7 @@ const Signup: React.FC = () => {
             type="password"
             label="Password"
             placeholder="••••••••"
-            value={form.password}
+            value={formValues.password}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.password}
@@ -187,7 +188,7 @@ const Signup: React.FC = () => {
             type="password"
             label="Re-enter Password"
             placeholder="••••••••"
-            value={form.re_password}
+            value={formValues.re_password}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.re_password}
