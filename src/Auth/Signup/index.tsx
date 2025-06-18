@@ -145,6 +145,7 @@ const Signup: React.FC = () => {
             options={[
               { id: "nutritionist", value: "Nutritionist" },
               { id: "cardiologist", value: "Cardiologist" },
+              { id: "other", value: "Other" },
             ]}
           />
           <Input

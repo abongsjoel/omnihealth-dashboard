@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Input from "../Input";
 
+import "./DropdownInput.scss";
+
 interface Option {
   id: string;
   value: string;
@@ -29,26 +31,33 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
   options,
   ...rest
 }) => {
-  const [_showDropdown, setShowDropDown] = useState(false);
+  const [showDropdown, setShowDropDown] = useState(false);
 
   const handleIconClick = () => {
     setShowDropDown((prev) => !prev);
   };
 
   return (
-    <div>
+    <div className="dropdown_input">
       <Input
         id={id}
         {...rest}
         iconName={
           options && options?.length > 0
-            ? _showDropdown
+            ? showDropdown
               ? "chevron_up"
               : "chevron_down"
             : "none"
         }
         onIconClick={handleIconClick}
       />
+      {showDropdown && options && options.length > 0 && (
+        <section className="drop_container">
+          {options.map((option) => (
+            <div className="drop_option">{option.value}</div>
+          ))}
+        </section>
+      )}
     </div>
   );
 };

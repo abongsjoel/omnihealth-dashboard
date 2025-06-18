@@ -71,7 +71,6 @@ const Input: React.FC<InputProps> = ({
       )}
       {iconName && iconName !== "none" && (
         <Icon
-          // className={`input-icon input_${size} input_icon_${iconSize}  ${getIcon}`}
           className="input_icon"
           title={iconName}
           size="sm"
