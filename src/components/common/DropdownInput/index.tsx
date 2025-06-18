@@ -31,23 +31,23 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
   value,
   options,
   onChange,
+  onBlur,
   ...rest
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [showDropdown, setShowDropDown] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(
     options ?? []
   );
-  //   const [selectedOption, setSelectedOption] = useState<Option | null>();
-  //   console.log({ selectedOption });
 
   const handleIconClick = () => {
     setShowDropDown((prev) => !prev);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
+    const inputValue = selectedOption?.value ?? "";
     onChange(e);
     if (options && options.length > 0) {
       setShowDropDown(true);
@@ -59,11 +59,6 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     }
   };
 
-  //   const handleOptionSelect = (option: Option) => {
-  //     setSelectedOption(option);
-  //     setShowDropDown(false);
-  //   };
-
   const handleOptionSelect = (option: Option) => {
     // simulate selecting an input value
     const fakeEvent = {
@@ -74,6 +69,34 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     } as unknown as React.ChangeEvent<HTMLInputElement>;
 
     onChange(fakeEvent);
+    setSelectedOption(option);
+    setShowDropDown(false);
+  };
+
+  const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    const isValid = options?.some(
+      (option) => option.value.toLowerCase() === inputValue.toLowerCase()
+    );
+
+    if (!isValid) {
+      // Delay clearing the input slightly to let DOM settle
+      setTimeout(() => {
+        const fakeEvent = {
+          target: {
+            value: "",
+            name: rest.name,
+          },
+        } as unknown as React.ChangeEvent<HTMLInputElement>;
+        onChange(fakeEvent);
+      }, 0);
+    }
+
+    if (onBlur) {
+      onBlur(e);
+    }
+
     setShowDropDown(false);
   };
 
@@ -107,6 +130,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
         }
         onChange={handleInputChange}
         onIconClick={handleIconClick}
+        onBlur={handleBlur}
         {...rest}
       />
       {showDropdown && options && options.length > 0 && (
@@ -115,6 +139,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
             <div
               className="drop_option"
               onClick={() => handleOptionSelect(option)}
+              key={option.id}
             >
               {option.value}
             </div>

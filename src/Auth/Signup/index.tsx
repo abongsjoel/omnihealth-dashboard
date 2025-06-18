@@ -150,7 +150,7 @@ const Signup: React.FC = () => {
             required
             options={[...options, { id: "other", value: "Other" }]}
           />
-          <Input
+          {/* <Input
             id="speciality"
             name="speciality"
             type="text"
@@ -162,7 +162,7 @@ const Signup: React.FC = () => {
             error={errors.speciality}
             autoComplete="speciality"
             required
-          />
+          /> */}
           <Input
             id="phone"
             name="phone"
