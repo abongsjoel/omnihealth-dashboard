@@ -29,19 +29,50 @@ interface DropdownInputProps {
 const DropdownInput: React.FC<DropdownInputProps> = ({
   id,
   options,
+  onChange,
   ...rest
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
+
   const [showDropdown, setShowDropDown] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>();
-  console.log({ selectedOption });
+  const [filteredOptions, setFilteredOptions] = useState<Option[]>(
+    options ?? []
+  );
+  //   const [selectedOption, setSelectedOption] = useState<Option | null>();
+  //   console.log({ selectedOption });
 
   const handleIconClick = () => {
     setShowDropDown((prev) => !prev);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    onChange(e);
+    if (options && options.length > 0) {
+      setShowDropDown(true);
+
+      const newFiltered = options.filter((option) =>
+        option.value.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setFilteredOptions(newFiltered);
+    }
+  };
+
+  //   const handleOptionSelect = (option: Option) => {
+  //     setSelectedOption(option);
+  //     setShowDropDown(false);
+  //   };
+
   const handleOptionSelect = (option: Option) => {
-    setSelectedOption(option);
+    // simulate selecting an input value
+    const fakeEvent = {
+      target: {
+        value: option.value,
+        name: rest.name,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+    onChange(fakeEvent);
     setShowDropDown(false);
   };
 
@@ -65,7 +96,6 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     <div className="dropdown_input" ref={dropdownRef}>
       <Input
         id={id}
-        {...rest}
         iconName={
           options && options?.length > 0
             ? showDropdown
@@ -73,11 +103,13 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
               : "chevron_down"
             : "none"
         }
+        onChange={handleInputChange}
         onIconClick={handleIconClick}
+        {...rest}
       />
       {showDropdown && options && options.length > 0 && (
         <section className="drop_container">
-          {options.map((option) => (
+          {filteredOptions.map((option) => (
             <div
               className="drop_option"
               onClick={() => handleOptionSelect(option)}
