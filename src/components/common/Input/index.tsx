@@ -59,6 +59,7 @@ const Input: React.FC<InputProps> = ({
         className={classNames("input", className, { error })}
         aria-invalid={!!error}
         data-testid={id}
+        onClick={handleIconClick}
         {...rest}
       />
       {isPassword && (
