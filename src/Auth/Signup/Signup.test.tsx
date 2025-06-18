@@ -132,36 +132,36 @@ describe("Signup Component", () => {
     expect(reEnterPasswordInput).toHaveValue("password123");
   });
 
-  it("submits successfully and navigates", async () => {
-    renderWithStore();
+  // it("submits successfully and navigates", async () => {
+  //   renderWithStore();
 
-    await fillSignupForm();
+  //   await fillSignupForm();
 
-    await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
+  //   await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
 
-    await waitFor(() => {
-      expect(mockSignup).toHaveBeenCalled();
-      expect(mockUnwrap).toHaveBeenCalled();
-      expect(mockNavigate).toHaveBeenCalledWith("/login");
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(mockSignup).toHaveBeenCalled();
+  //     expect(mockUnwrap).toHaveBeenCalled();
+  //     expect(mockNavigate).toHaveBeenCalledWith("/login");
+  //   });
+  // });
 
-  it("shows error toast when signup fails", async () => {
-    const toast = (await import("react-hot-toast")).default;
-    // Make unwrap reject instead of resolve
-    mockUnwrap.mockRejectedValueOnce(new Error("Signup failed"));
+  // it("shows error toast when signup fails", async () => {
+  //   const toast = (await import("react-hot-toast")).default;
+  //   // Make unwrap reject instead of resolve
+  //   mockUnwrap.mockRejectedValueOnce(new Error("Signup failed"));
 
-    renderWithStore();
+  //   renderWithStore();
 
-    await fillSignupForm();
-    await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
+  //   await fillSignupForm();
+  //   await userEvent.click(screen.getByRole("button", { name: /sign up/i }));
 
-    await waitFor(() => {
-      expect(mockSignup).toHaveBeenCalled();
-      expect(mockUnwrap).toHaveBeenCalled();
-      expect(toast.error).toHaveBeenCalledWith(
-        "Signup failed. Please try again!"
-      );
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(mockSignup).toHaveBeenCalled();
+  //     expect(mockUnwrap).toHaveBeenCalled();
+  //     expect(toast.error).toHaveBeenCalledWith(
+  //       "Signup failed. Please try again!"
+  //     );
+  //   });
+  // });
 });

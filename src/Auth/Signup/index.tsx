@@ -8,10 +8,10 @@ import { getValidationError } from "../../utils/utils";
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-
-import "./Signup.scss";
 import DropdownInput from "../../components/common/DropdownInput";
 import { specialists } from "../../utils/constants";
+
+import "./Signup.scss";
 
 interface FormValues {
   fullName: string;
@@ -150,19 +150,6 @@ const Signup: React.FC = () => {
             required
             options={[...options, { id: "other", value: "Other" }]}
           />
-          {/* <Input
-            id="speciality"
-            name="speciality"
-            type="text"
-            label="Speciality"
-            placeholder="e.g. Nutritionist, Cardiologist, etc."
-            value={formValues.speciality}
-            onChange={handleChange}
-            onBlur={handleInputBlur}
-            error={errors.speciality}
-            autoComplete="speciality"
-            required
-          /> */}
           <Input
             id="phone"
             name="phone"
