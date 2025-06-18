@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
-import type { MenuItem } from "../../types";
+import type { MenuItem } from "../../utils/types";
 
 import Logo from "../common/Logo";
 import Thumbnail from "../common/Thumbnail";

@@ -1,0 +1,31 @@
+.dropdown_input {
+  position: relative;
+
+  .drop_container {
+    background-color: var(--white);
+    position: absolute;
+    top: 75%;
+    width: 100%;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.125rem 0;
+    border-radius: 0.5rem;
+    z-index: 1000;
+
+    .drop_option {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--text-200);
+      font-size: 0.85rem;
+      cursor: pointer;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background-color: var(--primary-selected);
+      }
+    }
+  }
+}

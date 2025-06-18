@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 
-import type { CareTeamMember, MenuItem } from "../../../types";
+import type { CareTeamMember, MenuItem } from "../../../utils/types";
 import Icon from "../Icon";
 
 import "./Thumbnail.scss";

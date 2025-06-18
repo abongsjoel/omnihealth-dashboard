@@ -7,7 +7,7 @@ import authReducer, {
     getInitialAuthState,
 } from "./authSlice";
 import type { AuthState } from "./authSlice";
-import type { CareTeamMember } from "../../types";
+import type { CareTeamMember } from "../../utils/types";
 
 describe("authSlice", () => {
     let mockMember: CareTeamMember;

@@ -6,7 +6,7 @@ import { setupServer } from "msw/node";
 import { describe, it, expect, beforeAll, afterEach, afterAll } from "vitest";
 
 import { surveyApi } from "./surveysApi";
-import type { SurveyEntry } from "../../types";
+import type { SurveyEntry } from "../../utils/types";
 
 // 🔹 Mock survey data
 const mockSurveys: SurveyEntry[] = [

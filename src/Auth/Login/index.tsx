@@ -11,7 +11,7 @@ import {
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-import { getValidationError } from "../../utils";
+import { getValidationError } from "../../utils/utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";

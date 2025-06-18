@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { ChatMessage } from "../../types";
+import type { ChatMessage } from "../../utils/types";
 
 export interface Message {
   to: string;

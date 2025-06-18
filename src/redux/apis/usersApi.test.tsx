@@ -6,7 +6,7 @@ import { setupServer } from "msw/node";
 import { describe, it, expect, beforeAll, afterEach, afterAll } from "vitest";
 
 import { usersApi } from "./usersApi";
-import type { User } from "../../types";
+import type { User } from "../../utils/types";
 
 // 🔹 Mock Data
 const mockUsers: User[] = [
