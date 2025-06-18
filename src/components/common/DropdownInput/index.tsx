@@ -32,9 +32,16 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
   ...rest
 }) => {
   const [showDropdown, setShowDropDown] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<Option | null>();
+  console.log({ selectedOption });
 
   const handleIconClick = () => {
     setShowDropDown((prev) => !prev);
+  };
+
+  const handleOptionSelect = (option: Option) => {
+    setSelectedOption(option);
+    setShowDropDown(false);
   };
 
   return (
@@ -54,7 +61,12 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
       {showDropdown && options && options.length > 0 && (
         <section className="drop_container">
           {options.map((option) => (
-            <div className="drop_option">{option.value}</div>
+            <div
+              className="drop_option"
+              onClick={() => handleOptionSelect(option)}
+            >
+              {option.value}
+            </div>
           ))}
         </section>
       )}
