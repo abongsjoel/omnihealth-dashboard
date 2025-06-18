@@ -10,6 +10,7 @@ import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 
 import "./Signup.scss";
+import DropdownInput from "../../components/common/DropdownInput";
 
 interface FormValues {
   fullName: string;
@@ -128,6 +129,23 @@ const Signup: React.FC = () => {
             onChange={handleChange}
             error={errors.displayName}
             autoComplete="displayName"
+          />
+          <DropdownInput
+            id="speciality"
+            name="speciality"
+            type="text"
+            label="Speciality"
+            placeholder="Select Speciality"
+            value={formValues.speciality}
+            onChange={handleChange}
+            onBlur={handleInputBlur}
+            error={errors.speciality}
+            autoComplete="speciality"
+            required
+            options={[
+              { id: "nutritionist", value: "Nutritionist" },
+              { id: "cardiologist", value: "Cardiologist" },
+            ]}
           />
           <Input
             id="speciality"
