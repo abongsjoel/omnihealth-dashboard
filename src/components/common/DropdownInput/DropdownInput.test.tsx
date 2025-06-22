@@ -89,4 +89,11 @@ describe("DropdownInput Component", () => {
       );
     }, 0);
   });
+
+  it("renders with iconName 'none' when no options are provided", () => {
+    render(<DropdownInput {...baseProps} options={[]} />);
+
+    const icon = screen.queryByTestId("icon");
+    expect(icon).not.toBeInTheDocument();
+  });
 });
