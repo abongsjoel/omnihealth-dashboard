@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen } from "@testing-library/react";
-import { renderWithProvider } from "../test-utils";
+import { renderWithProvider } from "../utils/test-utils";
 // import Auth from "../Auth";
 
 // Mock useNavigation to simulate different paths

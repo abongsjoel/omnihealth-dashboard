@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import authReducer from "./redux/slices/authSlice";
+import authReducer from "../redux/slices/authSlice";
 
 // ✅ Wrap in combineReducers
 const rootReducer = combineReducers({

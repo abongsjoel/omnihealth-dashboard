@@ -3,11 +3,13 @@ import toast from "react-hot-toast";
 
 import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-import { getValidationError } from "../../utils";
+import { getValidationError } from "../../utils/utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import DropdownInput from "../../components/common/DropdownInput";
+import { specialists } from "../../utils/constants";
 
 import "./Signup.scss";
 
@@ -49,6 +51,11 @@ const Signup: React.FC = () => {
     re_password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+
+  const options = specialists.map((s) => ({
+    id: s.toLocaleLowerCase(),
+    value: s,
+  }));
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -129,18 +136,19 @@ const Signup: React.FC = () => {
             error={errors.displayName}
             autoComplete="displayName"
           />
-          <Input
+          <DropdownInput
             id="speciality"
             name="speciality"
             type="text"
             label="Speciality"
-            placeholder="e.g. Nutritionist, Cardiologist, etc."
+            placeholder="Select Speciality"
             value={formValues.speciality}
             onChange={handleChange}
             onBlur={handleInputBlur}
             error={errors.speciality}
             autoComplete="speciality"
             required
+            options={[...options, { id: "other", value: "Other" }]}
           />
           <Input
             id="phone"

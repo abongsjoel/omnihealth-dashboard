@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Mock } from "vitest";
 
 import Messages from "../Messages";
-import type { CareTeamMember, User } from "../../types";
+import type { CareTeamMember, User } from "../../utils/types";
 
 // 👇 Use full mock and then override inside the test
 vi.mock("../../redux/apis/messagesApi", async () => {
