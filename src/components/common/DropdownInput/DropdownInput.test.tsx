@@ -61,7 +61,7 @@ describe("DropdownInput Component", () => {
     fireEvent.click(icon);
 
     const option = screen.getByText("Cardiologist");
-    fireEvent.click(option);
+    fireEvent.mouseDown(option);
 
     expect(baseProps.onChange).toHaveBeenCalledWith(
       expect.objectContaining({
