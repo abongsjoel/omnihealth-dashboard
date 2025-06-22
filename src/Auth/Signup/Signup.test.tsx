@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import userEvent from "@testing-library/user-event";
+import toast from "react-hot-toast";
 
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
@@ -61,7 +62,11 @@ describe("Signup Component", () => {
   const fillSignupForm = async () => {
     await userEvent.type(screen.getByLabelText(/full name/i), "Dr. Ngwa Acho");
     await userEvent.type(screen.getByLabelText(/display name/i), "Dr. Acho");
-    await userEvent.type(screen.getByLabelText(/speciality/i), "Nutritionist");
+    // await userEvent.type(screen.getByLabelText(/speciality/i), "Nutritionist");
+    await fireEvent.change(screen.getByTestId("speciality"), {
+      target: { value: "Cardiologist" },
+    });
+
     await userEvent.type(
       screen.getByLabelText(/phone number/i),
       "237670312288"
@@ -130,5 +135,26 @@ describe("Signup Component", () => {
     expect(emailInput).toHaveValue("test@example.com");
     expect(passwordInput).toHaveValue("password123");
     expect(reEnterPasswordInput).toHaveValue("password123");
+  });
+
+  it("submits the form with valid data and navigates to login on success", async () => {
+    renderWithStore();
+
+    // Fill all form fields
+    await fillSignupForm();
+
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(mockSignup).toHaveBeenCalled();
+      expect(mockUnwrap).toHaveBeenCalled();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+
+    // Properly assert toast without using require
+    const toastMock = vi.mocked(toast);
+    expect(toastMock.success).toHaveBeenCalledWith("Signup successful!");
   });
 });
