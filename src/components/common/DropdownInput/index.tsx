@@ -37,17 +37,27 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [showDropdown, setShowDropDown] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(
     options ?? []
   );
 
   const handleIconClick = () => {
-    setShowDropDown((prev) => !prev);
+    setShowDropDown((prev) => {
+      const next = !prev;
+
+      // Reset filteredOptions when dropdown is being opened
+      if (next && options && options.length > 0) {
+        setFilteredOptions(options);
+      }
+
+      return next;
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = selectedOption?.value ?? "";
+    // const inputValue = selectedOption?.value ?? "";
+    const inputValue = e.target.value;
+
     onChange(e);
     if (options && options.length > 0) {
       setShowDropDown(true);
@@ -69,7 +79,6 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     } as unknown as React.ChangeEvent<HTMLInputElement>;
 
     onChange(fakeEvent);
-    setSelectedOption(option);
     setShowDropDown(false);
   };
 
@@ -98,6 +107,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     }
 
     setShowDropDown(false);
+    setFilteredOptions(options ?? []);
   };
 
   useEffect(() => {
