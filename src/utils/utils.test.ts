@@ -69,6 +69,19 @@ describe("getFormattedTime", () => {
         vi.useRealTimers();
     });
 
+    it("returns formatted time if today and more than 5 minutes ago", () => {
+        // Freeze current time
+        const now = new Date("2025-06-11T12:00:00Z");
+        vi.useFakeTimers().setSystemTime(now);
+
+        // 8 minutes ago (still today, not yesterday, not this week)
+        const todayPast = new Date(now.getTime() - 8 * 60 * 1000);
+        const formatted = getFormattedTime(todayPast);
+
+        expect(formatted).toMatch(/\d{1,2}:\d{2}/); // e.g. 11:52 AM
+
+        vi.useRealTimers();
+    });
 
     it("returns formatted time for today", () => {
         const date = new Date(base.setHours(8, 0, 0));
@@ -83,12 +96,17 @@ describe("getFormattedTime", () => {
         expect(getFormattedTime(date)).toMatch(/Yesterday at \d/);
     });
 
-    it("returns weekday + time if this week", () => {
-        const date = new Date();
-        const nowDay = date.getDay();
-        const daysAgo = nowDay === 0 ? 2 : 1;
-        date.setDate(date.getDate() - daysAgo);
-        expect(getFormattedTime(date)).toMatch(/ at \d/);
+    it("returns weekday and time if date is earlier this week", () => {
+        // Freeze time to a known Thursday
+        const now = new Date("2025-06-19T12:00:00"); // Thursday
+        vi.useFakeTimers().setSystemTime(now);
+
+        const twoDaysAgo = new Date("2025-06-17T09:30:00"); // Tuesday this week
+        const result = getFormattedTime(twoDaysAgo);
+
+        expect(result).toMatch(/Tuesday at \d{1,2}:\d{2}/); // formatted like: Tuesday at 9:30 AM
+
+        vi.useRealTimers();
     });
 
     it("returns full date if outside this week", () => {
