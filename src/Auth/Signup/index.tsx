@@ -17,6 +17,7 @@ interface FormValues {
   fullName: string;
   displayName: string;
   speciality: string;
+  other_speciality?: string;
   phone: string;
   email: string;
   password: string;
@@ -45,12 +46,14 @@ const Signup: React.FC = () => {
     fullName: "",
     displayName: "",
     speciality: "",
+    other_speciality: "",
     phone: "",
     email: "",
     password: "",
     re_password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isOtherSpeciality, setIsOtherSpeciality] = useState(false);
 
   const options = specialists.map((s) => ({
     id: s.toLocaleLowerCase(),
@@ -59,6 +62,17 @@ const Signup: React.FC = () => {
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "speciality" && value === "Other") {
+      setIsOtherSpeciality(true);
+      // setFormValues((prevValues) => ({
+      //   ...prevValues,
+      //   speciality: "",
+      // }));
+      // return;
+    }
+    // if (isOtherSpeciality && name === "speciality" && value !== "Other") {
+    //   setIsOtherSpeciality(false);
+    // }
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
@@ -150,6 +164,21 @@ const Signup: React.FC = () => {
             required
             options={[...options, { id: "other", value: "Other" }]}
           />
+          {isOtherSpeciality && (
+            <Input
+              id="other_speciality"
+              name="other_speciality"
+              type="text"
+              label="Specify Speciality"
+              placeholder="e.g. Internist"
+              value={formValues.other_speciality ?? ""}
+              onChange={handleChange}
+              onBlur={handleInputBlur}
+              error={errors.other_speciality}
+              autoComplete="other_speciality"
+              required
+            />
+          )}
           <Input
             id="phone"
             name="phone"
