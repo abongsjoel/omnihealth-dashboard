@@ -55,7 +55,6 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const inputValue = selectedOption?.value ?? "";
     const inputValue = e.target.value;
 
     onChange(e);
@@ -148,7 +147,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
           {filteredOptions.map((option) => (
             <div
               className="drop_option"
-              onClick={() => handleOptionSelect(option)}
+              onMouseDown={() => handleOptionSelect(option)}
               key={option.id}
             >
               {option.value}
