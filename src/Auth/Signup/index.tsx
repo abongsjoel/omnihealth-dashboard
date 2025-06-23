@@ -172,18 +172,20 @@ const Signup: React.FC = () => {
             options={[...options, { id: "other", value: "Other" }]}
           />
           {isOtherSpeciality && (
-            <Input
-              id="other_speciality"
-              name="other_speciality"
-              type="text"
-              label="Specify Speciality"
-              placeholder="e.g. Internist"
-              value={formValues.other_speciality ?? ""}
-              onChange={handleChange}
-              onBlur={handleInputBlur}
-              error={errors.other_speciality}
-              autoComplete="other_speciality"
-            />
+            <div className="other_speciality_input">
+              <Input
+                id="other_speciality"
+                name="other_speciality"
+                type="text"
+                label="Specify Speciality"
+                placeholder="e.g. Internist"
+                value={formValues.other_speciality ?? ""}
+                onChange={handleChange}
+                onBlur={handleInputBlur}
+                error={errors.other_speciality}
+                autoComplete="other_speciality"
+              />
+            </div>
           )}
           <Input
             id="phone"
