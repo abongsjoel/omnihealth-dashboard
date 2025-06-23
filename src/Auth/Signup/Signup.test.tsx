@@ -93,6 +93,41 @@ describe("Signup Component", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows 'Specify Speciality' input when 'Other' is selected", async () => {
+    renderWithStore();
+
+    const specialityInput = screen.getByTestId("speciality");
+
+    // Select "Other"
+    fireEvent.change(specialityInput, { target: { value: "Other" } });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/specify speciality/i)).toBeInTheDocument();
+    });
+  });
+
+  it("hides 'Specify Speciality' input when another option is selected after 'Other'", async () => {
+    renderWithStore();
+
+    const specialityInput = screen.getByTestId("speciality");
+
+    // Select "Other"
+    fireEvent.change(specialityInput, { target: { value: "Other" } });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/specify speciality/i)).toBeInTheDocument();
+    });
+
+    // Now select something else (e.g. "Cardiologist")
+    fireEvent.change(specialityInput, { target: { value: "Cardiologist" } });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText(/specify speciality/i)
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it("shows validation errors when required fields are empty", () => {
     renderWithStore();
 
@@ -106,6 +141,44 @@ describe("Signup Component", () => {
     expect(
       screen.getByText(/re-enter password is required/i)
     ).toBeInTheDocument();
+  });
+
+  it("replaces speciality with 'other_speciality' value when 'Other' is selected", async () => {
+    renderWithStore();
+
+    // Select "Other" in speciality
+    fireEvent.change(screen.getByTestId("speciality"), {
+      target: { value: "Other" },
+    });
+
+    // Fill out all fields
+    await userEvent.type(
+      screen.getByLabelText(/specify speciality/i),
+      "Internist"
+    );
+    await userEvent.type(screen.getByLabelText(/full name/i), "Dr. Ngwa");
+    await userEvent.type(screen.getByLabelText(/display name/i), "Ngwa");
+    await userEvent.type(
+      screen.getByLabelText(/phone number/i),
+      "237670312288"
+    );
+    await userEvent.type(screen.getByLabelText(/^email$/i), "test@example.com");
+    await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
+    await userEvent.type(
+      screen.getByLabelText(/re-enter password/i),
+      "password123"
+    );
+
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    // Assert call and payload
+    await waitFor(() => {
+      expect(mockSignup).toHaveBeenCalled();
+    });
+
+    const [[payload]] = mockSignup.mock.calls;
+    expect(payload.speciality).toBe("Internist");
   });
 
   it("accepts user input in all fields", () => {
