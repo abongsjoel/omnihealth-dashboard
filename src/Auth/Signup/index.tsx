@@ -17,6 +17,7 @@ interface FormValues {
   fullName: string;
   displayName: string;
   speciality: string;
+  other_speciality?: string;
   phone: string;
   email: string;
   password: string;
@@ -26,8 +27,14 @@ interface FormValues {
 type FormErrors = Partial<FormValues>;
 
 const validate = (formValues: FormValues): FormErrors => {
+  let fieldsToValidate = formValues;
+  if (formValues.speciality !== "Other") {
+    const { other_speciality: _, ...rest } = formValues;
+    fieldsToValidate = rest;
+  }
+
   const errors: FormErrors = {};
-  Object.entries(formValues).forEach(([field, value]) => {
+  Object.entries(fieldsToValidate).forEach(([field, value]) => {
     const error =
       field === "re_password"
         ? getValidationError(field, value, formValues.password)
@@ -45,26 +52,37 @@ const Signup: React.FC = () => {
     fullName: "",
     displayName: "",
     speciality: "",
+    other_speciality: "",
     phone: "",
     email: "",
     password: "",
     re_password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isOtherSpeciality, setIsOtherSpeciality] = useState(false);
 
   const options = specialists.map((s) => ({
     id: s.toLocaleLowerCase(),
     value: s,
   }));
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-    setErrors((preValues) => ({ ...preValues, [name]: undefined }));
-  }, []);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      if (name === "speciality" && value === "Other") {
+        setIsOtherSpeciality(true);
+      }
+      if (isOtherSpeciality && name === "speciality" && value !== "Other") {
+        setIsOtherSpeciality(false);
+      }
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
+      setErrors((preValues) => ({ ...preValues, [name]: undefined }));
+    },
+    [isOtherSpeciality]
+  );
 
   const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -86,7 +104,10 @@ const Signup: React.FC = () => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    const { re_password: _, ...cleanForm } = formValues;
+    const { re_password: _, other_speciality, ...cleanForm } = formValues;
+    if (isOtherSpeciality && other_speciality) {
+      cleanForm.speciality = other_speciality;
+    }
 
     try {
       const result = await signupCareTeam(cleanForm).unwrap();
@@ -150,6 +171,22 @@ const Signup: React.FC = () => {
             required
             options={[...options, { id: "other", value: "Other" }]}
           />
+          {isOtherSpeciality && (
+            <div className="other_speciality_input">
+              <Input
+                id="other_speciality"
+                name="other_speciality"
+                type="text"
+                label="Specify Speciality"
+                placeholder="e.g. Internist"
+                value={formValues.other_speciality ?? ""}
+                onChange={handleChange}
+                onBlur={handleInputBlur}
+                error={errors.other_speciality}
+                autoComplete="other_speciality"
+              />
+            </div>
+          )}
           <Input
             id="phone"
             name="phone"
