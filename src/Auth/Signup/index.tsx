@@ -27,8 +27,14 @@ interface FormValues {
 type FormErrors = Partial<FormValues>;
 
 const validate = (formValues: FormValues): FormErrors => {
+  let fieldsToValidate = formValues;
+  if (formValues.speciality !== "Other") {
+    const { other_speciality: _, ...rest } = formValues;
+    fieldsToValidate = rest;
+  }
+
   const errors: FormErrors = {};
-  Object.entries(formValues).forEach(([field, value]) => {
+  Object.entries(fieldsToValidate).forEach(([field, value]) => {
     const error =
       field === "re_password"
         ? getValidationError(field, value, formValues.password)
@@ -60,25 +66,23 @@ const Signup: React.FC = () => {
     value: s,
   }));
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name === "speciality" && value === "Other") {
-      setIsOtherSpeciality(true);
-      // setFormValues((prevValues) => ({
-      //   ...prevValues,
-      //   speciality: "",
-      // }));
-      // return;
-    }
-    // if (isOtherSpeciality && name === "speciality" && value !== "Other") {
-    //   setIsOtherSpeciality(false);
-    // }
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-    setErrors((preValues) => ({ ...preValues, [name]: undefined }));
-  }, []);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      if (name === "speciality" && value === "Other") {
+        setIsOtherSpeciality(true);
+      }
+      if (isOtherSpeciality && name === "speciality" && value !== "Other") {
+        setIsOtherSpeciality(false);
+      }
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
+      setErrors((preValues) => ({ ...preValues, [name]: undefined }));
+    },
+    [isOtherSpeciality]
+  );
 
   const handleInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -100,7 +104,10 @@ const Signup: React.FC = () => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    const { re_password: _, ...cleanForm } = formValues;
+    const { re_password: _, other_speciality, ...cleanForm } = formValues;
+    if (isOtherSpeciality && other_speciality) {
+      cleanForm.speciality = other_speciality;
+    }
 
     try {
       const result = await signupCareTeam(cleanForm).unwrap();
@@ -176,7 +183,6 @@ const Signup: React.FC = () => {
               onBlur={handleInputBlur}
               error={errors.other_speciality}
               autoComplete="other_speciality"
-              required
             />
           )}
           <Input
