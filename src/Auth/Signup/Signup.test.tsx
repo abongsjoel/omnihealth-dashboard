@@ -176,9 +176,6 @@ describe("Signup Component", () => {
     await waitFor(() => {
       expect(mockSignup).toHaveBeenCalled();
     });
-
-    // const [[payload]] = mockSignup.mock.calls;
-    // expect(payload.speciality).toBe("Internist");
   });
 
   it("accepts user input in all fields", () => {
