@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
@@ -11,28 +11,29 @@ import {
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-import { getValidationError } from "../../utils/utils";
+// import { getValidationError } from "../../utils/utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import { useInput } from "../../hooks/useInput";
 
 import "./Login.scss";
 
-interface FormValues {
-  email: string;
-  password: string;
-}
-type FormErrors = Partial<FormValues>;
+// interface FormValues {
+//   email: string;
+//   password: string;
+// }
+// type FormErrors = Partial<FormValues>;
 
-const validate = (formValues: FormValues): FormErrors => {
-  const errors: FormErrors = {};
-  Object.entries(formValues).forEach(([field, value]) => {
-    const error = getValidationError(field, value);
-    if (error) errors[field as keyof FormValues] = error;
-  });
-  return errors;
-};
+// const validate = (formValues: FormValues): FormErrors => {
+//   const errors: FormErrors = {};
+//   Object.entries(formValues).forEach(([field, value]) => {
+//     const error = getValidationError(field, value);
+//     if (error) errors[field as keyof FormValues] = error;
+//   });
+//   return errors;
+// };
 
 const Login: React.FC = () => {
   const [loginCareTeam, { isLoading }] = useLoginCareTeamMutation();
@@ -41,46 +42,66 @@ const Login: React.FC = () => {
   const returnTo = useAppSelector(selectReturnTo);
   const { navigate } = useNavigation();
 
-  const [formValues, setFormValues] = useState<FormValues>({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const {
+    value: emailValue,
+    error: emailError,
+    handleChange: handleEmailChange,
+    handleBlur: handleEmailBlur,
+  } = useInput("");
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-    setErrors((preValues) => ({
-      ...preValues,
-      [name]: getValidationError(name, value),
-    }));
-  }, []);
+  const {
+    value: passwordValue,
+    error: passwordError,
+    handleChange: handlePasswordChange,
+    handleBlur: handlePasswordBlur,
+  } = useInput("");
 
-  const handleInputBlur = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: getValidationError(name, value),
-      }));
-    },
-    []
-  );
+  // const [formValues, setFormValues] = useState<FormValues>({
+  //   email: "",
+  //   password: "",
+  // });
+  const [submitError, setSubmitError] = useState<string>();
+  console.log({ submitError, emailValue, passwordValue });
+
+  // const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormValues((prevValues) => ({
+  //     ...prevValues,
+  //     [name]: value,
+  //   }));
+  //   setErrors((preValues) => ({
+  //     ...preValues,
+  //     [name]: getValidationError(name, value),
+  //   }));
+  // }, []);
+
+  // const handleInputBlur = useCallback(
+  //   (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const { name, value } = e.target;
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name]: getValidationError(name, value),
+  //     }));
+  //   },
+  //   []
+  // );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newErrors = validate(formValues);
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    // const newErrors = validate(formValues);
+    // setErrors(newErrors);
+    // if (Object.keys(newErrors).length > 0) return;
+
+    if (emailError || passwordError) {
+      toast.error("Please fix the errors before submitting.");
+      return;
+    }
 
     try {
       const teammember = await loginCareTeam({
-        email: formValues.email,
-        password: formValues.password,
+        email: emailValue,
+        password: passwordValue,
       }).unwrap();
 
       dispatch(login(teammember));
@@ -89,10 +110,11 @@ const Login: React.FC = () => {
 
       if (error?.status === 401) {
         const message = "Invalid email or password.";
-        setErrors({
-          email: message,
-          password: message,
-        });
+        setSubmitError(message);
+        // setSubmitErrors({
+        //   email: message,
+        //   password: message,
+        // });
         document.getElementById("email")?.focus();
         toast.error(message);
       } else {
@@ -109,6 +131,11 @@ const Login: React.FC = () => {
       dispatch(clearReturnTo());
     }
   }, [isAuthenticated, navigate, returnTo, dispatch]);
+
+  useEffect(() => {
+    // Clear any previous submit errors when the component mounts
+    setSubmitError(undefined);
+  }, []);
 
   return (
     <section className="login_container">
@@ -134,10 +161,10 @@ const Login: React.FC = () => {
             type="email"
             label="Email"
             placeholder="abc@xyz.com"
-            value={formValues.email}
-            onChange={handleChange}
-            onBlur={handleInputBlur}
-            error={errors.email}
+            value={emailValue}
+            onChange={handleEmailChange}
+            onBlur={handleEmailBlur}
+            error={submitError ?? emailError}
             autoComplete="username"
             required
           />
@@ -147,10 +174,10 @@ const Login: React.FC = () => {
             type="password"
             label="Password"
             placeholder="••••••••"
-            value={formValues.password}
-            onChange={handleChange}
-            onBlur={handleInputBlur}
-            error={errors.password}
+            value={passwordValue}
+            onChange={handlePasswordChange}
+            onBlur={handlePasswordBlur}
+            error={submitError ?? passwordError}
             autoComplete="current-password"
             required
           />
