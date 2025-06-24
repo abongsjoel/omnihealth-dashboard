@@ -135,7 +135,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     // Clear any previous submit errors when the component mounts
     setSubmitError(undefined);
-  }, []);
+  }, [emailValue, passwordValue]);
 
   return (
     <section className="login_container">
@@ -185,7 +185,7 @@ const Login: React.FC = () => {
           <Button
             label={isLoading ? "Logging in..." : "Login"}
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !emailValue || !passwordValue}
             data-testid="login_submit"
           />
           <div className="login_footer">
