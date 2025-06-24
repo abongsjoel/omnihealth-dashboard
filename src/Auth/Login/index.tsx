@@ -11,7 +11,6 @@ import {
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-// import { getValidationError } from "../../utils/utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
@@ -19,21 +18,6 @@ import Button from "../../components/common/Button";
 import { useInput } from "../../hooks/useInput";
 
 import "./Login.scss";
-
-// interface FormValues {
-//   email: string;
-//   password: string;
-// }
-// type FormErrors = Partial<FormValues>;
-
-// const validate = (formValues: FormValues): FormErrors => {
-//   const errors: FormErrors = {};
-//   Object.entries(formValues).forEach(([field, value]) => {
-//     const error = getValidationError(field, value);
-//     if (error) errors[field as keyof FormValues] = error;
-//   });
-//   return errors;
-// };
 
 const Login: React.FC = () => {
   const [loginCareTeam, { isLoading }] = useLoginCareTeamMutation();
@@ -56,42 +40,10 @@ const Login: React.FC = () => {
     handleBlur: handlePasswordBlur,
   } = useInput("");
 
-  // const [formValues, setFormValues] = useState<FormValues>({
-  //   email: "",
-  //   password: "",
-  // });
   const [submitError, setSubmitError] = useState<string>();
-  console.log({ submitError, emailValue, passwordValue });
-
-  // const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormValues((prevValues) => ({
-  //     ...prevValues,
-  //     [name]: value,
-  //   }));
-  //   setErrors((preValues) => ({
-  //     ...preValues,
-  //     [name]: getValidationError(name, value),
-  //   }));
-  // }, []);
-
-  // const handleInputBlur = useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { name, value } = e.target;
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       [name]: getValidationError(name, value),
-  //     }));
-  //   },
-  //   []
-  // );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // const newErrors = validate(formValues);
-    // setErrors(newErrors);
-    // if (Object.keys(newErrors).length > 0) return;
 
     if (emailError || passwordError) {
       toast.error("Please fix the errors before submitting.");
@@ -111,10 +63,6 @@ const Login: React.FC = () => {
       if (error?.status === 401) {
         const message = "Invalid email or password.";
         setSubmitError(message);
-        // setSubmitErrors({
-        //   email: message,
-        //   password: message,
-        // });
         document.getElementById("email")?.focus();
         toast.error(message);
       } else {
@@ -133,7 +81,7 @@ const Login: React.FC = () => {
   }, [isAuthenticated, navigate, returnTo, dispatch]);
 
   useEffect(() => {
-    // Clear any previous submit errors when the component mounts
+    // Clear any previous submit errors when the component mounts or user starts typing
     setSubmitError(undefined);
   }, [emailValue, passwordValue]);
 
