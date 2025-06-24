@@ -27,8 +27,8 @@ export function useInput(
     const handleBlur = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             const { name, value } = e.target;
-            const error = getValidationError(name, value);
-            setError(error)
+            const err = getValidationError(name, value);
+            setError(err)
         },
         []
     );
