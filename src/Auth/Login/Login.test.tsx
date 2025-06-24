@@ -69,13 +69,6 @@ describe("Login Component", () => {
     expect(screen.getByTestId("login_submit")).toBeInTheDocument();
   });
 
-  it("shows validation errors on submit with empty fields", () => {
-    renderWithStore();
-    fireEvent.submit(screen.getByTestId("login_form"));
-    expect(screen.getByText(/email is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/password is required/i)).toBeInTheDocument();
-  });
-
   it("accepts user input in email and password fields", () => {
     renderWithStore();
     const emailInput = screen.getByLabelText(/email/i);
@@ -107,6 +100,33 @@ describe("Login Component", () => {
     });
 
     expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+  });
+
+  it("shows error toast and prevents submission if email or password has error", async () => {
+    const toast = (await import("react-hot-toast")).default;
+
+    renderWithStore();
+
+    // Simulate user typing invalid input
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+
+    fireEvent.change(emailInput, { target: { value: "" } }); // triggers emailError
+    fireEvent.change(passwordInput, { target: { value: "" } }); // triggers passwordError
+
+    // Force blur to set the error (your useInput sets error on blur)
+    fireEvent.blur(emailInput);
+    fireEvent.blur(passwordInput);
+
+    // Submit the form
+    fireEvent.submit(screen.getByTestId("login_form"));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Please fix the errors before submitting."
+      );
+      expect(mockLoginMutation[0]).not.toHaveBeenCalled();
+    });
   });
 
   it("logs in successfully and dispatches login", async () => {
