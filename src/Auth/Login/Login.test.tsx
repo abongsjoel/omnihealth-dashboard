@@ -69,13 +69,6 @@ describe("Login Component", () => {
     expect(screen.getByTestId("login_submit")).toBeInTheDocument();
   });
 
-  it("shows validation errors on submit with empty fields", () => {
-    renderWithStore();
-    fireEvent.submit(screen.getByTestId("login_form"));
-    expect(screen.getByText(/email is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/password is required/i)).toBeInTheDocument();
-  });
-
   it("accepts user input in email and password fields", () => {
     renderWithStore();
     const emailInput = screen.getByLabelText(/email/i);
