@@ -1,31 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, type ComponentPropsWithoutRef } from "react";
 import classNames from "classnames";
 
 import eyeIcon from "../../../assets/svgs/ep_view.svg";
 import eyeIconOff from "../../../assets/svgs/ep_view_off.svg";
+import Icon from "../Icon";
+
 import type { IconName } from "../../../assets/icons/iconLib";
 
 import "./Input.scss";
-import Icon from "../Icon";
 
-interface InputProps {
+type InputProps = {
   id: string;
-  name: string;
   type: string;
   label: string;
-  value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onIconClick?: () => void;
   error?: string;
-  autoComplete?: string;
-  pattern?: string;
-  placeholder?: string;
-  required?: boolean;
   iconName?: IconName | "none";
-  disabled?: boolean;
   className?: string;
-}
+} & ComponentPropsWithoutRef<"input">;
 
 const Input: React.FC<InputProps> = ({
   id,

@@ -1,8 +1,12 @@
 .dashboard {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 300px 2fr;
   height: 95vh;
   font-family: "Open Sans", sans-serif;
+
+  @media (max-width: $mobile-breakpoint) {
+    grid-template-columns: 1fr 2fr;
+  }
 
   .chat-area {
     display: flex;
