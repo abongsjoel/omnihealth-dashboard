@@ -56,6 +56,8 @@ const Messages: React.FC<MessagesProps> = ({
             {msg.agent ? (
               msg.agent === "openai" ? (
                 <span className="assistant_ai">(AI)</span>
+              ) : msg.agent.includes("auto") ? (
+                <span className="assistant_auto">(Auto-Response)</span>
               ) : (
                 <span className="assistant_human">
                   (
