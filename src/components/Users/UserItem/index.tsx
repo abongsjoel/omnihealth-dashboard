@@ -32,9 +32,13 @@ const UserItem: React.FC<{
         ) : (
           <span className="user_id_only">{user.userId}</span>
         )}
-        {lastMessageTime && (
-          <span className="last_message_time">{lastMessageTime}</span>
-        )}
+
+        <div className="time_container">
+          {lastMessageTime && (
+            <span className="last_message_time">{lastMessageTime}</span>
+          )}
+          <span className="unread_indicator">Unread</span>
+        </div>
       </div>
     </div>
   );
