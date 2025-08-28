@@ -49,6 +49,13 @@ export const getFormattedTime = (timestamp: Date | string): string => {
   } else if (isThisWeek(date)) {
     return `${format(date, "EEEE")} at ${format(date, "p")}`; // e.g. Wednesday at 2:14 PM
   } else {
-    return format(date, "PP 'at' p");
+    const currentYear = new Date().getFullYear();
+    const messageYear = date.getFullYear();
+
+    if (messageYear === currentYear) {
+      return format(date, "MMM d 'at' p"); // e.g. "Aug 15 at 2:14 PM"
+    } else {
+      return format(date, "MMM d, yyyy 'at' p"); // e.g. "Aug 15, 2024 at 2:14 PM"
+    }
   }
 };
