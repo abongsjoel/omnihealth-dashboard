@@ -16,6 +16,24 @@ vi.mock("../../redux/apis/usersApi", async () => {
   };
 });
 
+// Mock messages API
+vi.mock("../../redux/apis/messagesApi", async () => {
+  const actual = await vi.importActual("../../redux/apis/messagesApi");
+  return {
+    ...actual,
+    useGetUserMessagesQuery: vi.fn(),
+  };
+});
+
+// Mock utils
+vi.mock("../../utils/utils", async () => {
+  const actual = await vi.importActual("../../utils/utils");
+  return {
+    ...actual,
+    getFormattedTime: vi.fn(() => "2 min ago"),
+  };
+});
+
 const mockDispatch = vi.fn();
 
 vi.mock("../../redux/hooks", async () => {
@@ -32,6 +50,7 @@ import {
   useGetUserIdsQuery,
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
+import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
 // import { useAppDispatch } from "../../redux/hooks";
 
 const renderWithStore = (ui: React.ReactElement) => {
@@ -44,6 +63,13 @@ const renderWithStore = (ui: React.ReactElement) => {
 describe("Users Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Default mock for useGetUserMessagesQuery
+    (useGetUserMessagesQuery as any).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
   });
 
   it("shows loading skeleton", () => {
@@ -189,6 +215,7 @@ describe("Users Component", () => {
       payload: { userId: "1", userName: "Test User" },
     });
   });
+
   it("merges userIds and users correctly, handles sorting, and highlights selected user", async () => {
     // Set selected user
     const { useAppSelector } = await import("../../redux/hooks");
@@ -225,5 +252,38 @@ describe("Users Component", () => {
     // ✅ this now works
     const selectedDiv = screen.getByText("Charlie").closest(".user");
     expect(selectedDiv?.classList.contains("selected")).toBe(true);
+  });
+
+  it("displays last message time when available", () => {
+    // Mock messages for a user
+    (useGetUserMessagesQuery as any).mockReturnValue({
+      data: [
+        {
+          role: "user",
+          content: "Hello",
+          timestamp: "2023-01-01T10:00:00Z",
+          agent: "user",
+        },
+      ],
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetUserIdsQuery as any).mockReturnValue({
+      data: ["1"],
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetUsersQuery as any).mockReturnValue({
+      data: [{ userId: "1", userName: "Test User" }],
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithStore(<Users />);
+
+    // Check that the mocked formatted time is displayed
+    expect(screen.getByText("2 min ago")).toBeInTheDocument();
   });
 });
