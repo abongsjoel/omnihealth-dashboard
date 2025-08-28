@@ -2,9 +2,53 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, vi, beforeEach, expect } from "vitest";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import type { User, ChatMessage } from "../../utils/types";
+import type { RootState } from "../../redux/store";
 
 import Users from "../Users";
 import usersReducer from "../../redux/slices/usersSlice";
+
+// Create proper types for RTK Query mock returns
+interface MockQueryState<T> {
+  data: T;
+  isLoading: boolean;
+  error: null | { message: string };
+  refetch: () => void;
+  isSuccess: boolean;
+  isError: boolean;
+  isFetching: boolean;
+  isUninitialized: boolean;
+  currentData: T | undefined;
+  endpointName: string;
+  fulfilledTimeStamp: number | undefined;
+  requestId: string;
+  startedTimeStamp: number | undefined;
+  status: "pending" | "fulfilled" | "rejected" | "uninitialized";
+}
+
+// Helper functions to create properly typed mock returns
+function createMockQueryReturn<T>(
+  data: T,
+  isLoading = false,
+  error: null | { message: string } = null
+) {
+  return {
+    data,
+    isLoading,
+    error,
+    refetch: vi.fn(),
+    isSuccess: !isLoading && !error,
+    isError: !!error,
+    isFetching: isLoading,
+    isUninitialized: false,
+    currentData: data,
+    endpointName: "test",
+    fulfilledTimeStamp: Date.now(),
+    requestId: "test-request",
+    startedTimeStamp: Date.now(),
+    status: error ? "rejected" : isLoading ? "pending" : "fulfilled",
+  } satisfies Partial<MockQueryState<T>>;
+}
 
 // Mock hooks
 vi.mock("../../redux/apis/usersApi", async () => {
@@ -51,7 +95,11 @@ import {
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
 import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
-// import { useAppDispatch } from "../../redux/hooks";
+
+// Type the mocked functions using vi.mocked
+const mockUseGetUserIdsQuery = vi.mocked(useGetUserIdsQuery);
+const mockUseGetUsersQuery = vi.mocked(useGetUsersQuery);
+const mockUseGetUserMessagesQuery = vi.mocked(useGetUserMessagesQuery);
 
 const renderWithStore = (ui: React.ReactElement) => {
   const store = configureStore({
@@ -65,42 +113,38 @@ describe("Users Component", () => {
     vi.clearAllMocks();
 
     // Default mock for useGetUserMessagesQuery
-    (useGetUserMessagesQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserMessagesQuery.mockReturnValue(
+      createMockQueryReturn<ChatMessage[]>([]) as ReturnType<
+        typeof useGetUserMessagesQuery
+      >
+    );
   });
 
   it("shows loading skeleton", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: [],
-      isLoading: true,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>([], true) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
     expect(screen.getAllByTestId("user_skeleton").length).toBeGreaterThan(0);
   });
 
   it("shows error state", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: { message: "Failed to fetch userIds" },
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[] | undefined>(undefined, false, {
+        message: "Failed to fetch userIds",
+      }) as ReturnType<typeof useGetUserIdsQuery>
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
     expect(screen.getByText(/Unable to load users/i)).toBeInTheDocument();
@@ -110,21 +154,19 @@ describe("Users Component", () => {
   });
 
   it("renders sorted user list", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: ["2", "1", "3"],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>(["2", "1", "3"]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([
         { userId: "1", userName: "Charlie" },
         { userId: "2", userName: "Alice" },
         { userId: "3", userName: "Bob" },
-      ],
-      isLoading: false,
-      error: null,
-    });
+      ]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
     const names = screen
@@ -134,34 +176,30 @@ describe("Users Component", () => {
   });
 
   it("renders unnamed users", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: ["anon-1"],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>(["anon-1"]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
     expect(screen.getByText("anon-1")).toBeInTheDocument();
   });
 
   it("opens modal on + button click", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>([]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
     fireEvent.click(screen.getByRole("button", { name: "+" }));
@@ -169,17 +207,15 @@ describe("Users Component", () => {
   });
 
   it("closes modal when close button is clicked", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>([]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
 
@@ -195,17 +231,17 @@ describe("Users Component", () => {
   });
 
   it("dispatches updateSelectedUser when a user is clicked", () => {
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: ["1"],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>(["1"]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [{ userId: "1", userName: "Test User" }],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([
+        { userId: "1", userName: "Test User" },
+      ]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
     fireEvent.click(screen.getByText("Test User"));
@@ -219,29 +255,27 @@ describe("Users Component", () => {
   it("merges userIds and users correctly, handles sorting, and highlights selected user", async () => {
     // Set selected user
     const { useAppSelector } = await import("../../redux/hooks");
-    (useAppSelector as any).mockImplementation((selectorFn: any) =>
+    vi.mocked(useAppSelector).mockImplementation((selectorFn) =>
       selectorFn({
         users: {
           selectedUser: { userId: "3", userName: "Charlie" },
         },
-      })
+      } as RootState)
     );
 
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: ["2", "1", "3"],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>(["2", "1", "3"]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([
         { userId: "1", userName: "Bob" },
         { userId: "2", userName: "" },
         { userId: "3", userName: "Charlie" },
-      ],
-      isLoading: false,
-      error: null,
-    });
+      ]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
 
@@ -256,30 +290,28 @@ describe("Users Component", () => {
 
   it("displays last message time when available", () => {
     // Mock messages for a user
-    (useGetUserMessagesQuery as any).mockReturnValue({
-      data: [
+    mockUseGetUserMessagesQuery.mockReturnValue(
+      createMockQueryReturn<ChatMessage[]>([
         {
           role: "user",
           content: "Hello",
           timestamp: "2023-01-01T10:00:00Z",
           agent: "user",
         },
-      ],
-      isLoading: false,
-      error: null,
-    });
+      ]) as ReturnType<typeof useGetUserMessagesQuery>
+    );
 
-    (useGetUserIdsQuery as any).mockReturnValue({
-      data: ["1"],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUserIdsQuery.mockReturnValue(
+      createMockQueryReturn<string[]>(["1"]) as ReturnType<
+        typeof useGetUserIdsQuery
+      >
+    );
 
-    (useGetUsersQuery as any).mockReturnValue({
-      data: [{ userId: "1", userName: "Test User" }],
-      isLoading: false,
-      error: null,
-    });
+    mockUseGetUsersQuery.mockReturnValue(
+      createMockQueryReturn<User[]>([
+        { userId: "1", userName: "Test User" },
+      ]) as ReturnType<typeof useGetUsersQuery>
+    );
 
     renderWithStore(<Users />);
 
