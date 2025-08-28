@@ -39,10 +39,18 @@
       background-color: var(--primary-selected);
     }
 
+    .user-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
     .user-details {
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
+      flex: 1;
 
       .user_name {
         font-size: 1rem;
@@ -54,6 +62,19 @@
         font-size: 0.675rem;
         color: var(--text-200);
       }
+    }
+
+    .user_id_only {
+      font-size: 1rem;
+      color: var(--text-500);
+      flex: 1;
+    }
+
+    .last_message_time {
+      font-size: 0.625rem;
+      color: var(--text-200);
+      white-space: nowrap;
+      margin-left: 0.5rem;
     }
 
     &.skeleton {
@@ -101,6 +122,14 @@
         .user_id {
           font-size: 0.5rem;
         }
+      }
+
+      .user_id_only {
+        font-size: 0.75rem;
+      }
+
+      .last_message_time {
+        font-size: 0.5rem;
       }
     }
   }
