@@ -19,14 +19,16 @@ describe("Logo Component", () => {
     mockNavigate.mockClear();
   });
 
-  it("renders the logo text", () => {
+  it("renders the logo image", () => {
     render(<Logo />);
-    expect(screen.getByText("OmniHealth")).toBeInTheDocument();
+    const logoImage = screen.getByAltText("OmniHealth Logo");
+    expect(logoImage).toBeInTheDocument();
+    expect(logoImage).toHaveAttribute("src");
   });
 
   it("calls navigate('/') when clicked", () => {
     render(<Logo />);
-    fireEvent.click(screen.getByText("OmniHealth"));
+    fireEvent.click(screen.getByTestId("logo"));
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 });
