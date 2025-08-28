@@ -1,13 +1,15 @@
 import useNavigation from "../../../hooks/useNavigation";
+import logo from "../../../assets/logo.png";
+
 import "./Logo.scss";
 
 const Logo: React.FC = () => {
   const { navigate } = useNavigation();
 
   return (
-    <h1 className="logo" data-testid="logo" onClick={() => navigate("/")}>
-      OmniHealth
-    </h1>
+    <div className="logo" data-testid="logo" onClick={() => navigate("/")}>
+      <img src={logo} alt="OmniHealth Logo" />
+    </div>
   );
 };
 
