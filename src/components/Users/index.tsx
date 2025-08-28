@@ -5,55 +5,23 @@ import {
   useGetUserIdsQuery,
   useGetUsersQuery,
 } from "../../redux/apis/usersApi";
-import { useGetUserMessagesQuery } from "../../redux/apis/messagesApi";
 import {
   selectSelectedUser,
   updateSelectedUser,
 } from "../../redux/slices/usersSlice";
-import { getFormattedTime } from "../../utils/utils";
+
 import UserForm from "../Messages/UserForm";
 import Skeleton from "./UsersSkeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
 import Tooltip from "../common/Tooltip";
+import UserItem from "./UserItem";
 
 import "./Users.scss";
 
 // UserItem component that handles individual user display with last message time
-const UserItem: React.FC<{
-  user: { userId: string; userName: string };
-  isSelected: boolean;
-  onSelect: () => void;
-}> = ({ user, isSelected, onSelect }) => {
-  const { data: messages = [] } = useGetUserMessagesQuery(user.userId, {
-    skip: !user.userId || user.userId === "WEB_SIMULATION",
-  });
 
-  const lastMessageTime = useMemo(() => {
-    if (messages.length === 0) return null;
-    const lastMessage = messages[messages.length - 1];
-    return getFormattedTime(lastMessage.timestamp);
-  }, [messages]);
-
-  return (
-    <div onClick={onSelect} className={`user ${isSelected ? "selected" : ""}`}>
-      <div className="user-content">
-        {user.userName ? (
-          <div className="user-details">
-            <span className="user_name">{user.userName}</span>
-            <span className="user_id">{user.userId}</span>
-          </div>
-        ) : (
-          <span className="user_id_only">{user.userId}</span>
-        )}
-        {lastMessageTime && (
-          <span className="last_message_time">{lastMessageTime}</span>
-        )}
-      </div>
-    </div>
-  );
-};
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
