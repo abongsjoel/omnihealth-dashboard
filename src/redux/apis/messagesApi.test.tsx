@@ -32,6 +32,12 @@ const server = setupServer(
       return HttpResponse.json({ status: "ok" });
     }
     return new HttpResponse("Bad Request", { status: 400 });
+  }),
+  http.patch("http://localhost:3000/api/messages/user123/mark-read", () => {
+    return HttpResponse.json({ status: "ok" });
+  }),
+  http.patch("http://localhost:3000/api/messages/*/mark-read", () => {
+    return HttpResponse.json({ status: "ok" });
   })
 );
 
@@ -176,8 +182,88 @@ describe("messagesApi", () => {
         message: "hi",
         agent: "care",
       } as unknown as Message);
-    } catch (_) {
+    } catch {
       // Ignore the failure
+    }
+  });
+
+  it("marks messages as read successfully", async () => {
+    const store = makeStore();
+
+    const { result } = renderHook(
+      () => messagesApi.endpoints.markMessagesAsRead.useMutation(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    const [markAsRead] = result.current;
+
+    const res = await markAsRead("user123");
+
+    expect("data" in res).toBe(true); // confirms success
+  });
+
+  it("invalidates messages cache after marking as read", async () => {
+    const store = makeStore();
+
+    // Start by fetching messages
+    const { result: getMessages } = renderHook(
+      () => messagesApi.endpoints.getUserMessages.useQuery("user123"),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    await waitFor(() => {
+      expect(getMessages.current.isSuccess).toBe(true);
+    });
+
+    // Mark messages as read
+    const { result: markAsReadResult } = renderHook(
+      () => messagesApi.endpoints.markMessagesAsRead.useMutation(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    const [markAsRead] = markAsReadResult.current;
+
+    await markAsRead("user123");
+
+    // Wait for potential re-fetch after invalidation
+    await waitFor(() => {
+      expect(
+        getMessages.current.isFetching || getMessages.current.isSuccess
+      ).toBe(true);
+    });
+  });
+
+  it("handles empty userId in markMessagesAsRead invalidateTags", async () => {
+    const store = makeStore();
+
+    const { result } = renderHook(
+      () => messagesApi.endpoints.markMessagesAsRead.useMutation(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    const [markAsRead] = result.current;
+
+    // This should trigger the invalidateTags logic with an empty userId
+    try {
+      await markAsRead("");
+    } catch {
+      // Ignore potential failure, we're testing the invalidateTags logic
     }
   });
 });

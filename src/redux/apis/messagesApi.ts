@@ -28,7 +28,15 @@ export const messagesApi = createApi({
       invalidatesTags: (_, __, arg) =>
         arg?.to ? [{ type: "Messages", id: arg.to }] : [],
     }),
+    markMessagesAsRead: builder.mutation<void, string>({
+      query: (userId) => ({
+        url: `/api/messages/${userId}/mark-read`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (_, __, userId) =>
+        userId ? [{ type: "Messages", id: userId }] : [],
+    }),
   }),
 });
 
-export const { useGetUserMessagesQuery, useSendMessageMutation } = messagesApi;
+export const { useGetUserMessagesQuery, useSendMessageMutation, useMarkMessagesAsReadMutation } = messagesApi;

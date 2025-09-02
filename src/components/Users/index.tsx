@@ -9,12 +9,14 @@ import {
   selectSelectedUser,
   updateSelectedUser,
 } from "../../redux/slices/usersSlice";
+
 import UserForm from "../Messages/UserForm";
 import Skeleton from "./UsersSkeleton";
 import Error from "../common/Error";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
 import Tooltip from "../common/Tooltip";
+import UserItem from "./UserItem";
 
 import "./Users.scss";
 
@@ -108,24 +110,12 @@ const Users: React.FC = () => {
           usersList
             .filter((u) => u.userId !== "WEB_SIMULATION")
             .map((usr) => (
-              <div
+              <UserItem
                 key={usr.userId}
-                onClick={() => {
-                  dispatch(updateSelectedUser(usr));
-                }}
-                className={`user ${
-                  selectedUser?.userId === usr.userId ? "selected" : ""
-                }`}
-              >
-                {usr.userName ? (
-                  <div className="user-details">
-                    <span className="user_name">{usr.userName}</span>
-                    <span className="user_id">{usr.userId}</span>
-                  </div>
-                ) : (
-                  usr.userId
-                )}
-              </div>
+                user={usr}
+                isSelected={selectedUser?.userId === usr.userId}
+                onSelect={() => dispatch(updateSelectedUser(usr))}
+              />
             ))
         )}
       </section>
