@@ -174,6 +174,7 @@ describe("UserItem Component", () => {
 
     expect(mockUseGetUserMessagesQuery).toHaveBeenCalledWith("WEB_SIMULATION", {
       skip: true,
+      pollingInterval: 60000,
     });
   });
 
@@ -182,6 +183,7 @@ describe("UserItem Component", () => {
 
     expect(mockUseGetUserMessagesQuery).toHaveBeenCalledWith("test-user-1", {
       skip: false,
+      pollingInterval: 60000,
     });
   });
 
@@ -195,7 +197,20 @@ describe("UserItem Component", () => {
 
     expect(mockUseGetUserMessagesQuery).toHaveBeenCalledWith("", {
       skip: true,
+      pollingInterval: 60000,
     });
+  });
+
+  it("configures polling interval for automatic message updates", () => {
+    render(<UserItem {...defaultProps} />);
+
+    // Verify that pollingInterval is set to 60 seconds (60000ms) for real-time updates
+    expect(mockUseGetUserMessagesQuery).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        pollingInterval: 60000,
+      })
+    );
   });
 
   it("renders user content structure correctly", () => {

@@ -15,6 +15,7 @@ const UserItem: React.FC<{
 }> = ({ user, isSelected, onSelect }) => {
   const { data: messages = [] } = useGetUserMessagesQuery(user.userId, {
     skip: !user.userId || user.userId === "WEB_SIMULATION",
+    pollingInterval: 60000,
   });
 
   const [markMessagesAsRead] = useMarkMessagesAsReadMutation();
