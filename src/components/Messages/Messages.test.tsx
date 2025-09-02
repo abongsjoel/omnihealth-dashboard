@@ -220,4 +220,49 @@ describe("Messages Component", () => {
     expect(screen.queryByText("(AI)")).not.toBeInTheDocument();
     expect(screen.queryByText("(Care Member)")).not.toBeInTheDocument();
   });
+
+  it("renders auto-response agent correctly", () => {
+    const msgWithAutoAgent = [
+      {
+        _id: "msg-1",
+        role: "assistant",
+        agent: "auto-response-system",
+        content: "This is an automated response.",
+        timestamp: "2024-01-01T11:00:00Z",
+      },
+      {
+        _id: "msg-2",
+        role: "assistant",
+        agent: "system-auto",
+        content: "Another automated message.",
+        timestamp: "2024-01-01T11:01:00Z",
+      },
+    ];
+
+    (useGetUserMessagesQuery as unknown as Mock).mockReturnValue({
+      data: msgWithAutoAgent,
+      isLoading: false,
+      error: null,
+    });
+
+    (useGetCareTeamMembersQuery as unknown as Mock).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
+
+    render(<Messages selectedUser={mockedUser} />);
+
+    expect(
+      screen.getByText("This is an automated response.")
+    ).toBeInTheDocument();
+    expect(screen.getByText("Another automated message.")).toBeInTheDocument();
+    expect(screen.getAllByText("Assistant")).toHaveLength(2);
+
+    // Should show auto-response indicators
+    expect(screen.getAllByText("(Auto-Response)")).toHaveLength(2);
+    expect(screen.getAllByText("(Auto-Response)")[0].className).toContain(
+      "assistant_auto"
+    );
+  });
 });
