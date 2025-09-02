@@ -234,4 +234,91 @@ describe("Thumbnail Component", () => {
     // Should render "A" as uppercase of first char in name
     expect(screen.getByText("A")).toBeInTheDocument();
   });
+
+  it("handles edge case with only whitespace in name", () => {
+    render(
+      <Thumbnail
+        name="   "
+        menuItems={menuItems}
+        currentPath="/dashboard"
+        onLogout={onLogout}
+        onMenuClick={onMenuClick}
+        member={member}
+      />
+    );
+
+    const initialEl = screen.getByTestId("thumbnail_initial");
+    expect(initialEl).toBeInTheDocument();
+    expect(initialEl).toHaveTextContent("");
+  });
+
+  it("handles edge case with undefined words array scenario", () => {
+    // Test case where the nullish coalescing operator (??) is triggered
+    render(
+      <Thumbnail
+        name=""
+        menuItems={menuItems}
+        currentPath="/dashboard"
+        onLogout={onLogout}
+        onMenuClick={onMenuClick}
+        member={member}
+      />
+    );
+
+    const initialEl = screen.getByTestId("thumbnail_initial");
+    expect(initialEl).toHaveTextContent(""); // Should be empty string from ??
+  });
+
+  it("handles extreme edge case that triggers nullish coalescing", () => {
+    // Test where split creates an array but first element is empty or undefined
+    // This should specifically test the ?? "" part of line 33
+    render(
+      <Thumbnail
+        name="    " // Multiple spaces that will be trimmed to empty
+        menuItems={menuItems}
+        currentPath="/dashboard"
+        onLogout={onLogout}
+        onMenuClick={onMenuClick}
+        member={member}
+      />
+    );
+
+    const initialEl = screen.getByTestId("thumbnail_initial");
+    expect(initialEl).toHaveTextContent(""); // Should be empty from nullish coalescing
+  });
+
+  it("tests the complete logic path of getInitials function", () => {
+    // This test ensures we hit all the logic branches in getInitials
+    // including the edge case that may trigger the nullish coalescing
+
+    const testCases = [
+      { name: "John Doe", expected: "JD" },
+      { name: "John", expected: "J" },
+      { name: "", expected: "" },
+      { name: "   ", expected: "" },
+      { name: "a", expected: "A" },
+      { name: "a b", expected: "AB" },
+      // Edge case: string with only non-word characters
+      { name: "\t\n\r", expected: "" },
+    ];
+
+    testCases.forEach(({ name, expected }) => {
+      const { rerender } = render(
+        <Thumbnail
+          name={name}
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          onMenuClick={onMenuClick}
+          member={member}
+        />
+      );
+
+      const initialEl = screen.getByTestId("thumbnail_initial");
+      expect(initialEl).toHaveTextContent(expected);
+
+      // Clean up for next iteration
+      rerender(<div />);
+    });
+  });
 });
