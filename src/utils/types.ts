@@ -5,6 +5,7 @@ export interface ChatMessage {
   content: string;
   timestamp: Date | string;
   agent: string;
+  read?: boolean; // Optional read status, defaults to false for new messages
 }
 
 export interface User {

@@ -1,7 +1,10 @@
 import React, { useMemo } from "react";
 
 import { getFormattedTime } from "../../../utils/utils";
-import { useGetUserMessagesQuery } from "../../../redux/apis/messagesApi";
+import {
+  useGetUserMessagesQuery,
+  useMarkMessagesAsReadMutation,
+} from "../../../redux/apis/messagesApi";
 
 import "./UserItem.scss";
 
@@ -14,6 +17,8 @@ const UserItem: React.FC<{
     skip: !user.userId || user.userId === "WEB_SIMULATION",
   });
 
+  const [markMessagesAsRead] = useMarkMessagesAsReadMutation();
+
   const lastMessageTime = useMemo(() => {
     if (messages.length === 0) return null;
     const lastMessage = messages[messages.length - 1];
@@ -21,8 +26,29 @@ const UserItem: React.FC<{
     return formatedtime.split("at")[0].trim();
   }, [messages]);
 
+  const unreadCount = useMemo(() => {
+    return messages.filter(
+      (message) => message.role === "assistant" && !message.read
+    ).length;
+  }, [messages]);
+
+  const handleSelect = async () => {
+    // Mark messages as read when user is selected
+    if (unreadCount > 0) {
+      try {
+        await markMessagesAsRead(user.userId).unwrap();
+      } catch (error) {
+        console.error("Failed to mark messages as read:", error);
+      }
+    }
+    onSelect();
+  };
+
   return (
-    <div onClick={onSelect} className={`user ${isSelected ? "selected" : ""}`}>
+    <div
+      onClick={handleSelect}
+      className={`user ${isSelected ? "selected" : ""}`}
+    >
       <div className="user-content">
         {user.userName ? (
           <div className="user-details">
@@ -37,7 +63,9 @@ const UserItem: React.FC<{
           {lastMessageTime && (
             <span className="last_message_time">{lastMessageTime}</span>
           )}
-          <span className="unread_indicator">Unread</span>
+          {unreadCount > 0 && (
+            <span className="unread_indicator">{unreadCount}</span>
+          )}
         </div>
       </div>
     </div>

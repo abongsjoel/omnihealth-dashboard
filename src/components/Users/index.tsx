@@ -20,9 +20,6 @@ import UserItem from "./UserItem";
 
 import "./Users.scss";
 
-// UserItem component that handles individual user display with last message time
-
-
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedUser = useAppSelector(selectSelectedUser);
