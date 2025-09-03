@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { FiMoreVertical } from "react-icons/fi";
+
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
 import UserForm from "../UserForm";
 import Button from "../../common/Button";
@@ -39,6 +41,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
         <section className="action">
+          <FiMoreVertical size={20} />
           {action === "Edit" ? (
             <Tooltip message="Edit User Name" position="left">
               <Icon
