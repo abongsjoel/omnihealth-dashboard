@@ -95,7 +95,7 @@ const Users: React.FC = () => {
             <Button
               label="+"
               onClick={handleAddUserClick}
-              className="add_user_btn"
+              className="button add_user_btn"
             />
           </Tooltip>
         </section>

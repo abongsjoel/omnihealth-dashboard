@@ -33,7 +33,7 @@ const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       type={type}
       {...rest}
-      className={classNames("btn", className, {
+      className={classNames("button btn", className, {
         disabled,
         secondary,
         outline,

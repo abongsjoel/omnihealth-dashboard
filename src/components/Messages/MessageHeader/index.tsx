@@ -41,8 +41,10 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
         <section className="action">
-          <FiMoreVertical size={20} />
-          {action === "Edit" ? (
+          <Button plain>
+            <FiMoreVertical size={20} />
+          </Button>
+          {/* {action === "Edit" ? (
             <Tooltip message="Edit User Name" position="left">
               <Icon
                 title="edit"
@@ -55,7 +57,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
             <Button onClick={handleAssignName} className="btn-add-user">
               Assign Name
             </Button>
-          )}
+          )} */}
         </section>
       </header>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>

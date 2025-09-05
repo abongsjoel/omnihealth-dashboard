@@ -1,4 +1,4 @@
-button {
+.button {
   background-color: var(--primary);
   color: var(--white);
   border: none;
@@ -40,6 +40,8 @@ button {
     background-color: transparent;
     color: var(--text-100);
     border: none;
+    margin: 0;
+    padding: 0;
 
     &:hover {
       color: var(--text-500);
