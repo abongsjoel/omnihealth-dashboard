@@ -18,12 +18,22 @@ interface MessageHeaderProps {
 const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   const { data: users = [] } = useGetUsersQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const user = users.find((u) => u.userId === selectedUserId);
 
   const userName = user?.userName || "";
 
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen((v) => !v);
+  };
+
+  const handleDropdownClose = () => {
+    setIsDropdownOpen(false);
+  };
+
   const handleAssignName = () => {
+    handleDropdownClose();
     setIsModalOpen(true);
   };
 
@@ -41,23 +51,44 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
         <section className="action">
-          <Button plain>
+          <Button plain onClick={handleDropdownToggle}>
             <FiMoreVertical size={20} />
           </Button>
-          {/* {action === "Edit" ? (
-            <Tooltip message="Edit User Name" position="left">
-              <Icon
-                title="edit"
-                size="sm"
-                showOriginal
-                onClick={handleAssignName}
-              />
-            </Tooltip>
-          ) : (
-            <Button onClick={handleAssignName} className="btn-add-user">
-              Assign Name
-            </Button>
-          )} */}
+          {isDropdownOpen && (
+            <ul className="dropdown-menu">
+              <li>
+                {action === "Edit" ? (
+                  <Tooltip message="Edit User Name" position="left">
+                    <Button
+                      plain
+                      className="btn-dropmenu"
+                      onClick={handleAssignName}
+                    >
+                      <Icon title="edit" size="sm" showOriginal />
+                      Edit User
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    onClick={handleAssignName}
+                    plain
+                    className="btn-dropmenu "
+                  >
+                    Assign Name
+                  </Button>
+                )}
+              </li>
+              <li>
+                <Button
+                  // onClick={handleAssignName}
+                  plain
+                  className="btn-dropmenu "
+                >
+                  Delete User
+                </Button>
+              </li>
+            </ul>
+          )}
         </section>
       </header>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
