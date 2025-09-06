@@ -96,7 +96,7 @@ describe("MessageHeader", () => {
   it("shows dropdown when three-dot button is clicked", () => {
     renderHeader("12345");
     fireEvent.click(screen.getByRole("button", { name: "" }));
-    expect(screen.getByText("Edit User")).toBeInTheDocument();
+    expect(screen.getByText("Edit Name")).toBeInTheDocument();
     expect(screen.getByText("Delete User")).toBeInTheDocument();
   });
 
@@ -113,7 +113,7 @@ describe("MessageHeader", () => {
     fireEvent.click(screen.getByText("Edit Name"));
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
-      expect(screen.getByText(/Edit Name/i)).toBeInTheDocument();
+      expect(screen.getByText(/Edit User Name/i)).toBeInTheDocument();
     });
   });
 
@@ -123,7 +123,7 @@ describe("MessageHeader", () => {
     fireEvent.click(screen.getByText("Assign Name"));
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
-      expect(screen.getByText("Assign Name")).toBeInTheDocument();
+      expect(screen.getByText("Assign User Name")).toBeInTheDocument();
     });
   });
 
