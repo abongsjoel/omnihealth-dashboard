@@ -24,6 +24,12 @@
       font-size: 0.875rem;
       color: var(--text-200);
       margin-top: 0.5rem;
+      line-height: 1.15;
+
+      .user_name {
+        font-weight: 600;
+        color: var(--secondary);
+      }
     }
   }
 

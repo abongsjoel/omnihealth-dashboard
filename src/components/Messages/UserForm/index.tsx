@@ -3,7 +3,10 @@ import toast from "react-hot-toast";
 
 import Input from "../../common/Input";
 import Button from "../../common/Button";
-import { useAssignNameMutation } from "../../../redux/apis/usersApi";
+import {
+  useAssignNameMutation,
+  useDeleteUserMutation,
+} from "../../../redux/apis/usersApi";
 
 import warningIcon from "../../../assets/svgs/warning.svg";
 
@@ -52,6 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({
   handleCloseModal,
 }) => {
   const [assignName, { isLoading }] = useAssignNameMutation();
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const [form, setForm] = useState({ userName, userId });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -86,12 +90,21 @@ const UserForm: React.FC<UserFormProps> = ({
     }
   };
 
-  const handleDelete = () => {
-    // For now, just close the modal and show a toast
-    if (handleCloseModal) {
-      handleCloseModal();
+  const handleDelete = async () => {
+    try {
+      const result = await deleteUser({ userId: form.userId }).unwrap();
+      if (result.success) {
+        if (handleCloseModal) {
+          handleCloseModal();
+        }
+        toast.success(`User profile for ${form.userId} deleted.`);
+      } else {
+        toast.error("Failed to delete user. Please try again.");
+      }
+    } catch (err) {
+      console.error("Failed to delete user:", err);
+      toast.error("Failed to delete user. Please try again.");
     }
-    toast.success(`User profile for ${form.userId} deleted.`);
   };
 
   return (
@@ -102,8 +115,13 @@ const UserForm: React.FC<UserFormProps> = ({
           <div>
             <h2 className="title">Delete User</h2>
             <p className="message">
-              This will permanently remove the user profile and all associated
-              data. Are you sure you want to proceed?
+              This will permanently remove the user{" "}
+              <span className="user_name">
+                {form.userName
+                  ? `${form.userName} (${form.userId})`
+                  : form.userId}
+              </span>{" "}
+              and all associated chats. Are you sure you want to proceed?
             </p>
           </div>
         </section>
@@ -150,11 +168,19 @@ const UserForm: React.FC<UserFormProps> = ({
           outline
         />
         <Button
-          label={isLoading ? `${action}ing` : action}
+          label={
+            action === "Delete"
+              ? isDeleting
+                ? "Deleting"
+                : "Delete"
+              : isLoading
+              ? `${action}ing`
+              : action
+          }
           onClick={action === "Delete" ? handleDelete : handleSubmit}
           className="user_btn"
           danger={action === "Delete"}
-          disabled={isLoading}
+          disabled={action === "Delete" ? isDeleting : isLoading}
         />
       </footer>
     </form>
