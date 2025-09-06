@@ -110,7 +110,7 @@ describe("MessageHeader", () => {
   it("opens modal on dropdown 'Edit User' click", async () => {
     renderHeader("12345");
     fireEvent.click(screen.getByRole("button", { name: "" }));
-    fireEvent.click(screen.getByText("Edit User"));
+    fireEvent.click(screen.getByText("Edit Name"));
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
       expect(screen.getByText(/Edit Name/i)).toBeInTheDocument();
@@ -130,7 +130,7 @@ describe("MessageHeader", () => {
   it("closes modal when close button is clicked", async () => {
     renderHeader("12345");
     fireEvent.click(screen.getByRole("button", { name: "" }));
-    fireEvent.click(screen.getByText("Edit User"));
+    fireEvent.click(screen.getByText("Edit Name"));
     expect(await screen.findByTestId("modal")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Close"));
     await waitFor(() => {

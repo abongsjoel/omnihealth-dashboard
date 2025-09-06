@@ -5,6 +5,8 @@ import Input from "../../common/Input";
 import Button from "../../common/Button";
 import { useAssignNameMutation } from "../../../redux/apis/usersApi";
 
+import warningIcon from "../../../assets/svgs/warning.svg";
+
 import type { User } from "../../../utils/types";
 
 import "./UserForm.scss";
@@ -84,39 +86,62 @@ const UserForm: React.FC<UserFormProps> = ({
     }
   };
 
+  const handleDelete = () => {
+    // For now, just close the modal and show a toast
+    if (handleCloseModal) {
+      handleCloseModal();
+    }
+    toast.success(`User profile for ${form.userId} deleted.`);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="add_user_form">
-      <h2 className="title">{title}</h2>
-      <main className="main">
-        <Input
-          id="userName"
-          name="userName"
-          type="text"
-          label="User Name"
-          placeholder="Ngwa Lum"
-          value={form.userName}
-          onChange={handleChange}
-          error={errors.userName}
-          required
-          autoComplete="userName"
-          className="user_input"
-        />
-        <Input
-          id="userId"
-          name="userId"
-          type="number"
-          label="Phone Number"
-          placeholder="237670312288"
-          value={form.userId}
-          onChange={handleChange}
-          error={errors.userId}
-          autoComplete="phone-number"
-          pattern="[0-9]{9,15}"
-          required
-          disabled={action !== "Add"}
-          className="user_input"
-        />
-      </main>
+      {action === "Delete" ? (
+        <section className="delete_user">
+          <img src={warningIcon} alt="Warning" className="warning_icon" />
+          <div>
+            <h2 className="title">Delete User</h2>
+            <p className="message">
+              This will permanently remove the user profile and all associated
+              data. Are you sure you want to proceed?
+            </p>
+          </div>
+        </section>
+      ) : (
+        <>
+          <h2 className="title">{title}</h2>
+          <main className="main">
+            <Input
+              id="userName"
+              name="userName"
+              type="text"
+              label="User Name"
+              placeholder="Ngwa Lum"
+              value={form.userName}
+              onChange={handleChange}
+              error={errors.userName}
+              required
+              autoComplete="userName"
+              className="user_input"
+            />
+            <Input
+              id="userId"
+              name="userId"
+              type="number"
+              label="Phone Number"
+              placeholder="237670312288"
+              value={form.userId}
+              onChange={handleChange}
+              error={errors.userId}
+              autoComplete="phone-number"
+              pattern="[0-9]{9,15}"
+              required
+              disabled={action !== "Add"}
+              className="user_input"
+            />
+          </main>
+        </>
+      )}
       <footer className="btn_container">
         <Button
           label="Cancel"
@@ -126,8 +151,9 @@ const UserForm: React.FC<UserFormProps> = ({
         />
         <Button
           label={isLoading ? `${action}ing` : action}
-          onClick={handleSubmit}
+          onClick={action === "Delete" ? handleDelete : handleSubmit}
           className="user_btn"
+          danger={action === "Delete"}
           disabled={isLoading}
         />
       </footer>

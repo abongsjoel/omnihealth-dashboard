@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
 
@@ -20,6 +20,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const user = users.find((u) => u.userId === selectedUserId);
+  const [action, setAction] = useState<"Assign" | "Edit" | "Delete">("Assign");
 
   const userName = user?.userName || "";
 
@@ -32,6 +33,13 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   };
 
   const handleAssignName = () => {
+    setAction(userName ? "Edit" : "Assign");
+    handleDropdownClose();
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteUser = () => {
+    setAction("Delete");
     handleDropdownClose();
     setIsModalOpen(true);
   };
@@ -40,7 +48,11 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
-  const action = userName ? "Edit" : "Assign";
+  useEffect(() => {
+    if (userName) {
+      setAction(userName ? "Edit" : "Assign");
+    }
+  }, [userName]);
 
   return (
     <>
@@ -64,7 +76,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
                       onClick={handleAssignName}
                     >
                       <FiEdit2 size={12} />
-                      Edit User
+                      Edit Name
                     </Button>
                   </Tooltip>
                 ) : (
@@ -82,7 +94,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
               </li>
               <li className="dropdown-item">
                 <Button
-                  // onClick={handleAssignName}
+                  onClick={handleDeleteUser}
                   plain
                   className="btn-dropmenu delete"
                 >
@@ -96,7 +108,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
       </header>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <UserForm
-          title={`${action} Name`}
+          title={`${action} User Name`}
           action={action}
           userId={selectedUserId ?? ""}
           userName={userName}

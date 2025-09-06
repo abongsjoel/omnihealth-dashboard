@@ -11,6 +11,7 @@ interface ButtonProps {
   secondary?: boolean;
   outline?: boolean;
   plain?: boolean;
+  danger?: boolean;
   className?: string;
   title?: string;
   type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
@@ -24,6 +25,7 @@ const Button: React.FC<ButtonProps> = ({
   secondary = false,
   outline = false,
   plain = false,
+  danger = false,
   type = "button",
   children,
   ...rest
@@ -38,6 +40,7 @@ const Button: React.FC<ButtonProps> = ({
         secondary,
         outline,
         plain,
+        danger,
       })}
     >
       {children || label}
