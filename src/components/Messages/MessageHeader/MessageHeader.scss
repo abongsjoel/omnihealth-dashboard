@@ -52,7 +52,16 @@
         font-size: 0.85rem;
         display: flex;
         align-items: center;
-        gap: 0.25rem;
+        gap: 0.5rem;
+
+        &.delete {
+          color: var(--danger);
+
+          &:hover {
+            color: var(--danger-hover);
+            // color: var(--warning);
+          }
+        }
       }
     }
   }

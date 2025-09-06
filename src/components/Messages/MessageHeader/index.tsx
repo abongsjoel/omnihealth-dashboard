@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-import { FiMoreVertical } from "react-icons/fi";
+import { FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
 
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
 import UserForm from "../UserForm";
 import Button from "../../common/Button";
 import Modal from "../../common/Modal";
-import Icon from "../../common/Icon";
 import Tooltip from "../../common/Tooltip";
 
 import "./MessageHeader.scss";
@@ -64,7 +63,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
                       className="btn-dropmenu"
                       onClick={handleAssignName}
                     >
-                      <Icon title="edit" size="sm" showOriginal />
+                      <FiEdit2 size={12} />
                       Edit User
                     </Button>
                   </Tooltip>
@@ -74,6 +73,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
                     plain
                     className="btn-dropmenu "
                   >
+                    <FiEdit2 size={12} />
                     Assign Name
                   </Button>
                 )}
@@ -82,8 +82,9 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
                 <Button
                   // onClick={handleAssignName}
                   plain
-                  className="btn-dropmenu "
+                  className="btn-dropmenu delete"
                 >
+                  <FiTrash2 size={12} />
                   Delete User
                 </Button>
               </li>
