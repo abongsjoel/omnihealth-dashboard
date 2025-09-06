@@ -1,11 +1,25 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, type EnhancedStore } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-
 import { usersApi } from "../../../redux/apis/usersApi";
 import authReducer from "../../../redux/slices/authSlice";
+
+// Global mock for usersApi and useAssignNameMutation
+vi.mock("../../../redux/apis/usersApi", async () => {
+  const actual = await vi.importActual<
+    typeof import("../../../redux/apis/usersApi")
+  >("../../../redux/apis/usersApi");
+  return {
+    ...actual,
+    useAssignNameMutation: () => [
+      vi.fn(() => ({ unwrap: vi.fn() })),
+      { isLoading: false },
+    ],
+    usersApi: actual.usersApi,
+  };
+});
 
 vi.mock("react-hot-toast", () => {
   const success = vi.fn();
@@ -22,21 +36,26 @@ vi.mock("react-hot-toast", () => {
   };
 });
 
-const setupUsersApiMock = (unwrapImpl: () => Promise<any>) => {
+const setupUsersApiMock = (unwrapImpl: () => Promise<unknown>) => {
   vi.doMock("../../../redux/apis/usersApi", async () => {
-    const actual = await vi.importActual("../../../redux/apis/usersApi");
+    const actual = await vi.importActual<
+      typeof import("../../../redux/apis/usersApi")
+    >("../../../redux/apis/usersApi");
     return {
       ...actual,
       useAssignNameMutation: () => [
         vi.fn(() => ({ unwrap: unwrapImpl })),
         { isLoading: false },
       ],
+      usersApi: actual.usersApi,
     };
   });
 };
 
-const renderForm = async (props = {}) => {
-  const store = configureStore({
+const renderForm = async (
+  props: Record<string, unknown> = {}
+): Promise<ReturnType<typeof render>> => {
+  const store: EnhancedStore = configureStore({
     reducer: {
       auth: authReducer,
       [usersApi.reducerPath]: usersApi.reducer,
@@ -60,12 +79,35 @@ describe("UserForm Component", () => {
     vi.resetModules();
   });
 
-  it("renders inputs and buttons", async () => {
+  it("renders inputs and buttons for Add", async () => {
     await renderForm({ title: "Add New User", action: "Add" });
     expect(screen.getByLabelText("User Name")).toBeInTheDocument();
     expect(screen.getByLabelText("Phone Number")).toBeInTheDocument();
     expect(screen.getByText("Cancel")).toBeInTheDocument();
     expect(screen.getByText("Add")).toBeInTheDocument();
+  });
+
+  it("renders inputs and buttons for Edit", async () => {
+    await renderForm({ title: "Edit User", action: "Edit" });
+    expect(screen.getByLabelText("User Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Phone Number")).toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
+  });
+
+  it("renders delete confirmation for Delete", async () => {
+    await renderForm({ action: "Delete" });
+    expect(screen.getByText("Delete User")).toBeInTheDocument();
+    expect(
+      screen.getByText(/This will permanently remove the user/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /and all associated chats. Are you sure you want to proceed?/i
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
+    expect(screen.getByText("Delete")).toBeInTheDocument();
   });
 
   it("validates empty fields and shows errors", async () => {
@@ -80,6 +122,24 @@ describe("UserForm Component", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows error when phone number length is invalid", async () => {
+    await renderForm({ title: "Add New User", action: "Add" });
+
+    fireEvent.change(screen.getByLabelText("User Name"), {
+      target: { value: "Shorty" },
+    });
+
+    fireEvent.change(screen.getByLabelText("Phone Number"), {
+      target: { value: "123" },
+    });
+
+    fireEvent.click(screen.getByText("Add"));
+
+    expect(
+      await screen.findByText(/phone number must be between 9 and 15 digits/i)
+    ).toBeInTheDocument();
+  });
+
   it("submits valid form and shows success toast", async () => {
     setupUsersApiMock(() =>
       Promise.resolve({
@@ -88,10 +148,10 @@ describe("UserForm Component", () => {
       })
     );
 
-    const { default: UserForm } = await import("../UserForm"); // dynamic import after mocking
+    const { default: UserForm } = await import("../UserForm");
     const mockClose = vi.fn();
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -134,7 +194,7 @@ describe("UserForm Component", () => {
 
     const { default: UserForm } = await import("../UserForm");
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -165,38 +225,21 @@ describe("UserForm Component", () => {
     });
   });
 
-  it("shows error when phone number length is invalid", async () => {
-    await renderForm({ title: "Add New User", action: "Add" });
-
-    // Valid name
-    fireEvent.change(screen.getByLabelText("User Name"), {
-      target: { value: "Shorty" },
-    });
-
-    // Invalid phone number: too short
-    fireEvent.change(screen.getByLabelText("Phone Number"), {
-      target: { value: "123" },
-    });
-
-    fireEvent.click(screen.getByText("Add"));
-
-    expect(
-      await screen.findByText(/phone number must be between 9 and 15 digits/i)
-    ).toBeInTheDocument();
-  });
-
   it("shows loading label on submit button when isLoading is true", async () => {
     vi.doMock("../../../redux/apis/usersApi", async () => {
-      const actual = await vi.importActual("../../../redux/apis/usersApi");
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
       return {
         ...actual,
         useAssignNameMutation: () => [vi.fn(), { isLoading: true }],
+        usersApi: actual.usersApi,
       };
     });
 
     const { default: UserForm } = await import("../UserForm");
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -212,5 +255,210 @@ describe("UserForm Component", () => {
     );
 
     expect(screen.getByText("Assigning")).toBeInTheDocument();
+  });
+
+  it("calls handleCloseModal and shows toast when Delete button is clicked", async () => {
+    const mockClose = vi.fn();
+
+    // Ensure isLoading is false for Delete action
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [
+          vi.fn(() => ({ unwrap: () => Promise.resolve({ success: true }) })),
+          { isLoading: false },
+        ],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
+
+    // Find the enabled "Delete" button and click it
+    const deleteBtn = screen.getByRole("button", { name: /^delete$/i });
+    expect(deleteBtn).not.toBeDisabled();
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(mockClose).toHaveBeenCalled();
+      expect(toast.success).toHaveBeenCalledWith(
+        "User profile for 237670000000 deleted."
+      );
+    });
+  });
+
+  it("calls handleCloseModal when Cancel is clicked", async () => {
+    const mockClose = vi.fn();
+    await renderForm({ action: "Delete", handleCloseModal: mockClose });
+    fireEvent.click(screen.getByText("Cancel"));
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  it('shows "Deleting" label on Delete button when isDeleting is true', async () => {
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [vi.fn(), { isLoading: true }],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={vi.fn()}
+        />
+      </Provider>
+    );
+
+    expect(screen.getByText("Deleting")).toBeInTheDocument();
+  });
+
+  it("shows error toast when Delete user fails", async () => {
+    const mockClose = vi.fn();
+
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [
+          vi.fn(() => ({
+            unwrap: () => Promise.reject(new Error("Network error")),
+          })),
+          { isLoading: false },
+        ],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
+
+    const deleteBtn = screen.getByRole("button", { name: /^delete$/i });
+    expect(deleteBtn).not.toBeDisabled();
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to delete user. Please try again."
+      );
+    });
+  });
+
+  it("shows error toast when Delete user returns success: false", async () => {
+    const mockClose = vi.fn();
+
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [
+          vi.fn(() => ({
+            unwrap: () => Promise.resolve({ success: false }),
+          })),
+          { isLoading: false },
+        ],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
+
+    const deleteBtn = screen.getByRole("button", { name: /^delete$/i });
+    expect(deleteBtn).not.toBeDisabled();
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to delete user. Please try again."
+      );
+    });
   });
 });

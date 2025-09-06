@@ -3,39 +3,67 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1rem;
   max-width: 350px;
+
+  .delete_user {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .warning_icon {
+      width: 40px;
+      height: 40px;
+      display: block;
+      margin: 0 auto 0.5rem auto;
+    }
+
+    .message {
+      font-size: 0.875rem;
+      color: var(--text-200);
+      margin-top: 0.5rem;
+      line-height: 1.15;
+
+      .user_name {
+        font-weight: 600;
+        color: var(--secondary);
+      }
+    }
+  }
 
   .title {
     font-size: 1rem;
     font-weight: 700;
+    margin-bottom: 0.5rem;
     color: var(--primary);
   }
 
   .main {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 
     .user_input {
       font-size: 0.75rem;
     }
+  }
 
-    .btn_container {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
+  .btn_container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 
-      .user_btn {
-        font-size: 0.75rem;
-        width: 100%;
-      }
-    }
-    .btn_cancel {
-      background-color: var(--gray-200);
-      color: var(--gray-500);
-      border: 1px solid var(--gray-200);
-      cursor: not-allowed;
+    .user_btn {
+      font-size: 0.75rem;
+      width: 100%;
     }
   }
+
+  // .btn_cancel {
+  //   background-color: var(--gray-200);
+  //   color: var(--gray-500);
+  //   border: 1px solid var(--gray-200);
+  //   cursor: not-allowed;
+  // }
 }

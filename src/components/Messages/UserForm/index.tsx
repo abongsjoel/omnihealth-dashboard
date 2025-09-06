@@ -3,7 +3,12 @@ import toast from "react-hot-toast";
 
 import Input from "../../common/Input";
 import Button from "../../common/Button";
-import { useAssignNameMutation } from "../../../redux/apis/usersApi";
+import {
+  useAssignNameMutation,
+  useDeleteUserMutation,
+} from "../../../redux/apis/usersApi";
+
+import warningIcon from "../../../assets/svgs/warning.svg";
 
 import type { User } from "../../../utils/types";
 
@@ -13,7 +18,7 @@ interface UserFormProps {
   title?: string;
   userId?: string;
   userName?: string;
-  action?: "Assign" | "Add" | "Edit";
+  action?: "Assign" | "Add" | "Edit" | "Delete";
   handleCloseModal?: () => void;
 }
 
@@ -50,6 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({
   handleCloseModal,
 }) => {
   const [assignName, { isLoading }] = useAssignNameMutation();
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const [form, setForm] = useState({ userName, userId });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -84,53 +90,99 @@ const UserForm: React.FC<UserFormProps> = ({
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const result = await deleteUser({ userId: form.userId }).unwrap();
+      if (result.success) {
+        if (handleCloseModal) {
+          handleCloseModal();
+        }
+        toast.success(`User profile for ${form.userId} deleted.`);
+      } else {
+        toast.error("Failed to delete user. Please try again.");
+      }
+    } catch (err) {
+      console.error("Failed to delete user:", err);
+      toast.error("Failed to delete user. Please try again.");
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="add_user_form">
-      <h2 className="title">{title}</h2>
-      <main className="main">
-        <Input
-          id="userName"
-          name="userName"
-          type="text"
-          label="User Name"
-          placeholder="Ngwa Lum"
-          value={form.userName}
-          onChange={handleChange}
-          error={errors.userName}
-          required
-          autoComplete="userName"
-          className="user_input"
+      {action === "Delete" ? (
+        <section className="delete_user">
+          <img src={warningIcon} alt="Warning" className="warning_icon" />
+          <div>
+            <h2 className="title">Delete User</h2>
+            <p className="message">
+              This will permanently remove the user{" "}
+              <span className="user_name">
+                {form.userName
+                  ? `${form.userName} (${form.userId})`
+                  : form.userId}
+              </span>{" "}
+              and all associated chats. Are you sure you want to proceed?
+            </p>
+          </div>
+        </section>
+      ) : (
+        <>
+          <h2 className="title">{title}</h2>
+          <main className="main">
+            <Input
+              id="userName"
+              name="userName"
+              type="text"
+              label="User Name"
+              placeholder="Ngwa Lum"
+              value={form.userName}
+              onChange={handleChange}
+              error={errors.userName}
+              required
+              autoComplete="userName"
+              className="user_input"
+            />
+            <Input
+              id="userId"
+              name="userId"
+              type="number"
+              label="Phone Number"
+              placeholder="237670312288"
+              value={form.userId}
+              onChange={handleChange}
+              error={errors.userId}
+              autoComplete="phone-number"
+              pattern="[0-9]{9,15}"
+              required
+              disabled={action !== "Add"}
+              className="user_input"
+            />
+          </main>
+        </>
+      )}
+      <footer className="btn_container">
+        <Button
+          label="Cancel"
+          onClick={handleCloseModal}
+          className="user_btn"
+          outline
         />
-        <Input
-          id="userId"
-          name="userId"
-          type="number"
-          label="Phone Number"
-          placeholder="237670312288"
-          value={form.userId}
-          onChange={handleChange}
-          error={errors.userId}
-          autoComplete="phone-number"
-          pattern="[0-9]{9,15}"
-          required
-          disabled={action !== "Add"}
-          className="user_input"
+        <Button
+          label={
+            action === "Delete"
+              ? isDeleting
+                ? "Deleting"
+                : "Delete"
+              : isLoading
+              ? `${action}ing`
+              : action
+          }
+          onClick={action === "Delete" ? handleDelete : handleSubmit}
+          className="user_btn"
+          danger={action === "Delete"}
+          disabled={action === "Delete" ? isDeleting : isLoading}
         />
-        <footer className="btn_container">
-          <Button
-            label="Cancel"
-            onClick={handleCloseModal}
-            className="user_btn"
-            outline
-          />
-          <Button
-            label={isLoading ? `${action}ing` : action}
-            onClick={handleSubmit}
-            className="user_btn"
-            disabled={isLoading}
-          />
-        </footer>
-      </main>
+      </footer>
     </form>
   );
 };

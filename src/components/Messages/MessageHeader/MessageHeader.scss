@@ -1,6 +1,6 @@
 .message-header {
   position: sticky;
-  top: 0;
+  top: 5px;
   background-color: var(--gray-300);
   padding: 0.65rem 1rem;
   border-bottom: 1px solid #e0e0e0;
@@ -29,15 +29,48 @@
   }
 
   .action {
-    display: inline-flex;
-    align-items: end;
-    justify-content: end;
     cursor: pointer;
-  }
+    position: relative;
 
-  .btn-add-user {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.5rem;
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      min-width: 140px;
+      z-index: 20;
+      margin: 0;
+      padding: 0.25rem 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+
+      .dropdown-item {
+        padding: 0.25rem 1rem;
+
+        &:hover {
+          background-color: var(--gray-100);
+        }
+      }
+
+      .btn-dropmenu {
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &.delete {
+          color: var(--danger);
+
+          &:hover {
+            color: var(--danger-hover);
+          }
+        }
+      }
+    }
   }
 }
 

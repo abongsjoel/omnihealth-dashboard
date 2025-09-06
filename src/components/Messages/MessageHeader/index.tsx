@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import { FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
 
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
 import UserForm from "../UserForm";
 import Button from "../../common/Button";
 import Modal from "../../common/Modal";
-import Icon from "../../common/Icon";
 import Tooltip from "../../common/Tooltip";
 
 import "./MessageHeader.scss";
@@ -16,12 +17,30 @@ interface MessageHeaderProps {
 const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   const { data: users = [] } = useGetUsersQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const user = users.find((u) => u.userId === selectedUserId);
+  const [action, setAction] = useState<"Assign" | "Edit" | "Delete">("Assign");
 
   const userName = user?.userName || "";
 
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen((v) => !v);
+  };
+
+  const handleDropdownClose = () => {
+    setIsDropdownOpen(false);
+  };
+
   const handleAssignName = () => {
+    setAction(userName ? "Edit" : "Assign");
+    handleDropdownClose();
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteUser = () => {
+    setAction("Delete");
+    handleDropdownClose();
     setIsModalOpen(true);
   };
 
@@ -29,7 +48,11 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
-  const action = userName ? "Edit" : "Assign";
+  useEffect(() => {
+    if (userName) {
+      setAction(userName ? "Edit" : "Assign");
+    }
+  }, [userName]);
 
   return (
     <>
@@ -39,25 +62,53 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           <h2 className="phone-number">{selectedUserId}</h2>
         </section>
         <section className="action">
-          {action === "Edit" ? (
-            <Tooltip message="Edit User Name" position="left">
-              <Icon
-                title="edit"
-                size="sm"
-                showOriginal
-                onClick={handleAssignName}
-              />
-            </Tooltip>
-          ) : (
-            <Button onClick={handleAssignName} className="btn-add-user">
-              Assign Name
-            </Button>
+          <Button plain onClick={handleDropdownToggle}>
+            <FiMoreVertical size={20} />
+          </Button>
+          {isDropdownOpen && (
+            <ul className="dropdown-menu">
+              <li className="dropdown-item">
+                {action === "Edit" ? (
+                  <Tooltip message="Edit User Name" position="left">
+                    <Button
+                      plain
+                      className="btn-dropmenu"
+                      onClick={handleAssignName}
+                    >
+                      <FiEdit2 size={12} />
+                      Edit Name
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip message="Assign User Name" position="left">
+                    <Button
+                      onClick={handleAssignName}
+                      plain
+                      className="btn-dropmenu "
+                    >
+                      <FiEdit2 size={12} />
+                      Assign Name
+                    </Button>
+                  </Tooltip>
+                )}
+              </li>
+              <li className="dropdown-item">
+                <Button
+                  onClick={handleDeleteUser}
+                  plain
+                  className="btn-dropmenu delete"
+                >
+                  <FiTrash2 size={12} />
+                  Delete User
+                </Button>
+              </li>
+            </ul>
           )}
         </section>
       </header>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <UserForm
-          title={`${action} Name`}
+          title={`${action} User Name`}
           action={action}
           userId={selectedUserId ?? ""}
           userName={userName}
