@@ -68,14 +68,16 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
                     </Button>
                   </Tooltip>
                 ) : (
-                  <Button
-                    onClick={handleAssignName}
-                    plain
-                    className="btn-dropmenu "
-                  >
-                    <FiEdit2 size={12} />
-                    Assign Name
-                  </Button>
+                  <Tooltip message="Assign User Name" position="left">
+                    <Button
+                      onClick={handleAssignName}
+                      plain
+                      className="btn-dropmenu "
+                    >
+                      <FiEdit2 size={12} />
+                      Assign Name
+                    </Button>
+                  </Tooltip>
                 )}
               </li>
               <li>

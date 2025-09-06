@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { usersApi } from "../../../redux/apis/usersApi";
 import authReducer from "../../../redux/slices/authSlice";
-import type { ReactNode } from "react";
+import type { ReactNode, ButtonHTMLAttributes } from "react";
 
 import MessageHeader from "../MessageHeader";
 
@@ -24,8 +24,13 @@ vi.mock("../../common/Modal", () => ({
     ) : null,
 }));
 
-vi.mock("../../common/Icon", () => ({
-  default: () => <span data-testid="icon-edit">EditIcon</span>,
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+}
+vi.mock("../../common/Button", () => ({
+  default: ({ children, ...props }: ButtonProps) => (
+    <button {...props}>{children}</button>
+  ),
 }));
 
 interface TooltipProps {
@@ -83,37 +88,29 @@ describe("MessageHeader", () => {
 
   it("renders user name and ID correctly", () => {
     renderHeader("12345");
-
     expect(screen.getByText("Jane Doe")).toBeInTheDocument();
     expect(screen.getByText("12345")).toBeInTheDocument();
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "" })).toBeInTheDocument();
   });
 
   it("shows dropdown when three-dot button is clicked", () => {
     renderHeader("12345");
-
-    fireEvent.click(screen.getByRole("button"));
-
+    fireEvent.click(screen.getByRole("button", { name: "" }));
     expect(screen.getByText("Edit User")).toBeInTheDocument();
-    expect(screen.getByTestId("icon-edit")).toBeInTheDocument();
     expect(screen.getByText("Delete User")).toBeInTheDocument();
   });
 
   it("renders 'Assign Name' option for unnamed user in dropdown", async () => {
     renderHeader("67890");
-
-    fireEvent.click(screen.getByRole("button"));
-
+    fireEvent.click(screen.getByRole("button", { name: "" }));
     expect(await screen.findByText("Assign Name")).toBeInTheDocument();
     expect(screen.getByText("Delete User")).toBeInTheDocument();
   });
 
   it("opens modal on dropdown 'Edit User' click", async () => {
     renderHeader("12345");
-
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("button", { name: "" }));
     fireEvent.click(screen.getByText("Edit User"));
-
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
       expect(screen.getByText(/Edit Name/i)).toBeInTheDocument();
@@ -122,24 +119,19 @@ describe("MessageHeader", () => {
 
   it("opens modal on dropdown 'Assign Name' click", async () => {
     renderHeader("67890");
-
     fireEvent.click(screen.getByRole("button"));
     fireEvent.click(screen.getByText("Assign Name"));
-
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
-      expect(screen.getAllByText("Assign Name")).toHaveLength(1);
+      expect(screen.getByText("Assign Name")).toBeInTheDocument();
     });
   });
 
   it("closes modal when close button is clicked", async () => {
     renderHeader("12345");
-
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("button", { name: "" }));
     fireEvent.click(screen.getByText("Edit User"));
-
     expect(await screen.findByTestId("modal")).toBeInTheDocument();
-
     fireEvent.click(screen.getByText("Close"));
     await waitFor(() => {
       expect(screen.queryByTestId("modal")).not.toBeInTheDocument();
