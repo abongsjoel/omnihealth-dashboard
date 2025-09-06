@@ -99,7 +99,12 @@ describe("UserForm Component", () => {
     await renderForm({ action: "Delete" });
     expect(screen.getByText("Delete User")).toBeInTheDocument();
     expect(
-      screen.getByText(/permanently remove the user profile/i)
+      screen.getByText(/This will permanently remove the user/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /and all associated chats. Are you sure you want to proceed?/i
+      )
     ).toBeInTheDocument();
     expect(screen.getByText("Cancel")).toBeInTheDocument();
     expect(screen.getByText("Delete")).toBeInTheDocument();
@@ -263,6 +268,10 @@ describe("UserForm Component", () => {
       return {
         ...actual,
         useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [
+          vi.fn(() => ({ unwrap: () => Promise.resolve({ success: true }) })),
+          { isLoading: false },
+        ],
         usersApi: actual.usersApi,
       };
     });
