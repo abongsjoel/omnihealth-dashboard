@@ -3,9 +3,21 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-
 import { usersApi } from "../../../redux/apis/usersApi";
 import authReducer from "../../../redux/slices/authSlice";
+
+// Global mock for usersApi and useAssignNameMutation
+vi.mock("../../../redux/apis/usersApi", async () => {
+  const actual = await vi.importActual("../../../redux/apis/usersApi");
+  return {
+    ...actual,
+    useAssignNameMutation: () => [
+      vi.fn(() => ({ unwrap: vi.fn() })),
+      { isLoading: false },
+    ],
+    usersApi: actual.usersApi,
+  };
+});
 
 vi.mock("react-hot-toast", () => {
   const success = vi.fn();
@@ -31,6 +43,7 @@ const setupUsersApiMock = (unwrapImpl: () => Promise<any>) => {
         vi.fn(() => ({ unwrap: unwrapImpl })),
         { isLoading: false },
       ],
+      usersApi: actual.usersApi,
     };
   });
 };
@@ -60,12 +73,30 @@ describe("UserForm Component", () => {
     vi.resetModules();
   });
 
-  it("renders inputs and buttons", async () => {
+  it("renders inputs and buttons for Add", async () => {
     await renderForm({ title: "Add New User", action: "Add" });
     expect(screen.getByLabelText("User Name")).toBeInTheDocument();
     expect(screen.getByLabelText("Phone Number")).toBeInTheDocument();
     expect(screen.getByText("Cancel")).toBeInTheDocument();
     expect(screen.getByText("Add")).toBeInTheDocument();
+  });
+
+  it("renders inputs and buttons for Edit", async () => {
+    await renderForm({ title: "Edit User", action: "Edit" });
+    expect(screen.getByLabelText("User Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Phone Number")).toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
+  });
+
+  it("renders delete confirmation for Delete", async () => {
+    await renderForm({ action: "Delete" });
+    expect(screen.getByText("Delete User")).toBeInTheDocument();
+    expect(
+      screen.getByText(/permanently remove the user profile/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
+    expect(screen.getByText("Delete")).toBeInTheDocument();
   });
 
   it("validates empty fields and shows errors", async () => {
@@ -80,6 +111,24 @@ describe("UserForm Component", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows error when phone number length is invalid", async () => {
+    await renderForm({ title: "Add New User", action: "Add" });
+
+    fireEvent.change(screen.getByLabelText("User Name"), {
+      target: { value: "Shorty" },
+    });
+
+    fireEvent.change(screen.getByLabelText("Phone Number"), {
+      target: { value: "123" },
+    });
+
+    fireEvent.click(screen.getByText("Add"));
+
+    expect(
+      await screen.findByText(/phone number must be between 9 and 15 digits/i)
+    ).toBeInTheDocument();
+  });
+
   it("submits valid form and shows success toast", async () => {
     setupUsersApiMock(() =>
       Promise.resolve({
@@ -88,7 +137,7 @@ describe("UserForm Component", () => {
       })
     );
 
-    const { default: UserForm } = await import("../UserForm"); // dynamic import after mocking
+    const { default: UserForm } = await import("../UserForm");
     const mockClose = vi.fn();
 
     const store = configureStore({
@@ -165,32 +214,13 @@ describe("UserForm Component", () => {
     });
   });
 
-  it("shows error when phone number length is invalid", async () => {
-    await renderForm({ title: "Add New User", action: "Add" });
-
-    // Valid name
-    fireEvent.change(screen.getByLabelText("User Name"), {
-      target: { value: "Shorty" },
-    });
-
-    // Invalid phone number: too short
-    fireEvent.change(screen.getByLabelText("Phone Number"), {
-      target: { value: "123" },
-    });
-
-    fireEvent.click(screen.getByText("Add"));
-
-    expect(
-      await screen.findByText(/phone number must be between 9 and 15 digits/i)
-    ).toBeInTheDocument();
-  });
-
   it("shows loading label on submit button when isLoading is true", async () => {
     vi.doMock("../../../redux/apis/usersApi", async () => {
       const actual = await vi.importActual("../../../redux/apis/usersApi");
       return {
         ...actual,
         useAssignNameMutation: () => [vi.fn(), { isLoading: true }],
+        usersApi: actual.usersApi,
       };
     });
 
@@ -212,5 +242,60 @@ describe("UserForm Component", () => {
     );
 
     expect(screen.getByText("Assigning")).toBeInTheDocument();
+  });
+
+  it("calls handleCloseModal and shows toast when Delete button is clicked", async () => {
+    const mockClose = vi.fn();
+
+    // Ensure isLoading is false for Delete action
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
+
+    // Find the enabled "Delete" button and click it
+    const deleteBtn = screen.getByRole("button", { name: /^delete$/i });
+    expect(deleteBtn).not.toBeDisabled();
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(mockClose).toHaveBeenCalled();
+      expect(toast.success).toHaveBeenCalledWith(
+        "User profile for 237670000000 deleted."
+      );
+    });
+  });
+
+  it("calls handleCloseModal when Cancel is clicked", async () => {
+    const mockClose = vi.fn();
+    await renderForm({ action: "Delete", handleCloseModal: mockClose });
+    fireEvent.click(screen.getByText("Cancel"));
+    expect(mockClose).toHaveBeenCalled();
   });
 });
