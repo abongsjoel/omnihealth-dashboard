@@ -317,4 +317,148 @@ describe("UserForm Component", () => {
     fireEvent.click(screen.getByText("Cancel"));
     expect(mockClose).toHaveBeenCalled();
   });
+
+  it('shows "Deleting" label on Delete button when isDeleting is true', async () => {
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [vi.fn(), { isLoading: true }],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={vi.fn()}
+        />
+      </Provider>
+    );
+
+    expect(screen.getByText("Deleting")).toBeInTheDocument();
+  });
+
+  it("shows error toast when Delete user fails", async () => {
+    const mockClose = vi.fn();
+
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [
+          vi.fn(() => ({
+            unwrap: () => Promise.reject(new Error("Network error")),
+          })),
+          { isLoading: false },
+        ],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
+
+    const deleteBtn = screen.getByRole("button", { name: /^delete$/i });
+    expect(deleteBtn).not.toBeDisabled();
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to delete user. Please try again."
+      );
+    });
+  });
+
+  it("shows error toast when Delete user returns success: false", async () => {
+    const mockClose = vi.fn();
+
+    vi.doMock("../../../redux/apis/usersApi", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
+      return {
+        ...actual,
+        useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
+        useDeleteUserMutation: () => [
+          vi.fn(() => ({
+            unwrap: () => Promise.resolve({ success: false }),
+          })),
+          { isLoading: false },
+        ],
+        usersApi: actual.usersApi,
+      };
+    });
+
+    const { default: UserForm } = await import("../UserForm");
+
+    const store: EnhancedStore = configureStore({
+      reducer: {
+        auth: authReducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(usersApi.middleware),
+    });
+
+    render(
+      <Provider store={store}>
+        <UserForm
+          userName="Test"
+          userId="237670000000"
+          action="Delete"
+          handleCloseModal={mockClose}
+        />
+      </Provider>
+    );
+
+    const deleteBtn = screen.getByRole("button", { name: /^delete$/i });
+    expect(deleteBtn).not.toBeDisabled();
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to delete user. Please try again."
+      );
+    });
+  });
 });

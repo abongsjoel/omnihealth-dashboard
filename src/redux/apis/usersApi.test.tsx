@@ -30,7 +30,13 @@ const server = setupServer(
       const body = (await request.json()) as User;
       return HttpResponse.json({ success: true, user: body });
     }
-  )
+  ),
+  http.delete("http://localhost:3000/api/users/:userId", ({ params }) => {
+    if (params.userId === "u1") {
+      return HttpResponse.json({ success: true });
+    }
+    return HttpResponse.json({ success: false });
+  })
 );
 
 beforeAll(() => server.listen());
@@ -107,5 +113,43 @@ describe("usersApi", () => {
 
     expect(response.success).toBe(true);
     expect(response.user.userName).toBe("Updated Alice");
+  });
+
+  it("deletes a user successfully", async () => {
+    const store = makeStore();
+
+    const { result } = renderHook(
+      () => usersApi.endpoints.deleteUser.useMutation(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    const [deleteUser] = result.current;
+
+    const response = await deleteUser({ userId: "u1" }).unwrap();
+
+    expect(response.success).toBe(true);
+  });
+
+  it("returns success: false when user deletion fails", async () => {
+    const store = makeStore();
+
+    const { result } = renderHook(
+      () => usersApi.endpoints.deleteUser.useMutation(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      }
+    );
+
+    const [deleteUser] = result.current;
+
+    const response = await deleteUser({ userId: "nonexistent" }).unwrap();
+
+    expect(response.success).toBe(false);
   });
 });
