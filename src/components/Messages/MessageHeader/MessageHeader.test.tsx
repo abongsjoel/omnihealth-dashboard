@@ -137,4 +137,14 @@ describe("MessageHeader", () => {
       expect(screen.queryByTestId("modal")).not.toBeInTheDocument();
     });
   });
+
+  it("opens modal on dropdown 'Delete User' click", async () => {
+    renderHeader("12345");
+    fireEvent.click(screen.getByRole("button")); // open dropdown
+    fireEvent.click(screen.getByText("Delete User")); // click delete
+    await waitFor(() => {
+      expect(screen.getByTestId("modal")).toBeInTheDocument();
+      expect(screen.getByText("Delete User")).toBeInTheDocument();
+    });
+  });
 });
