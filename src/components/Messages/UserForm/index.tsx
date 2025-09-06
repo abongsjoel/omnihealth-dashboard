@@ -13,7 +13,7 @@ interface UserFormProps {
   title?: string;
   userId?: string;
   userName?: string;
-  action?: "Assign" | "Add" | "Edit";
+  action?: "Assign" | "Add" | "Edit" | "Delete";
   handleCloseModal?: () => void;
 }
 
@@ -116,21 +116,21 @@ const UserForm: React.FC<UserFormProps> = ({
           disabled={action !== "Add"}
           className="user_input"
         />
-        <footer className="btn_container">
-          <Button
-            label="Cancel"
-            onClick={handleCloseModal}
-            className="user_btn"
-            outline
-          />
-          <Button
-            label={isLoading ? `${action}ing` : action}
-            onClick={handleSubmit}
-            className="user_btn"
-            disabled={isLoading}
-          />
-        </footer>
       </main>
+      <footer className="btn_container">
+        <Button
+          label="Cancel"
+          onClick={handleCloseModal}
+          className="user_btn"
+          outline
+        />
+        <Button
+          label={isLoading ? `${action}ing` : action}
+          onClick={handleSubmit}
+          className="user_btn"
+          disabled={isLoading}
+        />
+      </footer>
     </form>
   );
 };
