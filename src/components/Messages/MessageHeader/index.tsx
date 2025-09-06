@@ -55,7 +55,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
           </Button>
           {isDropdownOpen && (
             <ul className="dropdown-menu">
-              <li>
+              <li className="dropdown-item">
                 {action === "Edit" ? (
                   <Tooltip message="Edit User Name" position="left">
                     <Button
@@ -80,7 +80,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
                   </Tooltip>
                 )}
               </li>
-              <li>
+              <li className="dropdown-item">
                 <Button
                   // onClick={handleAssignName}
                   plain
