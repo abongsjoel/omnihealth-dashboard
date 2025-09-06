@@ -1,14 +1,16 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, type EnhancedStore } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import { usersApi } from "../../../redux/apis/usersApi";
 import authReducer from "../../../redux/slices/authSlice";
 
 // Global mock for usersApi and useAssignNameMutation
 vi.mock("../../../redux/apis/usersApi", async () => {
-  const actual = await vi.importActual("../../../redux/apis/usersApi");
+  const actual = await vi.importActual<
+    typeof import("../../../redux/apis/usersApi")
+  >("../../../redux/apis/usersApi");
   return {
     ...actual,
     useAssignNameMutation: () => [
@@ -34,9 +36,11 @@ vi.mock("react-hot-toast", () => {
   };
 });
 
-const setupUsersApiMock = (unwrapImpl: () => Promise<any>) => {
+const setupUsersApiMock = (unwrapImpl: () => Promise<unknown>) => {
   vi.doMock("../../../redux/apis/usersApi", async () => {
-    const actual = await vi.importActual("../../../redux/apis/usersApi");
+    const actual = await vi.importActual<
+      typeof import("../../../redux/apis/usersApi")
+    >("../../../redux/apis/usersApi");
     return {
       ...actual,
       useAssignNameMutation: () => [
@@ -48,8 +52,10 @@ const setupUsersApiMock = (unwrapImpl: () => Promise<any>) => {
   });
 };
 
-const renderForm = async (props = {}) => {
-  const store = configureStore({
+const renderForm = async (
+  props: Record<string, unknown> = {}
+): Promise<ReturnType<typeof render>> => {
+  const store: EnhancedStore = configureStore({
     reducer: {
       auth: authReducer,
       [usersApi.reducerPath]: usersApi.reducer,
@@ -140,7 +146,7 @@ describe("UserForm Component", () => {
     const { default: UserForm } = await import("../UserForm");
     const mockClose = vi.fn();
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -183,7 +189,7 @@ describe("UserForm Component", () => {
 
     const { default: UserForm } = await import("../UserForm");
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -216,7 +222,9 @@ describe("UserForm Component", () => {
 
   it("shows loading label on submit button when isLoading is true", async () => {
     vi.doMock("../../../redux/apis/usersApi", async () => {
-      const actual = await vi.importActual("../../../redux/apis/usersApi");
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
       return {
         ...actual,
         useAssignNameMutation: () => [vi.fn(), { isLoading: true }],
@@ -226,7 +234,7 @@ describe("UserForm Component", () => {
 
     const { default: UserForm } = await import("../UserForm");
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -249,7 +257,9 @@ describe("UserForm Component", () => {
 
     // Ensure isLoading is false for Delete action
     vi.doMock("../../../redux/apis/usersApi", async () => {
-      const actual = await vi.importActual("../../../redux/apis/usersApi");
+      const actual = await vi.importActual<
+        typeof import("../../../redux/apis/usersApi")
+      >("../../../redux/apis/usersApi");
       return {
         ...actual,
         useAssignNameMutation: () => [vi.fn(), { isLoading: false }],
@@ -259,7 +269,7 @@ describe("UserForm Component", () => {
 
     const { default: UserForm } = await import("../UserForm");
 
-    const store = configureStore({
+    const store: EnhancedStore = configureStore({
       reducer: {
         auth: authReducer,
         [usersApi.reducerPath]: usersApi.reducer,
