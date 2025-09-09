@@ -7,10 +7,11 @@ import {
   useAssignNameMutation,
   useDeleteUserMutation,
 } from "../../../redux/apis/usersApi";
+import { updateSelectedUser } from "../../../redux/slices/usersSlice";
+import { useAppDispatch } from "../../../redux/hooks";
+import type { User } from "../../../utils/types";
 
 import warningIcon from "../../../assets/svgs/warning.svg";
-
-import type { User } from "../../../utils/types";
 
 import "./UserForm.scss";
 
@@ -54,6 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({
   action = "Assign",
   handleCloseModal,
 }) => {
+  const dispatch = useAppDispatch();
   const [assignName, { isLoading }] = useAssignNameMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
@@ -92,12 +94,18 @@ const UserForm: React.FC<UserFormProps> = ({
 
   const handleDelete = async () => {
     try {
-      const result = await deleteUser({ userId: form.userId }).unwrap();
+      const result = await deleteUser({ userId }).unwrap();
       if (result.success) {
         if (handleCloseModal) {
           handleCloseModal();
         }
-        toast.success(`User profile for ${form.userId} deleted.`);
+        // Display empty chat after user deletion
+        dispatch(updateSelectedUser(null));
+        toast.success(
+          `User profile for ${
+            userName ? `${userName} (${userId})` : userId
+          } deleted.`
+        );
       } else {
         toast.error("Failed to delete user. Please try again.");
       }
@@ -117,9 +125,7 @@ const UserForm: React.FC<UserFormProps> = ({
             <p className="message">
               This will permanently remove the user{" "}
               <span className="user_name">
-                {form.userName
-                  ? `${form.userName} (${form.userId})`
-                  : form.userId}
+                <b>{userName ? `${userName} (${userId})` : userId}</b>
               </span>{" "}
               and all associated chats. Are you sure you want to proceed?
             </p>

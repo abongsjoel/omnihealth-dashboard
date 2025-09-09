@@ -306,7 +306,7 @@ describe("UserForm Component", () => {
     await waitFor(() => {
       expect(mockClose).toHaveBeenCalled();
       expect(toast.success).toHaveBeenCalledWith(
-        "User profile for 237670000000 deleted."
+        "User profile for Test (237670000000) deleted."
       );
     });
   });
