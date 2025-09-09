@@ -1,11 +1,10 @@
+import type { ReactNode, ButtonHTMLAttributes } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { usersApi } from "../../../redux/apis/usersApi";
 import authReducer from "../../../redux/slices/authSlice";
-import type { ReactNode, ButtonHTMLAttributes } from "react";
-
 import MessageHeader from "../MessageHeader";
 
 // Mock modal-related components to prevent actual DOM complexity
@@ -52,7 +51,7 @@ vi.mock("react-hot-toast", () => {
 // Mock getUsers query response
 const mockUsers = [
   { userId: "12345", userName: "Jane Doe" },
-  { userId: "67890", userName: "" }, // No name yet
+  { userId: "67890", userName: "" },
 ];
 
 vi.mock("../../../redux/apis/usersApi", async () => {
@@ -146,5 +145,34 @@ describe("MessageHeader", () => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
       expect(screen.getByText("Delete User")).toBeInTheDocument();
     });
+  });
+
+  it("closes dropdown when clicking outside the dropdown", async () => {
+    renderHeader("12345");
+    // Open dropdown
+    fireEvent.click(screen.getByRole("button", { name: "" }));
+    expect(screen.getByText("Edit Name")).toBeInTheDocument();
+
+    // Simulate click outside dropdown
+    fireEvent.mouseDown(document.body);
+
+    await waitFor(() => {
+      expect(screen.queryByText("Edit Name")).not.toBeInTheDocument();
+      expect(screen.queryByText("Delete User")).not.toBeInTheDocument();
+    });
+  });
+
+  it("does not close dropdown when clicking inside the dropdown", async () => {
+    renderHeader("12345");
+    // Open dropdown
+    fireEvent.click(screen.getByRole("button", { name: "" }));
+    expect(screen.getByText("Edit Name")).toBeInTheDocument();
+
+    // Click inside dropdown (on Edit Name)
+    fireEvent.mouseDown(screen.getByText("Edit Name"));
+
+    // Dropdown should still be open
+    expect(screen.getByText("Edit Name")).toBeInTheDocument();
+    expect(screen.getByText("Delete User")).toBeInTheDocument();
   });
 });
