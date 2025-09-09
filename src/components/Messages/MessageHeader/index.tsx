@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
 
@@ -18,6 +18,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   const { data: users = [] } = useGetUsersQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLUListElement>(null);
 
   const user = users.find((u) => u.userId === selectedUserId);
   const [action, setAction] = useState<"Assign" | "Edit" | "Delete">("Assign");
@@ -54,6 +55,24 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     }
   }, [userName]);
 
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        handleDropdownClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
   return (
     <>
       <header className="message-header">
@@ -66,7 +85,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
             <FiMoreVertical size={20} />
           </Button>
           {isDropdownOpen && (
-            <ul className="dropdown-menu">
+            <ul className="dropdown-menu" ref={dropdownRef}>
               <li className="dropdown-item">
                 {action === "Edit" ? (
                   <Tooltip message="Edit User Name" position="left">
