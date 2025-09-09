@@ -21,7 +21,7 @@ const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    updateSelectedUser: (state, action: PayloadAction<User>) => {
+    updateSelectedUser: (state, action: PayloadAction<User | null>) => {
       state.selectedUser = action.payload;
     },
   },

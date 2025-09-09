@@ -7,10 +7,11 @@ import {
   useAssignNameMutation,
   useDeleteUserMutation,
 } from "../../../redux/apis/usersApi";
+import { updateSelectedUser } from "../../../redux/slices/usersSlice";
+import { useAppDispatch } from "../../../redux/hooks";
+import type { User } from "../../../utils/types";
 
 import warningIcon from "../../../assets/svgs/warning.svg";
-
-import type { User } from "../../../utils/types";
 
 import "./UserForm.scss";
 
@@ -54,6 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({
   action = "Assign",
   handleCloseModal,
 }) => {
+  const dispatch = useAppDispatch();
   const [assignName, { isLoading }] = useAssignNameMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
@@ -97,6 +99,7 @@ const UserForm: React.FC<UserFormProps> = ({
         if (handleCloseModal) {
           handleCloseModal();
         }
+        dispatch(updateSelectedUser(null));
         toast.success(`User profile for ${form.userId} deleted.`);
       } else {
         toast.error("Failed to delete user. Please try again.");
