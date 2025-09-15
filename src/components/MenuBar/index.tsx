@@ -36,7 +36,7 @@ const MenuBar: React.FC = () => {
     <nav className="menu_bar" data-testid="menu_bar">
       <Logo />
 
-      <ul className="menu_items">
+      {/* <ul className="menu_items">
         {menuItems.map(({ label, path }) => (
           <li
             key={path}
@@ -49,7 +49,18 @@ const MenuBar: React.FC = () => {
             {label}
           </li>
         ))}
-      </ul>
+      </ul> */}
+
+      <section>
+        {menuItems.find((item) => item.path === currentPath) && (
+          <p className="current_page" data-testid="current_page">
+            {
+              menuItems.find((item) => item.path === currentPath)
+                ?.label /* Safe to use non-null assertion as we check existence above */
+            }
+          </p>
+        )}
+      </section>
 
       <section className="welcome_container">
         <p className="welcome_message">
