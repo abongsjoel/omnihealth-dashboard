@@ -3,7 +3,7 @@ import type { IconName } from "../assets/icons/iconLib";
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
-  timestamp: Date | string | number;
+  timestamp: Date | string;
   agent: string;
   read?: boolean; // Optional read status, defaults to false for new messages
 }

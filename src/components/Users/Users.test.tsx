@@ -164,7 +164,7 @@ describe("Users Component", () => {
           role: "user",
           agent: "user",
         },
-      ] as LastMessage[],
+      ] as unknown as LastMessage[],
       isLoading: false,
       error: undefined,
     });
@@ -221,7 +221,7 @@ describe("Users Component", () => {
           role: "user",
           agent: "user",
         },
-      ] as LastMessage[],
+      ] as unknown as LastMessage[],
       isLoading: false,
       error: undefined,
     });
