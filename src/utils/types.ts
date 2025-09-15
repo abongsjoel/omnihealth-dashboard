@@ -8,6 +8,10 @@ export interface ChatMessage {
   read?: boolean; // Optional read status, defaults to false for new messages
 }
 
+export interface LastMessage extends ChatMessage {
+  userId: string;
+}
+
 export interface User {
   userId: string;
   userName: string;

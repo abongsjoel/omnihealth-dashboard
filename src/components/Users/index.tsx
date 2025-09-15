@@ -1,10 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
-import {
-  useGetUserIdsQuery,
-  useGetUsersQuery,
-} from "../../redux/apis/usersApi";
+import { useGetUsersQuery } from "../../redux/apis/usersApi";
+import { useGetLastMessagesQuery } from "../../redux/apis/messagesApi";
 import {
   selectSelectedUser,
   updateSelectedUser,
@@ -25,10 +23,10 @@ const Users: React.FC = () => {
   const selectedUser = useAppSelector(selectSelectedUser);
 
   const {
-    data: userIds = [],
-    isLoading: isLoadingIds,
-    error: errorIds,
-  } = useGetUserIdsQuery(undefined, {
+    data: lastMessages = [],
+    isLoading: isLoadingLastMessages,
+    error: errorLastMessages,
+  } = useGetLastMessagesQuery(undefined, {
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnReconnect: true,
@@ -43,40 +41,54 @@ const Users: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isLoading = useMemo(
-    () => isLoadingIds || isLoadingUsers,
-    [isLoadingIds, isLoadingUsers]
+    () => isLoadingLastMessages || isLoadingUsers,
+    [isLoadingLastMessages, isLoadingUsers]
   );
-  const error = useMemo(() => errorIds || errorUsers, [errorIds, errorUsers]);
+  const error = useMemo(
+    () => errorLastMessages || errorUsers,
+    [errorLastMessages, errorUsers]
+  );
 
   const usersList = useMemo(() => {
-    const userMap = new Map<string, string>();
+    const updatedList = lastMessages.map((msg) => {
+      const user = users.find((u) => u.userId === msg.userId);
 
-    // Add all known users (with userName)
-    for (const user of users || []) {
-      userMap.set(user.userId, user.userName);
-    }
+      // Normalize timestamp to a number for consistent sorting and typing.
+      const ts =
+        typeof msg.timestamp === "number"
+          ? msg.timestamp
+          : msg.timestamp instanceof Date
+          ? msg.timestamp.getTime()
+          : Date.parse(String(msg.timestamp));
 
-    // Add all userIds (preserve existing userNames, or add blank)
-    for (const id of userIds || []) {
-      if (!userMap.has(id)) {
-        userMap.set(id, "");
-      }
-    }
-
-    // Convert to array
-    const merged = Array.from(userMap.entries()).map(([userId, userName]) => ({
-      userId,
-      userName,
-    }));
-
-    // Sort: named users A–Z, unnamed at the end
-    return merged.sort((a, b) => {
-      if (!a.userName && !b.userName) return 0;
-      if (!a.userName) return 1;
-      if (!b.userName) return -1;
-      return a.userName.localeCompare(b.userName);
+      return {
+        userId: msg.userId,
+        userName: user ? user.userName : "",
+        lastMessageTimeStamp: Number.isFinite(ts) ? (ts as number) : 0, // ensure a number
+      };
     });
-  }, [userIds, users]);
+
+    // Remove duplicates (in case lastMessages has multiple entries for same userId)
+    const uniqueMap = new Map<
+      string,
+      { userId: string; userName: string; lastMessageTimeStamp: number }
+    >();
+    updatedList.forEach((u) => {
+      if (!uniqueMap.has(u.userId)) {
+        uniqueMap.set(u.userId, u);
+      }
+    });
+
+    // Convert map back to array
+    const uniqueList = Array.from(uniqueMap.values()).filter(
+      (u) => u.userId !== "WEB_SIMULATION"
+    );
+
+    // Sort by lastMessageTimeStamp descending (newest first)
+    uniqueList.sort((a, b) => b.lastMessageTimeStamp - a.lastMessageTimeStamp);
+
+    return uniqueList;
+  }, [users, lastMessages]);
 
   const handleAddUserClick = () => {
     setIsModalOpen(true);
@@ -107,16 +119,14 @@ const Users: React.FC = () => {
             message="Please check your connection or try again shortly."
           />
         ) : (
-          usersList
-            .filter((u) => u.userId !== "WEB_SIMULATION")
-            .map((usr) => (
-              <UserItem
-                key={usr.userId}
-                user={usr}
-                isSelected={selectedUser?.userId === usr.userId}
-                onSelect={() => dispatch(updateSelectedUser(usr))}
-              />
-            ))
+          usersList.map((usr) => (
+            <UserItem
+              key={usr.userId}
+              user={usr}
+              isSelected={selectedUser?.userId === usr.userId}
+              onSelect={() => dispatch(updateSelectedUser(usr))}
+            />
+          ))
         )}
       </section>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
