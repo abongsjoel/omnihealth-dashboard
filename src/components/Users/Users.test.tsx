@@ -235,4 +235,78 @@ describe("Users Component", () => {
       lastMessageTimeStamp: 3000,
     });
   });
+
+  it("normalizes Date object timestamps and sorts correctly", () => {
+    mockUseGetUsersQuery.mockReturnValue({
+      data: [
+        { userId: "a", userName: "Alice" },
+        { userId: "b", userName: "Bob" },
+      ] as User[],
+      isLoading: false,
+      error: undefined,
+    });
+    mockUseGetLastMessagesQuery.mockReturnValue({
+      data: [
+        {
+          userId: "a",
+          content: "msgA",
+          timestamp: new Date("2025-01-01T12:00:00Z"), // Date instance
+          role: "user",
+          agent: "user",
+        },
+        {
+          userId: "b",
+          content: "msgB",
+          timestamp: new Date("2025-01-02T12:00:00Z"), // later date
+          role: "user",
+          agent: "user",
+        },
+      ] as LastMessage[],
+      isLoading: false,
+      error: undefined,
+    });
+
+    renderWithStore(<Users />);
+    const items = screen.getAllByTestId(/user_item_/);
+    // Should be sorted desc by timestamp: b then a
+    expect(items[0]).toHaveTextContent("Bob");
+    expect(items[1]).toHaveTextContent("Alice");
+  });
+
+  it("parses string timestamps with Date.parse and sorts correctly", () => {
+    mockUseGetUsersQuery.mockReturnValue({
+      data: [
+        { userId: "x", userName: "Xavier" },
+        { userId: "y", userName: "Yvonne" },
+      ] as User[],
+      isLoading: false,
+      error: undefined,
+    });
+    mockUseGetLastMessagesQuery.mockReturnValue({
+      data: [
+        {
+          userId: "x",
+          content: "msgX",
+          timestamp: "2025-01-03T00:00:00Z", // ISO string
+          role: "user",
+          agent: "user",
+        },
+        {
+          userId: "y",
+          content: "msgY",
+          timestamp: "2025-01-01T00:00:00Z", // earlier
+          role: "user",
+          agent: "user",
+        },
+      ] as LastMessage[],
+      isLoading: false,
+      error: undefined,
+    });
+
+    renderWithStore(<Users />);
+    const items = screen.getAllByTestId(/user_item_/);
+    // Should be sorted desc by parsed timestamp: x then y
+    expect(items[0]).toHaveTextContent("Xavier");
+    expect(items[1]).toHaveTextContent("Yvonne");
+  });
 });
