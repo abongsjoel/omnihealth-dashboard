@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { ChatMessage } from "../../utils/types";
+import type { ChatMessage, LastMessage } from "../../utils/types";
 
 export interface Message {
   to: string;
@@ -18,6 +18,10 @@ export const messagesApi = createApi({
       query: (userId) => `/api/messages/${userId}`,
       providesTags: (_, __, userId) =>
         userId ? [{ type: "Messages", id: userId }] : [],
+    }),
+    getLastMessages: builder.query<LastMessage[], void>({
+      query: () => "/api/messages/last-messages",
+      providesTags: ["Messages"],
     }),
     sendMessage: builder.mutation<void, Message>({
       query: ({ to, message, agent }) => ({
@@ -39,4 +43,4 @@ export const messagesApi = createApi({
   }),
 });
 
-export const { useGetUserMessagesQuery, useSendMessageMutation, useMarkMessagesAsReadMutation } = messagesApi;
+export const { useGetUserMessagesQuery, useSendMessageMutation, useMarkMessagesAsReadMutation, useGetLastMessagesQuery } = messagesApi;
