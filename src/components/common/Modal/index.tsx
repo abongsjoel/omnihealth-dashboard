@@ -1,4 +1,6 @@
 import React from "react";
+import { createPortal } from "react-dom";
+
 import Button from "../Button";
 
 import "./Modal.scss";
@@ -12,7 +14,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <section
       className="modal-overlay"
       data-testid="modal-overlay"
@@ -24,7 +26,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         </Button>
         {children}
       </div>
-    </section>
+    </section>,
+    document.getElementById("modal-root")!
   );
 };
 
