@@ -73,7 +73,9 @@ const Messages: React.FC<MessagesProps> = ({
           </strong>
         )}
         {msg.content}
-        <div className="msg-time">{getFormattedTime(msg.timestamp)}</div>
+        <div className="msg-time">
+          {getFormattedTime(msg.createdAt ?? msg.timestamp)}
+        </div>
       </article>
     );
   });

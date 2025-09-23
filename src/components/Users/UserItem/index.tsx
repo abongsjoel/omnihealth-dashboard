@@ -23,7 +23,9 @@ const UserItem: React.FC<{
   const lastMessageTime = useMemo(() => {
     if (messages.length === 0) return null;
     const lastMessage = messages[messages.length - 1];
-    const formatedtime = getFormattedTime(lastMessage.timestamp);
+    const formatedtime = getFormattedTime(
+      lastMessage.createdAt ?? lastMessage.timestamp
+    );
     return formatedtime.split("at")[0].trim();
   }, [messages]);
 

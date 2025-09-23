@@ -6,6 +6,7 @@ export interface ChatMessage {
   timestamp: Date | string;
   agent: string;
   read?: boolean; // Optional read status, defaults to false for new messages
+  createdAt?: Date | string; // Optional createdAt field for messages
 }
 
 export interface LastMessage extends ChatMessage {
