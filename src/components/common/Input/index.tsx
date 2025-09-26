@@ -16,6 +16,7 @@ type InputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onIconClick?: () => void;
   error?: string;
+  info?: string;
   iconName?: IconName | "none";
   className?: string;
 } & ComponentPropsWithoutRef<"input">;
@@ -26,6 +27,7 @@ const Input: React.FC<InputProps> = ({
   type,
   label,
   error,
+  info,
   onIconClick,
   placeholder = "",
   iconName = "none",
@@ -71,8 +73,13 @@ const Input: React.FC<InputProps> = ({
           onClick={handleIconClick}
         />
       )}
-      <p className={classNames("error_text", { visible: !!error })}>
-        {error || ""}
+      <p
+        className={classNames("error_text", {
+          visible: !!info || !!error,
+          info_text: !!info && !error,
+        })}
+      >
+        {error || info || ""}
       </p>
     </div>
   );
