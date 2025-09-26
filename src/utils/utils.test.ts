@@ -29,6 +29,40 @@ describe("getValidationError", () => {
         );
     });
 
+    it("validates password length requirement", () => {
+        expect(getValidationError("password", "short")).toBe(
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+        );
+    });
+
+    it("validates password lowercase requirement", () => {
+        expect(getValidationError("password", "PASSWORD123")).toBe(
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+        );
+    });
+
+    it("validates password uppercase requirement", () => {
+        expect(getValidationError("password", "password123")).toBe(
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+        );
+    });
+
+    it("validates password number requirement", () => {
+        expect(getValidationError("password", "Password")).toBe(
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+        );
+    });
+
+    it("validates password with multiple missing requirements", () => {
+        expect(getValidationError("password", "pass")).toBe(
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+        );
+    });
+
+    it("returns empty string for valid password", () => {
+        expect(getValidationError("password", "Password123")).toBe("");
+    });
+
     it("validates password match", () => {
         expect(getValidationError("re_password", "pass123", "pass321")).toBe(
             "Passwords do not match."
