@@ -1,7 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import "@testing-library/jest-dom";
 import Input from "../Input";
+
+import "@testing-library/jest-dom";
 
 describe("Input Component", () => {
   const baseProps = {
@@ -56,5 +57,39 @@ describe("Input Component", () => {
     render(<Input {...baseProps} error="Error here" />);
     const input = screen.getByTestId("password");
     expect(input).toHaveAttribute("aria-invalid", "true");
+  });
+
+  it("displays an info message if provided", () => {
+    render(<Input {...baseProps} info="Password requirements info" />);
+    const infoMessage = screen.getByText("Password requirements info");
+
+    expect(infoMessage).toBeInTheDocument();
+    expect(infoMessage).toHaveClass("info_text");
+  });
+
+  it("prioritizes error message over info message when both are provided", () => {
+    render(
+      <Input
+        {...baseProps}
+        error="Invalid password"
+        info="Password requirements info"
+      />
+    );
+
+    expect(screen.getByText("Invalid password")).toBeInTheDocument();
+    expect(
+      screen.queryByText("Password requirements info")
+    ).not.toBeInTheDocument();
+
+    const errorElement = screen.getByText("Invalid password");
+    expect(errorElement).not.toHaveClass("info_text");
+  });
+
+  it("shows visible class when info is provided", () => {
+    render(<Input {...baseProps} info="Some info text" />);
+    const messageElement = screen.getByText("Some info text");
+
+    expect(messageElement).toHaveClass("visible");
+    expect(messageElement).toHaveClass("info_text");
   });
 });
