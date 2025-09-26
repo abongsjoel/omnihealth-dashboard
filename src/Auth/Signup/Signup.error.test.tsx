@@ -68,10 +68,10 @@ const fillSignupForm = async () => {
   });
   await userEvent.type(screen.getByLabelText(/phone number/i), "237670312288");
   await userEvent.type(screen.getByLabelText(/^email$/i), "fail@test.com");
-  await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
+  await userEvent.type(screen.getByLabelText(/^password$/i), "Password@123");
   await userEvent.type(
     screen.getByLabelText(/re-enter password/i),
-    "password123"
+    "Password@123"
   );
 };
 
