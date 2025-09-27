@@ -31,36 +31,36 @@ describe("getValidationError", () => {
 
     it("validates password length requirement", () => {
         expect(getValidationError("password", "short")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password lowercase requirement", () => {
         expect(getValidationError("password", "PASSWORD123")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password uppercase requirement", () => {
         expect(getValidationError("password", "password123")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password number requirement", () => {
         expect(getValidationError("password", "Password")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password with multiple missing requirements", () => {
         expect(getValidationError("password", "pass")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("returns empty string for valid password", () => {
-        expect(getValidationError("password", "Password123")).toBe("");
+        expect(getValidationError("password", "Password@123")).toBe("");
     });
 
     it("validates password match", () => {
