@@ -225,7 +225,7 @@ const Signup: React.FC = () => {
             type="password"
             label="Password"
             placeholder="••••••••"
-            info="At least 8 characters, one uppercase, one lowercase, and one number"
+            info="At least 8 characters, one uppercase, one lowercase, one number and one special character"
             value={formValues.password}
             onChange={handleChange}
             onBlur={handleInputBlur}
