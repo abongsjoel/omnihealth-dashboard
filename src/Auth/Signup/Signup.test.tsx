@@ -62,7 +62,6 @@ describe("Signup Component", () => {
   const fillSignupForm = async () => {
     await userEvent.type(screen.getByLabelText(/full name/i), "Dr. Ngwa Acho");
     await userEvent.type(screen.getByLabelText(/display name/i), "Dr. Acho");
-    // await userEvent.type(screen.getByLabelText(/speciality/i), "Nutritionist");
     await fireEvent.change(screen.getByTestId("speciality"), {
       target: { value: "Cardiologist" },
     });
@@ -72,10 +71,10 @@ describe("Signup Component", () => {
       "237670312288"
     );
     await userEvent.type(screen.getByLabelText(/^email$/i), "test@example.com");
-    await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
+    await userEvent.type(screen.getByLabelText(/^password$/i), "Password@123");
     await userEvent.type(
       screen.getByLabelText(/re-enter password/i),
-      "password123"
+      "Password@123"
     );
   };
 
@@ -163,10 +162,10 @@ describe("Signup Component", () => {
       "237670312288"
     );
     await userEvent.type(screen.getByLabelText(/^email$/i), "test@example.com");
-    await userEvent.type(screen.getByLabelText(/^password$/i), "password123");
+    await userEvent.type(screen.getByLabelText(/^password$/i), "Password@123");
     await userEvent.type(
       screen.getByLabelText(/re-enter password/i),
-      "password123"
+      "Password@123"
     );
 
     // Submit the form

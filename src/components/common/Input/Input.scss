@@ -43,11 +43,16 @@
     opacity: 0.5;
   }
 
-  .error_text {
+  .error_text,
+  .info_text {
     min-height: 1.25rem;
     color: var(--error);
     font-size: 0.575rem;
     visibility: hidden;
+  }
+
+  .info_text {
+    color: var(--text-100);
   }
 
   .error_text.visible {

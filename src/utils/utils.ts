@@ -27,6 +27,15 @@ export const getValidationError = (
     return "Enter a valid email address";
   } else if (field === "phone" && (value.length < 9 || value.length > 15)) {
     return "Phone number must be between 9 and 15 digits.";
+  } else if (field === "password") {
+    const hasMinLength = value.length >= 8;
+    const hasLowercase = /(?=.*[a-z])/.test(value);
+    const hasUppercase = /(?=.*[A-Z])/.test(value);
+    const hasNumber = /(?=.*\d)/.test(value);
+
+    if (!hasMinLength || !hasLowercase || !hasUppercase || !hasNumber) {
+      return "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number";
+    }
   } else if (field === "re_password" && value !== currentPassword) {
     return "Passwords do not match.";
   }
