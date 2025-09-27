@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 
 import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
 import useNavigation from "../../hooks/useNavigation";
-import { getValidationError } from "../../utils/utils";
+import { getValidationError, isErrorWithStatus } from "../../utils/utils";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
@@ -116,7 +116,12 @@ const Signup: React.FC = () => {
       toast.success(result.message || "Signup successful!");
     } catch (err) {
       console.error("Signup failed:", err);
-      toast.error("Signup failed. Please try again!");
+
+      if (isErrorWithStatus(err) && err.status === 409) {
+        toast.error("Email already exists. Please sign in instead.");
+      } else {
+        toast.error("Signup failed. Please try again!");
+      }
     }
   };
 
@@ -220,7 +225,7 @@ const Signup: React.FC = () => {
             type="password"
             label="Password"
             placeholder="••••••••"
-            info="At least 8 characters, one uppercase, one lowercase, and one number"
+            info="At least 8 characters, one uppercase, one lowercase, one number and one special character"
             value={formValues.password}
             onChange={handleChange}
             onBlur={handleInputBlur}

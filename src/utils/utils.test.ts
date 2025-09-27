@@ -3,6 +3,7 @@ import {
     formatField,
     getValidationError,
     getFormattedTime,
+    isErrorWithStatus,
 } from "./utils";
 
 describe("formatField", () => {
@@ -31,36 +32,36 @@ describe("getValidationError", () => {
 
     it("validates password length requirement", () => {
         expect(getValidationError("password", "short")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password lowercase requirement", () => {
         expect(getValidationError("password", "PASSWORD123")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password uppercase requirement", () => {
         expect(getValidationError("password", "password123")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password number requirement", () => {
         expect(getValidationError("password", "Password")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("validates password with multiple missing requirements", () => {
         expect(getValidationError("password", "pass")).toBe(
-            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number"
+            "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
         );
     });
 
     it("returns empty string for valid password", () => {
-        expect(getValidationError("password", "Password123")).toBe("");
+        expect(getValidationError("password", "Password@123")).toBe("");
     });
 
     it("validates password match", () => {
@@ -146,5 +147,42 @@ describe("getFormattedTime", () => {
     it("returns full date if outside this week", () => {
         const date = new Date("2023-12-25T14:00:00Z");
         expect(getFormattedTime(date)).toMatch(/Dec 25, 2023 at/);
+    });
+});
+
+describe("isErrorWithStatus", () => {
+    it("returns true for error with numeric status", () => {
+        const error = { status: 409 };
+        expect(isErrorWithStatus(error)).toBe(true);
+    });
+
+    it("returns false for null", () => {
+        expect(isErrorWithStatus(null)).toBe(false);
+    });
+
+    it("returns false for non-object error", () => {
+        expect(isErrorWithStatus("string error")).toBe(false);
+        expect(isErrorWithStatus(123)).toBe(false);
+        expect(isErrorWithStatus(true)).toBe(false);
+    });
+
+    it("returns false for object without status property", () => {
+        const error = { message: "Error occurred" };
+        expect(isErrorWithStatus(error)).toBe(false);
+    });
+
+    it("returns false for object with non-numeric status", () => {
+        const error = { status: "404" };
+        expect(isErrorWithStatus(error)).toBe(false);
+    });
+
+    it("returns false for object with status as null", () => {
+        const error = { status: null };
+        expect(isErrorWithStatus(error)).toBe(false);
+    });
+
+    it("returns false for object with status as undefined", () => {
+        const error = { status: undefined };
+        expect(isErrorWithStatus(error)).toBe(false);
     });
 });
