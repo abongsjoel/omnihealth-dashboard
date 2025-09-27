@@ -226,4 +226,60 @@ describe("Signup Component", () => {
     const toastMock = vi.mocked(toast);
     expect(toastMock.success).toHaveBeenCalledWith("Signup successful!");
   });
+
+  it("shows email exists error message when signup fails with 409 status", async () => {
+    renderWithStore();
+
+    // Mock the signup mutation to reject with a 409 error
+    const mockError = { status: 409, message: "Email already exists" };
+    mockUnwrap.mockRejectedValueOnce(mockError);
+
+    // Fill all form fields
+    await fillSignupForm();
+
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(mockSignup).toHaveBeenCalled();
+      expect(mockUnwrap).toHaveBeenCalled();
+    });
+
+    // Verify the specific error message is shown
+    const toastMock = vi.mocked(toast);
+    expect(toastMock.error).toHaveBeenCalledWith(
+      "Email already exists. Please sign in instead."
+    );
+
+    // Verify navigation does not happen on error
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it("shows generic error message when signup fails with non-409 status", async () => {
+    renderWithStore();
+
+    // Mock the signup mutation to reject with a different error
+    const mockError = { status: 500, message: "Internal server error" };
+    mockUnwrap.mockRejectedValueOnce(mockError);
+
+    // Fill all form fields
+    await fillSignupForm();
+
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(mockSignup).toHaveBeenCalled();
+      expect(mockUnwrap).toHaveBeenCalled();
+    });
+
+    // Verify the generic error message is shown
+    const toastMock = vi.mocked(toast);
+    expect(toastMock.error).toHaveBeenCalledWith(
+      "Signup failed. Please try again!"
+    );
+
+    // Verify navigation does not happen on error
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 });

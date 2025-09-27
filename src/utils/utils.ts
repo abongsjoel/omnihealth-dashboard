@@ -32,9 +32,10 @@ export const getValidationError = (
     const hasLowercase = /(?=.*[a-z])/.test(value);
     const hasUppercase = /(?=.*[A-Z])/.test(value);
     const hasNumber = /(?=.*\d)/.test(value);
+    const hasSpecialChar = /(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(value);
 
-    if (!hasMinLength || !hasLowercase || !hasUppercase || !hasNumber) {
-      return "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number";
+    if (!hasMinLength || !hasLowercase || !hasUppercase || !hasNumber || !hasSpecialChar) {
+      return "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character";
     }
   } else if (field === "re_password" && value !== currentPassword) {
     return "Passwords do not match.";
@@ -67,4 +68,13 @@ export const getFormattedTime = (timestamp: Date | string): string => {
       return format(date, "MMM d, yyyy 'at' p"); // e.g. "Aug 15, 2024 at 2:14 PM"
     }
   }
+};
+
+export const isErrorWithStatus = (error: unknown): error is { status: number } => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof error.status === 'number'
+  );
 };
