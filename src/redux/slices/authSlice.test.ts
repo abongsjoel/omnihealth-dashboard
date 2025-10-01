@@ -100,4 +100,33 @@ describe("authSlice", () => {
         expect(state.careteamMember).toEqual(cachedMember);
     });
 
+    it("should handle invalid JSON in localStorage and clear it", () => {
+        // Mock console.error to avoid noise in test output
+        const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => { });
+
+        // Set invalid JSON in localStorage
+        localStorage.setItem("careteamMember", "invalid json string");
+
+        const state = getInitialAuthState();
+
+        // Verify error was logged
+        expect(mockConsoleError).toHaveBeenCalledWith(
+            "Failed to parse careteamMember from localStorage:",
+            expect.any(SyntaxError)
+        );
+
+        // Verify invalid data was cleared from localStorage
+        expect(localStorage.getItem("careteamMember")).toBeNull();
+
+        // Verify returned state
+        expect(state).toEqual({
+            isAuthenticated: false,
+            careteamMember: null,
+            returnTo: null,
+        });
+
+        // Restore console.error
+        mockConsoleError.mockRestore();
+    });
+
 });
