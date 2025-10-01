@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { AuthHeader } from "./utils";
 import type { ChatMessage, LastMessage } from "../../utils/types";
 
 export interface Message {
@@ -7,13 +8,7 @@ export interface Message {
   agent: string;
 }
 
-const currentTeamMember = localStorage.getItem("careteamMember");
-const parsedTeamMember = currentTeamMember ? JSON.parse(currentTeamMember) : null;
-const token = parsedTeamMember?.token || "";
 
-const AuthHeader = {
-  Authorization: `Bearer ${token}`,
-};
 
 export const messagesApi = createApi({
   reducerPath: "messagesApi",
