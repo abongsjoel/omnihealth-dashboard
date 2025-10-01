@@ -20,6 +20,9 @@ export const careTeamApi = createApi({
       query: (payload) => ({
         url: "/api/careteam/signup",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: payload,
       }),
     }),
@@ -30,6 +33,9 @@ export const careTeamApi = createApi({
       query: (credentials) => ({
         url: "/api/careteam/login",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: credentials,
       }),
     }),
