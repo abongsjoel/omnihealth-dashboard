@@ -7,6 +7,14 @@ export interface Message {
   agent: string;
 }
 
+const currentTeamMember = localStorage.getItem("careteamMember");
+const parsedTeamMember = currentTeamMember ? JSON.parse(currentTeamMember) : null;
+const token = parsedTeamMember?.token || "";
+
+const AuthHeader = {
+  Authorization: `Bearer ${token}`,
+};
+
 export const messagesApi = createApi({
   reducerPath: "messagesApi",
   baseQuery: fetchBaseQuery({
@@ -15,7 +23,10 @@ export const messagesApi = createApi({
   tagTypes: ["Messages"],
   endpoints: (builder) => ({
     getUserMessages: builder.query<ChatMessage[], string>({
-      query: (userId) => `/api/messages/${userId}`,
+      query: (userId) => ({
+        url: `/api/messages/${userId}`,
+        headers: AuthHeader
+      }),
       providesTags: (_, __, userId) =>
         userId ? [{ type: "Messages", id: userId }] : [],
     }),
