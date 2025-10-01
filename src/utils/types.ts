@@ -50,6 +50,12 @@ export interface CareTeamMember {
   speciality: string;
   email: string;
   phone: string;
+  message?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface LoggedInTeamMember {
+  token: string;
+  teamMember: CareTeamMember;
 }

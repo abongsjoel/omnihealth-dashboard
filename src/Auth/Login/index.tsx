@@ -51,12 +51,12 @@ const Login: React.FC = () => {
     }
 
     try {
-      const teammember = await loginCareTeam({
+      const loggedInTeamMember = await loginCareTeam({
         email: emailValue,
         password: passwordValue,
       }).unwrap();
 
-      dispatch(login(teammember));
+      dispatch(login(loggedInTeamMember.teamMember));
     } catch (err) {
       const error = err as FetchBaseQueryError;
 

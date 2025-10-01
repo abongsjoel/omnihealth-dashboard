@@ -131,7 +131,7 @@ describe("Login Component", () => {
 
   it("logs in successfully and dispatches login", async () => {
     const fakeMember = { id: "1", fullName: "Dr. Jane Doe" };
-    mockUnwrap.mockResolvedValue(fakeMember);
+    mockUnwrap.mockResolvedValue({ teamMember: fakeMember });
 
     const store = createStore(); // with careTeamApi reducer + middleware
 
