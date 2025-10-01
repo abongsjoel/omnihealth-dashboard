@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { User } from "../../utils/types";
+import { AuthHeader } from "./utils";
 
 export const usersApi = createApi({
   reducerPath: "usersApi",
@@ -9,17 +10,21 @@ export const usersApi = createApi({
   tagTypes: ["Users"],
   endpoints: (builder) => ({
     getUsers: builder.query<User[], void>({
-      query: () => "/api/users",
+      query: () => ({ url: "/api/users", headers: AuthHeader }),
       providesTags: ["Users"],
     }),
     getUserIds: builder.query<string[], void>({
-      query: () => "/api/user-ids",
+      query: () => ({ url: "/api/user-ids", headers: AuthHeader }),
       providesTags: ["Users"],
     }),
     assignName: builder.mutation<{ success: boolean; user: User }, User>({
       query: (body) => ({
         url: "/api/users/assign-name",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...AuthHeader
+        },
         body,
       }),
       invalidatesTags: ["Users"],
@@ -28,6 +33,7 @@ export const usersApi = createApi({
       query: ({ userId }) => ({
         url: `/api/users/${userId}`,
         method: "DELETE",
+        headers: AuthHeader
       }),
       invalidatesTags: ["Users"],
     }),

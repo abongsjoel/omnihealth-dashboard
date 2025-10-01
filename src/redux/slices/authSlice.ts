@@ -11,9 +11,23 @@ export interface AuthState {
 export const getInitialAuthState = (): AuthState => {
   const cached = localStorage.getItem("careteamMember");
 
+  let careteamMember = null;
+  let isAuthenticated = false;
+
+  if (cached && cached !== "undefined" && cached !== "null") {
+    try {
+      careteamMember = JSON.parse(cached);
+      isAuthenticated = true;
+    } catch (error) {
+      console.error("Failed to parse careteamMember from localStorage:", error);
+      // Clear invalid data
+      localStorage.removeItem("careteamMember");
+    }
+  }
+
   return {
-    isAuthenticated: !!cached,
-    careteamMember: cached ? JSON.parse(cached) : null,
+    isAuthenticated,
+    careteamMember,
     returnTo: null,
   };
 };

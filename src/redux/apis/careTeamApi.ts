@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type { CareTeamMember } from "../../utils/types";
 
 interface CareTeamSignupPayload {
   fullName: string;
@@ -7,18 +8,6 @@ interface CareTeamSignupPayload {
   email: string;
   phone: string;
   password: string;
-}
-
-export interface CareTeamMember {
-  _id: string;
-  fullName: string;
-  displayName: string;
-  speciality: string;
-  email: string;
-  phone: string;
-  message: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export const careTeamApi = createApi({
@@ -31,6 +20,9 @@ export const careTeamApi = createApi({
       query: (payload) => ({
         url: "/api/careteam/signup",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: payload,
       }),
     }),
@@ -41,6 +33,9 @@ export const careTeamApi = createApi({
       query: (credentials) => ({
         url: "/api/careteam/login",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: credentials,
       }),
     }),

@@ -32,7 +32,7 @@ export const getValidationError = (
     const hasLowercase = /(?=.*[a-z])/.test(value);
     const hasUppercase = /(?=.*[A-Z])/.test(value);
     const hasNumber = /(?=.*\d)/.test(value);
-    const hasSpecialChar = /(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(value);
+    const hasSpecialChar = /(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?])/.test(value);
 
     if (!hasMinLength || !hasLowercase || !hasUppercase || !hasNumber || !hasSpecialChar) {
       return "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character";

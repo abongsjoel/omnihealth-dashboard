@@ -50,6 +50,8 @@ export interface CareTeamMember {
   speciality: string;
   email: string;
   phone: string;
+  message?: string;
+  token?: string;
   createdAt: string;
   updatedAt: string;
 }
