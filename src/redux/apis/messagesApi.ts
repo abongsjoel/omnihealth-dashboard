@@ -31,13 +31,17 @@ export const messagesApi = createApi({
         userId ? [{ type: "Messages", id: userId }] : [],
     }),
     getLastMessages: builder.query<LastMessage[], void>({
-      query: () => "/api/messages/last-messages",
+      query: () => ({ url: "/api/messages/last-messages", headers: AuthHeader }),
       providesTags: ["Messages"],
     }),
     sendMessage: builder.mutation<void, Message>({
       query: ({ to, message, agent }) => ({
         url: "/api/send-message",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...AuthHeader
+        },
         body: { to, message, agent },
       }),
       invalidatesTags: (_, __, arg) =>
@@ -47,6 +51,7 @@ export const messagesApi = createApi({
       query: (userId) => ({
         url: `/api/messages/${userId}/mark-read`,
         method: "PATCH",
+        headers: AuthHeader
       }),
       invalidatesTags: (_, __, userId) =>
         userId ? [{ type: "Messages", id: userId }] : [],
