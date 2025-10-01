@@ -51,11 +51,7 @@ export interface CareTeamMember {
   email: string;
   phone: string;
   message?: string;
+  token?: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface LoggedInTeamMember {
-  token: string;
-  teamMember: CareTeamMember;
 }
