@@ -111,6 +111,14 @@ const Users: React.FC = () => {
             />
           </Tooltip>
         </section>
+        <section className="search-bar">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search users..."
+            // onChange={handleSearchChange} // Implement search functionality if needed
+          />
+        </section>
         {isLoading ? (
           <Skeleton />
         ) : error ? (
