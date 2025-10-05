@@ -15,13 +15,15 @@ import Button from "../common/Button";
 import Modal from "../common/Modal";
 import Tooltip from "../common/Tooltip";
 import UserItem from "./UserItem";
+import Search from "../common/Search";
 
 import "./Users.scss";
-import Search from "../common/Search";
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedUser = useAppSelector(selectSelectedUser);
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     data: lastMessages = [],
@@ -99,6 +101,10 @@ const Users: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <>
       <section className="user-list">
@@ -113,7 +119,7 @@ const Users: React.FC = () => {
           </Tooltip>
         </section>
         <section className="search-bar">
-          <Search />
+          <Search value={searchTerm} onChange={handleSearch} />
         </section>
         {isLoading ? (
           <Skeleton />
