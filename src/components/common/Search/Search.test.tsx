@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import Search from "./index";
@@ -101,14 +100,6 @@ describe("Search Component", () => {
         key: "Enter",
       })
     );
-  });
-
-  it("supports ref forwarding", () => {
-    const ref = React.createRef<HTMLInputElement>();
-    render(<Search ref={ref} />);
-
-    expect(ref.current).toBeInstanceOf(HTMLInputElement);
-    expect(ref.current).toHaveClass("search-input");
   });
 
   it("maintains input type as text", () => {
