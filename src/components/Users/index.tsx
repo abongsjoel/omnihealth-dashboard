@@ -118,7 +118,7 @@ const Users: React.FC = () => {
             <input
               type="text"
               className="search-input"
-              placeholder="Search users..."
+              placeholder="Search..."
               // onChange={handleSearchChange} // Implement search functionality if needed
             />
           </div>

@@ -54,6 +54,11 @@
       &:focus {
         border-color: var(--primary-selected);
       }
+
+      &::placeholder {
+        color: var(--gray-400);
+        opacity: 1; /* Ensures consistent appearance across browsers */
+      }
     }
   }
 }
