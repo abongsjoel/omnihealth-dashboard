@@ -15,17 +15,16 @@ const Search: React.FC<SearchProps> = ({
   placeholder = "Search...",
 }) => {
   return (
-    <section className="search-bar">
-      <div className="search-input-wrapper">
-        <IoSearchOutline className="search-icon" />
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search..."
-          onChange={onChange}
-        />
-      </div>
-    </section>
+    <div className="search-input-wrapper">
+      <IoSearchOutline className="search-icon" />
+      <input
+        type="text"
+        className="search-input"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+    </div>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { IoSearchOutline } from "react-icons/io5";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useGetUsersQuery } from "../../redux/apis/usersApi";
