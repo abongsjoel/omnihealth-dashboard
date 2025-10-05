@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { IoSearchOutline } from "react-icons/io5";
 
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useGetUsersQuery } from "../../redux/apis/usersApi";
 import { useGetLastMessagesQuery } from "../../redux/apis/messagesApi";
 import {
@@ -112,12 +113,15 @@ const Users: React.FC = () => {
           </Tooltip>
         </section>
         <section className="search-bar">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search users..."
-            // onChange={handleSearchChange} // Implement search functionality if needed
-          />
+          <div className="search-input-wrapper">
+            <IoSearchOutline className="search-icon" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search users..."
+              // onChange={handleSearchChange} // Implement search functionality if needed
+            />
+          </div>
         </section>
         {isLoading ? (
           <Skeleton />
