@@ -93,6 +93,16 @@ const Users: React.FC = () => {
     return uniqueList;
   }, [users, lastMessages]);
 
+  const filteredUsersList = useMemo(() => {
+    if (!searchTerm.trim()) return usersList;
+    const lowerSearch = searchTerm.toLowerCase();
+    return usersList.filter(
+      (u) =>
+        u.userId.toLowerCase().includes(lowerSearch) ||
+        u.userName.toLowerCase().includes(lowerSearch)
+    );
+  }, [usersList, searchTerm]);
+
   const handleAddUserClick = () => {
     setIsModalOpen(true);
   };
@@ -129,7 +139,7 @@ const Users: React.FC = () => {
             message="Please check your connection or try again shortly."
           />
         ) : (
-          usersList.map((usr) => (
+          filteredUsersList.map((usr) => (
             <UserItem
               key={usr.userId}
               user={usr}
