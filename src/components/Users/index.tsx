@@ -138,7 +138,7 @@ const Users: React.FC = () => {
             title="Unable to load users"
             message="Please check your connection or try again shortly."
           />
-        ) : (
+        ) : filteredUsersList.length > 0 ? (
           filteredUsersList.map((usr) => (
             <UserItem
               key={usr.userId}
@@ -147,6 +147,8 @@ const Users: React.FC = () => {
               onSelect={() => dispatch(updateSelectedUser(usr))}
             />
           ))
+        ) : (
+          <p className="no_users_found">No users found</p>
         )}
       </section>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>

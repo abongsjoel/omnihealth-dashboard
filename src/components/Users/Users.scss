@@ -28,6 +28,13 @@
   .search-bar {
     margin-bottom: 1rem;
   }
+
+  .no_users_found {
+    text-align: center;
+    color: var(--text-200);
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: $mobile-breakpoint) {
