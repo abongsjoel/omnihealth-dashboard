@@ -18,6 +18,7 @@ import Tooltip from "../common/Tooltip";
 import UserItem from "./UserItem";
 
 import "./Users.scss";
+import Search from "../common/Search";
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -113,15 +114,7 @@ const Users: React.FC = () => {
           </Tooltip>
         </section>
         <section className="search-bar">
-          <div className="search-input-wrapper">
-            <IoSearchOutline className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search..."
-              // onChange={handleSearchChange} // Implement search functionality if needed
-            />
-          </div>
+          <Search />
         </section>
         {isLoading ? (
           <Skeleton />
