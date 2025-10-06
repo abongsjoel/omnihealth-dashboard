@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useGetUsersQuery } from "../../redux/apis/usersApi";
 import { useGetLastMessagesQuery } from "../../redux/apis/messagesApi";
 import {
@@ -15,12 +15,15 @@ import Button from "../common/Button";
 import Modal from "../common/Modal";
 import Tooltip from "../common/Tooltip";
 import UserItem from "./UserItem";
+import Search from "../common/Search";
 
 import "./Users.scss";
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedUser = useAppSelector(selectSelectedUser);
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     data: lastMessages = [],
@@ -90,12 +93,26 @@ const Users: React.FC = () => {
     return uniqueList;
   }, [users, lastMessages]);
 
+  const filteredUsersList = useMemo(() => {
+    if (!searchTerm.trim()) return usersList;
+    const lowerSearch = searchTerm.toLowerCase();
+    return usersList.filter(
+      (u) =>
+        u.userId.toLowerCase().includes(lowerSearch) ||
+        u.userName.toLowerCase().includes(lowerSearch)
+    );
+  }, [usersList, searchTerm]);
+
   const handleAddUserClick = () => {
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -111,6 +128,9 @@ const Users: React.FC = () => {
             />
           </Tooltip>
         </section>
+        <section className="search-bar">
+          <Search value={searchTerm} onChange={handleSearch} />
+        </section>
         {isLoading ? (
           <Skeleton />
         ) : error ? (
@@ -118,8 +138,8 @@ const Users: React.FC = () => {
             title="Unable to load users"
             message="Please check your connection or try again shortly."
           />
-        ) : (
-          usersList.map((usr) => (
+        ) : filteredUsersList.length > 0 ? (
+          filteredUsersList.map((usr) => (
             <UserItem
               key={usr.userId}
               user={usr}
@@ -127,6 +147,8 @@ const Users: React.FC = () => {
               onSelect={() => dispatch(updateSelectedUser(usr))}
             />
           ))
+        ) : (
+          <p className="no_users_found">No users found</p>
         )}
       </section>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>

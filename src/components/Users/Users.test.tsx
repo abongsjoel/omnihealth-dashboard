@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+
 import usersReducer from "../../redux/slices/usersSlice";
 import authReducer from "../../redux/slices/authSlice";
 
@@ -308,5 +309,257 @@ describe("Users Component", () => {
     // Should be sorted desc by parsed timestamp: x then y
     expect(items[0]).toHaveTextContent("Xavier");
     expect(items[1]).toHaveTextContent("Yvonne");
+  });
+
+  describe("search functionality", () => {
+    beforeEach(() => {
+      // Mock the Search component
+      vi.mock("../common/Search", () => ({
+        __esModule: true,
+        default: ({
+          value,
+          onChange,
+        }: {
+          value: string;
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+        }) => (
+          <input
+            data-testid="search-input"
+            value={value}
+            onChange={onChange}
+            placeholder="Search users..."
+          />
+        ),
+      }));
+    });
+
+    it("filters users by userId when search term is entered", () => {
+      mockUseGetUsersQuery.mockReturnValue({
+        data: [
+          { userId: "john123", userName: "John Doe" },
+          { userId: "jane456", userName: "Jane Smith" },
+          { userId: "bob789", userName: "Bob Wilson" },
+        ] as User[],
+        isLoading: false,
+        error: undefined,
+      });
+      mockUseGetLastMessagesQuery.mockReturnValue({
+        data: [
+          {
+            userId: "john123",
+            content: "msg1",
+            timestamp: "2023-01-01T10:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "jane456",
+            content: "msg2",
+            timestamp: "2023-01-01T12:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "bob789",
+            content: "msg3",
+            timestamp: "2023-01-01T08:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+        ] as LastMessage[],
+        isLoading: false,
+        error: undefined,
+      });
+
+      renderWithStore(<Users />);
+
+      // Initially all users should be visible
+      expect(screen.getByTestId("user_item_john123")).toBeInTheDocument();
+      expect(screen.getByTestId("user_item_jane456")).toBeInTheDocument();
+      expect(screen.getByTestId("user_item_bob789")).toBeInTheDocument();
+
+      // Search for "john"
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "john" } });
+
+      // Only john123 should be visible
+      expect(screen.getByTestId("user_item_john123")).toBeInTheDocument();
+      expect(screen.queryByTestId("user_item_jane456")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("user_item_bob789")).not.toBeInTheDocument();
+    });
+
+    it("filters users by userName when search term is entered", () => {
+      mockUseGetUsersQuery.mockReturnValue({
+        data: [
+          { userId: "user1", userName: "Alice Johnson" },
+          { userId: "user2", userName: "Bob Smith" },
+          { userId: "user3", userName: "Charlie Wilson" },
+        ] as User[],
+        isLoading: false,
+        error: undefined,
+      });
+      mockUseGetLastMessagesQuery.mockReturnValue({
+        data: [
+          {
+            userId: "user1",
+            content: "msg1",
+            timestamp: "2023-01-01T10:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "user2",
+            content: "msg2",
+            timestamp: "2023-01-01T12:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "user3",
+            content: "msg3",
+            timestamp: "2023-01-01T08:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+        ] as LastMessage[],
+        isLoading: false,
+        error: undefined,
+      });
+
+      renderWithStore(<Users />);
+
+      // Search for "Smith"
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "Smith" } });
+
+      // Only Bob Smith should be visible
+      expect(screen.queryByTestId("user_item_user1")).not.toBeInTheDocument();
+      expect(screen.getByTestId("user_item_user2")).toBeInTheDocument();
+      expect(screen.queryByTestId("user_item_user3")).not.toBeInTheDocument();
+    });
+
+    it("performs case-insensitive search", () => {
+      mockUseGetUsersQuery.mockReturnValue({
+        data: [
+          { userId: "USER1", userName: "ALICE" },
+          { userId: "user2", userName: "bob" },
+        ] as User[],
+        isLoading: false,
+        error: undefined,
+      });
+      mockUseGetLastMessagesQuery.mockReturnValue({
+        data: [
+          {
+            userId: "USER1",
+            content: "msg1",
+            timestamp: "2023-01-01T10:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "user2",
+            content: "msg2",
+            timestamp: "2023-01-01T12:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+        ] as LastMessage[],
+        isLoading: false,
+        error: undefined,
+      });
+
+      renderWithStore(<Users />);
+
+      // Search for lowercase "alice"
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "alice" } });
+
+      // Should find uppercase "ALICE"
+      expect(screen.getByTestId("user_item_USER1")).toBeInTheDocument();
+      expect(screen.queryByTestId("user_item_user2")).not.toBeInTheDocument();
+    });
+
+    it("returns all users when search term is empty or whitespace", () => {
+      mockUseGetUsersQuery.mockReturnValue({
+        data: [
+          { userId: "user1", userName: "Alice" },
+          { userId: "user2", userName: "Bob" },
+        ] as User[],
+        isLoading: false,
+        error: undefined,
+      });
+      mockUseGetLastMessagesQuery.mockReturnValue({
+        data: [
+          {
+            userId: "user1",
+            content: "msg1",
+            timestamp: "2023-01-01T10:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "user2",
+            content: "msg2",
+            timestamp: "2023-01-01T12:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+        ] as LastMessage[],
+        isLoading: false,
+        error: undefined,
+      });
+
+      renderWithStore(<Users />);
+
+      const searchInput = screen.getByTestId("search-input");
+
+      // Search with whitespace only
+      fireEvent.change(searchInput, { target: { value: "   " } });
+
+      // All users should still be visible
+      expect(screen.getByTestId("user_item_user1")).toBeInTheDocument();
+      expect(screen.getByTestId("user_item_user2")).toBeInTheDocument();
+    });
+
+    it("shows no users when search term matches nothing", () => {
+      mockUseGetUsersQuery.mockReturnValue({
+        data: [
+          { userId: "user1", userName: "Alice" },
+          { userId: "user2", userName: "Bob" },
+        ] as User[],
+        isLoading: false,
+        error: undefined,
+      });
+      mockUseGetLastMessagesQuery.mockReturnValue({
+        data: [
+          {
+            userId: "user1",
+            content: "msg1",
+            timestamp: "2023-01-01T10:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+          {
+            userId: "user2",
+            content: "msg2",
+            timestamp: "2023-01-01T12:00:00Z",
+            role: "user",
+            agent: "user",
+          },
+        ] as LastMessage[],
+        isLoading: false,
+        error: undefined,
+      });
+
+      renderWithStore(<Users />);
+
+      // Search for something that doesn't exist
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "nonexistent" } });
+
+      // No users should be visible
+      expect(screen.queryByTestId("user_item_user1")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("user_item_user2")).not.toBeInTheDocument();
+    });
   });
 });

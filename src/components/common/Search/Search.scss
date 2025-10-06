@@ -1,0 +1,32 @@
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-100);
+    font-size: 1rem;
+    z-index: 1;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 1px 1px rgba(171, 171, 171, 0.1);
+    border-radius: 25px;
+    outline: none;
+
+    &:focus {
+      border-color: var(--primary-selected);
+    }
+
+    &::placeholder {
+      color: var(--gray-400);
+      opacity: 1; /* Ensures consistent appearance across browsers */
+    }
+  }
+}
