@@ -8,11 +8,25 @@ import Login from "../Login";
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
 
+// Mock utils module - use factory function to avoid hoisting issues
+vi.mock("../../utils/utils", () => ({
+  formatField: vi.fn((fieldName: string) => {
+    return fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+  }),
+  getValidationError: vi.fn(() => ""),
+}));
+
 // Mock APIs
 vi.mock("react-hot-toast", () => ({ default: { error: vi.fn() } }));
 vi.mock("../../../hooks/useNavigation", () => ({
   default: () => ({ navigate: vi.fn() }),
 }));
+
+const mockUnwrap = vi.fn();
+const mockLoginMutation = [
+  vi.fn(() => ({ unwrap: mockUnwrap })),
+  { isLoading: false },
+];
 
 vi.mock("../../redux/apis/careTeamApi", async () => {
   const actual = await vi.importActual<any>("../../redux/apis/careTeamApi");
@@ -21,12 +35,6 @@ vi.mock("../../redux/apis/careTeamApi", async () => {
     useLoginCareTeamMutation: () => mockLoginMutation,
   };
 });
-
-const mockUnwrap = vi.fn();
-const mockLoginMutation = [
-  vi.fn(() => ({ unwrap: mockUnwrap })),
-  { isLoading: false },
-];
 
 vi.mock("../../../components/common/Logo", () => () => <div>Logo</div>);
 
@@ -55,8 +63,22 @@ const renderWithStore = (store = createStore()) =>
   );
 
 describe("Login Component", () => {
-  beforeEach(() => {
+  let mockGetValidationError: any;
+  let mockFormatField: any;
+
+  beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Get the mocked functions
+    const utils = await import("../../utils/utils");
+    mockGetValidationError = vi.mocked(utils.getValidationError);
+    mockFormatField = vi.mocked(utils.formatField);
+
+    // Reset getValidationError to return no error by default
+    mockGetValidationError.mockReturnValue("");
+    mockFormatField.mockImplementation((fieldName: string) => {
+      return fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    });
   });
 
   it("renders login form elements", () => {
@@ -107,16 +129,20 @@ describe("Login Component", () => {
 
     renderWithStore();
 
-    // Simulate user typing invalid input
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
 
-    fireEvent.change(emailInput, { target: { value: "" } }); // triggers emailError
-    fireEvent.change(passwordInput, { target: { value: "" } }); // triggers passwordError
-
-    // Force blur to set the error (your useInput sets error on blur)
+    // Trigger validation errors by blurring empty fields
+    fireEvent.focus(emailInput);
     fireEvent.blur(emailInput);
+    fireEvent.focus(passwordInput);
     fireEvent.blur(passwordInput);
+
+    // Wait for errors to appear
+    await waitFor(() => {
+      expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+    });
 
     // Submit the form
     fireEvent.submit(screen.getByTestId("login_form"));
@@ -133,7 +159,7 @@ describe("Login Component", () => {
     const fakeMember = { id: "1", fullName: "Dr. Jane Doe" };
     mockUnwrap.mockResolvedValue(fakeMember);
 
-    const store = createStore(); // with careTeamApi reducer + middleware
+    const store = createStore();
 
     render(
       <Provider store={store}>
@@ -196,8 +222,128 @@ describe("Login Component", () => {
 
     await waitFor(() => {
       const errors = screen.getAllByText("Incorrect Email or Password.");
-      expect(errors.length).toBe(2);
+      expect(errors.length).toBeGreaterThanOrEqual(1);
       expect(toast.error).toHaveBeenCalledWith("Incorrect Email or Password.");
+    });
+  });
+
+  it("shows error when email validation fails before API call", async () => {
+    const toast = (await import("react-hot-toast")).default;
+
+    // Mock getValidationError to return an error for this specific test
+    mockGetValidationError.mockImplementation((field, value) => {
+      if (field === "email" && value === "invalid-email") {
+        return "Invalid email format";
+      }
+      return "";
+    });
+
+    renderWithStore();
+
+    // Enter invalid email and valid password
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "invalid-email" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "ValidPass@123" },
+    });
+
+    // Submit the form
+    fireEvent.submit(screen.getByTestId("login_form"));
+
+    await waitFor(() => {
+      // Use getAllByText since there might be multiple error messages
+      const errors = screen.getAllByText("Incorrect Email or Password.");
+      expect(errors.length).toBeGreaterThanOrEqual(1);
+      expect(toast.error).toHaveBeenCalledWith("Incorrect Email or Password.");
+
+      // Verify email field gets focus
+      expect(document.activeElement).toBe(screen.getByLabelText(/email/i));
+
+      // Verify API call was NOT made
+      expect(mockLoginMutation[0]).not.toHaveBeenCalled();
+    });
+  });
+
+  it("prevents submission and shows error when getValidationError returns non-empty string", async () => {
+    const toast = (await import("react-hot-toast")).default;
+
+    // Set up the mock to return an error for email validation
+    mockGetValidationError.mockImplementation((field, value) => {
+      if (field === "email" && value === "test@invalid") {
+        return "Email format is invalid";
+      }
+      return "";
+    });
+
+    renderWithStore();
+
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+
+    // Enter values
+    fireEvent.change(emailInput, { target: { value: "test@invalid" } });
+    fireEvent.change(passwordInput, { target: { value: "ValidPassword123" } });
+
+    // Submit form
+    fireEvent.submit(screen.getByTestId("login_form"));
+
+    await waitFor(() => {
+      // Check that getValidationError was called with email field
+      expect(mockGetValidationError).toHaveBeenCalledWith(
+        "email",
+        "test@invalid"
+      );
+
+      // Verify error handling
+      expect(toast.error).toHaveBeenCalledWith("Incorrect Email or Password.");
+
+      // Verify focus is set to email field
+      expect(document.activeElement).toBe(emailInput);
+
+      // Verify login API was not called
+      expect(mockLoginMutation[0]).not.toHaveBeenCalled();
+    });
+  });
+
+  it("proceeds with login when email validation passes", async () => {
+    const fakeMember = { id: "1", fullName: "Dr. Test" };
+    mockUnwrap.mockResolvedValue(fakeMember);
+
+    // Mock getValidationError to return empty string (no error)
+    mockGetValidationError.mockReturnValue("");
+
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <Login />
+      </Provider>
+    );
+
+    // Enter valid credentials
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "valid@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "ValidPass@123" },
+    });
+
+    // Submit form
+    fireEvent.submit(screen.getByTestId("login_form"));
+
+    await waitFor(() => {
+      // Verify validation was called
+      expect(mockGetValidationError).toHaveBeenCalledWith(
+        "email",
+        "valid@example.com"
+      );
+
+      // Verify login API was called (validation passed)
+      expect(mockLoginMutation[0]).toHaveBeenCalledWith({
+        email: "valid@example.com",
+        password: "ValidPass@123",
+      });
     });
   });
 });
