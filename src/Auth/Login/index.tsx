@@ -52,13 +52,9 @@ const Login: React.FC = () => {
     }
 
     const emailValidationError = getValidationError("email", emailValue);
-    const passwordValidationError = getValidationError(
-      "password",
-      passwordValue
-    );
 
     // Additional check to prevent submission if email or password is invalid
-    if (emailValidationError !== "" || passwordValidationError !== "") {
+    if (emailValidationError !== "") {
       const message = "Incorrect Email or Password.";
       setSubmitError(message);
       document.getElementById("email")?.focus();

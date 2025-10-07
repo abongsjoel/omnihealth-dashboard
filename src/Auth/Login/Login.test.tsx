@@ -173,7 +173,9 @@ describe("Login Component", () => {
     fireEvent.submit(screen.getByTestId("login_form"));
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith("Incorrect Email or Password.");
+      expect(toast.error).toHaveBeenCalledWith(
+        "Unexpected login error. Please try again."
+      );
     });
   });
 
