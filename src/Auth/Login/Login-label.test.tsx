@@ -7,7 +7,7 @@ import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
 
 vi.mock("../../../redux/apis/careTeamApi", async () => {
-  const actual = await vi.importActual<any>("../../../redux/apis/careTeamApi");
+  const actual = await vi.importActual("../../../redux/apis/careTeamApi");
   return {
     ...actual,
     useLoginCareTeamMutation: () => {
@@ -18,7 +18,7 @@ vi.mock("../../../redux/apis/careTeamApi", async () => {
           };
         }),
         { isLoading: true }, // 👈 Forces "Logging in..." label
-      ];
+      ] as const;
     },
   };
 });

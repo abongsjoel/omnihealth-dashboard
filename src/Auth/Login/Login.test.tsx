@@ -1,4 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  type MockedFunction,
+} from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -26,10 +33,10 @@ const mockUnwrap = vi.fn();
 const mockLoginMutation = [
   vi.fn(() => ({ unwrap: mockUnwrap })),
   { isLoading: false },
-];
+] as const;
 
 vi.mock("../../redux/apis/careTeamApi", async () => {
-  const actual = await vi.importActual<any>("../../redux/apis/careTeamApi");
+  const actual = await vi.importActual("../../redux/apis/careTeamApi");
   return {
     ...actual,
     useLoginCareTeamMutation: () => mockLoginMutation,
@@ -63,8 +70,10 @@ const renderWithStore = (store = createStore()) =>
   );
 
 describe("Login Component", () => {
-  let mockGetValidationError: any;
-  let mockFormatField: any;
+  let mockGetValidationError: MockedFunction<
+    (field: string, value: string) => string
+  >;
+  let mockFormatField: MockedFunction<(fieldName: string) => string>;
 
   beforeEach(async () => {
     vi.clearAllMocks();
