@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
-import { getValidationError } from "../utils/utils";
-
+import { formatField } from "../utils/utils";
 interface UseInputReturn {
     value: string;
     error?: string;
@@ -18,17 +17,19 @@ export function useInput(
         const { name, value } = e.target;
         setValue(value);
 
-        if (error) {
-            const err = getValidationError(name, value);
-            setError(err)
+        if (!error && value === "") {
+            setError(`${formatField(name)} is required`);
+        } else {
+            setError(undefined);
         }
     }, [error]);
 
     const handleBlur = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             const { name, value } = e.target;
-            const err = getValidationError(name, value);
-            setError(err)
+            if (value === "") {
+                setError(`${formatField(name)} is required`);
+            }
         },
         []
     );
