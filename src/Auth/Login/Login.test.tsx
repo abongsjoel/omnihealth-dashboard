@@ -231,12 +231,14 @@ describe("Login Component", () => {
     const toast = (await import("react-hot-toast")).default;
 
     // Mock getValidationError to return an error for this specific test
-    mockGetValidationError.mockImplementation((field, value) => {
-      if (field === "email" && value === "invalid-email") {
-        return "Invalid email format";
+    mockGetValidationError.mockImplementation(
+      (field: string, value: string) => {
+        if (field === "email" && value === "invalid-email") {
+          return "Invalid email format";
+        }
+        return "";
       }
-      return "";
-    });
+    );
 
     renderWithStore();
 
@@ -269,12 +271,14 @@ describe("Login Component", () => {
     const toast = (await import("react-hot-toast")).default;
 
     // Set up the mock to return an error for email validation
-    mockGetValidationError.mockImplementation((field, value) => {
-      if (field === "email" && value === "test@invalid") {
-        return "Email format is invalid";
+    mockGetValidationError.mockImplementation(
+      (field: string, value: string) => {
+        if (field === "email" && value === "test@invalid") {
+          return "Email format is invalid";
+        }
+        return "";
       }
-      return "";
-    });
+    );
 
     renderWithStore();
 
