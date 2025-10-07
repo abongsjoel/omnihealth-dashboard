@@ -22,10 +22,16 @@ const Search: React.FC<SearchProps> = ({
         type="text"
         className="search-input"
         placeholder={placeholder}
+        value={value}
         {...rest}
       />
-      {showClearIcon && (
+      {showClearIcon ? (
         <IoCloseOutline className="search-clear-icon" onClick={onClear} />
+      ) : (
+        <div className="search-dots">
+          <span className="dot"></span>
+          <span className="dot"></span>
+        </div>
       )}
     </div>
   );
