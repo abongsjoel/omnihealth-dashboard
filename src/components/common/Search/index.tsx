@@ -1,14 +1,20 @@
 import React, { type ComponentPropsWithoutRef } from "react";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline, IoCloseOutline } from "react-icons/io5";
 
 import "./Search.scss";
 
-type SearchProps = ComponentPropsWithoutRef<"input">;
+type SearchProps = {
+  onClear?: () => void;
+} & ComponentPropsWithoutRef<"input">;
 
 const Search: React.FC<SearchProps> = ({
   placeholder = "Search...",
+  value,
+  onClear,
   ...rest
 }) => {
+  const showClearIcon = value && String(value).length > 0;
+
   return (
     <div className="search-input-wrapper">
       <IoSearchOutline className="search-icon" />
@@ -16,8 +22,17 @@ const Search: React.FC<SearchProps> = ({
         type="text"
         className="search-input"
         placeholder={placeholder}
+        value={value}
         {...rest}
       />
+      {showClearIcon ? (
+        <IoCloseOutline className="search-clear-icon" onClick={onClear} />
+      ) : (
+        <div className="search-dots">
+          <span className="dot"></span>
+          <span className="dot"></span>
+        </div>
+      )}
     </div>
   );
 };
