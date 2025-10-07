@@ -32,7 +32,7 @@ describe("useInput", () => {
     });
 
     expect(result.current.value).toBe("test@example.com");
-    expect(result.current.error).toBeUndefined(); // no error since no prior error
+    expect(result.current.error).toBeUndefined();
   });
 
   it("calls getValidationError and sets error on blur", () => {
@@ -46,24 +46,4 @@ describe("useInput", () => {
 
     expect(result.current.error).toBe("Email is required");
   });
-
-  // it("re-validates on change if error already exists", () => {
-  //   const { result } = renderHook(() => useInput(""));
-
-  //   // Simulate blur to trigger initial error
-  //   act(() => {
-  //     result.current.handleBlur({
-  //       target: { name: "email", value: "" },
-  //     } as React.ChangeEvent<HTMLInputElement>);
-  //   });
-
-  //   // Re-trigger change (this should re-validate)
-  //   act(() => {
-  //     result.current.handleChange({
-  //       target: { name: "email", value: "" },
-  //     } as React.ChangeEvent<HTMLInputElement>);
-  //   });
-
-  //   expect(result.current.error).toBe("Email is required");
-  // });
 });
