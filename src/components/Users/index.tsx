@@ -115,6 +115,10 @@ const Users: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleSearchClear = () => {
+    setSearchTerm("");
+  };
+
   return (
     <>
       <section className="user-list">
@@ -129,7 +133,11 @@ const Users: React.FC = () => {
           </Tooltip>
         </section>
         <section className="search-bar">
-          <Search value={searchTerm} onChange={handleSearch} />
+          <Search
+            value={searchTerm}
+            onChange={handleSearch}
+            onClear={handleSearchClear}
+          />
         </section>
         {isLoading ? (
           <Skeleton />
