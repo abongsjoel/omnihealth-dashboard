@@ -99,29 +99,6 @@ describe("useInput hook", () => {
       expect(result.current.value).toBe("john");
       expect(result.current.error).toBeUndefined();
     });
-
-    // it("does not override existing error when value becomes empty", () => {
-    //   const { result } = renderHook(() => useInput(""));
-
-    //   // Set an initial error
-    //   act(() => {
-    //     result.current.handleBlur({
-    //       target: { name: "username", value: "" },
-    //     } as React.ChangeEvent<HTMLInputElement>);
-    //   });
-
-    //   expect(result.current.error).toBe("Username is required");
-
-    //   // Change to empty again (should not change existing error)
-    //   act(() => {
-    //     result.current.handleChange({
-    //       target: { name: "username", value: "" },
-    //     } as React.ChangeEvent<HTMLInputElement>);
-    //   });
-
-    //   expect(result.current.value).toBe("");
-    //   expect(result.current.error).toBe("Username is required");
-    // });
   });
 
   describe("handleBlur", () => {
