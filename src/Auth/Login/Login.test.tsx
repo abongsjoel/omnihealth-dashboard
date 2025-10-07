@@ -195,9 +195,9 @@ describe("Login Component", () => {
     fireEvent.submit(screen.getByTestId("login_form"));
 
     await waitFor(() => {
-      const errors = screen.getAllByText("Invalid email or password.");
+      const errors = screen.getAllByText("Incorrect Email or Password.");
       expect(errors.length).toBe(2);
-      expect(toast.error).toHaveBeenCalledWith("Invalid email or password.");
+      expect(toast.error).toHaveBeenCalledWith("Incorrect Email or Password.");
     });
   });
 });

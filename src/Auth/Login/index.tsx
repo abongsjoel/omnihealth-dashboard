@@ -61,7 +61,7 @@ const Login: React.FC = () => {
       const error = err as FetchBaseQueryError;
 
       if (error?.status === 401) {
-        const message = "Invalid email or password.";
+        const message = "Incorrect Email or Password.";
         setSubmitError(message);
         document.getElementById("email")?.focus();
         toast.error(message);
