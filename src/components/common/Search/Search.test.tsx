@@ -80,13 +80,6 @@ describe("Search Component", () => {
     expect(mockOnBlur).toHaveBeenCalledTimes(1);
   });
 
-  // it("accepts value prop and displays it", () => {
-  //   render(<Search value="initial value" readOnly />);
-
-  //   const input = screen.getByDisplayValue("initial value");
-  //   expect(input).toBeInTheDocument();
-  // });
-
   it("handles keyboard events", () => {
     const mockOnKeyDown = vi.fn();
     render(<Search onKeyDown={mockOnKeyDown} />);
@@ -168,14 +161,6 @@ describe("Search Component", () => {
     // Should not throw error when clicked without onClear
     expect(() => fireEvent.click(clearIcon!)).not.toThrow();
   });
-
-  // it("supports ref forwarding", () => {
-  //   const ref = React.createRef<HTMLInputElement>();
-  //   render(<Search ref={ref} />);
-
-  //   expect(ref.current).toBeInstanceOf(HTMLInputElement);
-  //   expect(ref.current).toHaveClass("search-input");
-  // });
 
   it("handles value prop changes correctly", () => {
     const { rerender } = render(<Search value="" />);
