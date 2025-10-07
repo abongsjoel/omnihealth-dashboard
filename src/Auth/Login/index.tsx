@@ -18,6 +18,7 @@ import Button from "../../components/common/Button";
 import { useInput } from "../../hooks/useInput";
 
 import "./Login.scss";
+import { getValidationError } from "../../utils/utils";
 
 const Login: React.FC = () => {
   const [loginCareTeam, { isLoading }] = useLoginCareTeamMutation();
@@ -47,6 +48,21 @@ const Login: React.FC = () => {
 
     if (emailError || passwordError) {
       toast.error("Please fix the errors before submitting.");
+      return;
+    }
+
+    const emailValidationError = getValidationError("email", emailValue);
+    const passwordValidationError = getValidationError(
+      "password",
+      passwordValue
+    );
+
+    // Additional check to prevent submission if email or password is invalid
+    if (emailValidationError !== "" || passwordValidationError !== "") {
+      const message = "Incorrect Email or Password.";
+      setSubmitError(message);
+      document.getElementById("email")?.focus();
+      toast.error(message);
       return;
     }
 

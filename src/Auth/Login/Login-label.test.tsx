@@ -50,7 +50,7 @@ describe("Login Component", () => {
       target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: "password123" },
+      target: { value: "Password@123" },
     });
 
     // 🚀 Trigger login

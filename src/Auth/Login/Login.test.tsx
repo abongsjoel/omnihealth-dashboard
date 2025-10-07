@@ -145,7 +145,7 @@ describe("Login Component", () => {
       target: { value: "jane@example.com" },
     });
     fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: "secure123" },
+      target: { value: "Secure@123" },
     });
 
     fireEvent.submit(screen.getByTestId("login_form"));
@@ -167,15 +167,13 @@ describe("Login Component", () => {
       target: { value: "fail@example.com" },
     });
     fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: "wrongpass" },
+      target: { value: "wrong@Pass" },
     });
 
     fireEvent.submit(screen.getByTestId("login_form"));
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        "Unexpected login error. Please try again."
-      );
+      expect(toast.error).toHaveBeenCalledWith("Incorrect Email or Password.");
     });
   });
 
