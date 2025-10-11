@@ -33,13 +33,14 @@ describe("utils.ts", () => {
     vi.clearAllMocks();
   });
 
-  describe("AuthHeader", () => {
+  describe("getAuthHeader", () => {
     it("returns empty Bearer token when localStorage is null", async () => {
       mockLocalStorage.getItem.mockReturnValue(null);
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer ",
       });
     });
@@ -47,9 +48,10 @@ describe("utils.ts", () => {
     it("returns empty Bearer token when localStorage is empty string", async () => {
       mockLocalStorage.getItem.mockReturnValue("");
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer ",
       });
     });
@@ -63,9 +65,10 @@ describe("utils.ts", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockTeamMember));
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer jwt-token-abc123",
       });
     });
@@ -81,9 +84,10 @@ describe("utils.ts", () => {
         JSON.stringify(mockTeamMemberNoToken)
       );
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer ",
       });
     });
@@ -97,9 +101,10 @@ describe("utils.ts", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockTeamMember));
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer ",
       });
     });
@@ -113,9 +118,10 @@ describe("utils.ts", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockTeamMember));
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer ",
       });
     });
@@ -129,9 +135,10 @@ describe("utils.ts", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockTeamMember));
 
-      const { AuthHeader } = await import("./utils");
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
 
-      expect(AuthHeader).toEqual({
+      expect(result).toEqual({
         Authorization: "Bearer ",
       });
     });
@@ -139,17 +146,60 @@ describe("utils.ts", () => {
     it("throws error when localStorage contains invalid JSON", async () => {
       mockLocalStorage.getItem.mockReturnValue("invalid json string");
 
-      await expect(async () => {
-        await import("./utils");
-      }).rejects.toThrow();
+      const { getAuthHeader } = await import("./utils");
+
+      expect(() => getAuthHeader()).toThrow();
     });
 
     it("throws error when localStorage contains malformed JSON", async () => {
       mockLocalStorage.getItem.mockReturnValue('{"name": "John",}'); // trailing comma
 
-      await expect(async () => {
-        await import("./utils");
-      }).rejects.toThrow();
+      const { getAuthHeader } = await import("./utils");
+
+      expect(() => getAuthHeader()).toThrow();
+    });
+
+    it("can be called multiple times and returns fresh token from localStorage", async () => {
+      const { getAuthHeader } = await import("./utils");
+
+      // First call - no token
+      mockLocalStorage.getItem.mockReturnValue(null);
+      expect(getAuthHeader()).toEqual({
+        Authorization: "Bearer ",
+      });
+
+      // Second call - with token
+      const mockTeamMember = {
+        id: "456",
+        fullName: "Dr. John Smith",
+        token: "new-jwt-token-xyz789",
+      };
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockTeamMember));
+
+      expect(getAuthHeader()).toEqual({
+        Authorization: "Bearer new-jwt-token-xyz789",
+      });
+
+      // Verify localStorage.getItem was called each time
+      expect(mockLocalStorage.getItem).toHaveBeenCalledTimes(2);
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith("careteamMember");
+    });
+
+    it("handles whitespace token gracefully", async () => {
+      const mockTeamMember = {
+        id: "123",
+        fullName: "Dr. Jane Doe",
+        token: "   ",
+      };
+
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockTeamMember));
+
+      const { getAuthHeader } = await import("./utils");
+      const result = getAuthHeader();
+
+      expect(result).toEqual({
+        Authorization: "Bearer    ",
+      });
     });
   });
 });
