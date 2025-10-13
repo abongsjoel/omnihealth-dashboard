@@ -124,8 +124,8 @@ const Users: React.FC = () => {
 
   return (
     <>
-      <section className="user-list">
-        <section className="user-list-header">
+      <section className="user_list">
+        <section className="user_list_header">
           <h2 className="title">Users</h2>
           <Tooltip message="Add a new user" position="left">
             <Button

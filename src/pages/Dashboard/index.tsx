@@ -14,10 +14,10 @@ const Dashboard: React.FC = () => {
   const selectedUser = useAppSelector(selectSelectedUser);
 
   return (
-    <main className="dashboard">
+    <main className={`dashboard ${selectedUser ? "user_selected" : ""}`}>
       <Users />
 
-      <section className="chat-area">
+      <section className="chat_area">
         {selectedUser ? (
           <>
             <MessageHeader

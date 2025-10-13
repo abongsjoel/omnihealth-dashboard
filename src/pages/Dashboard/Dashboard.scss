@@ -4,7 +4,7 @@
   height: 95vh;
   font-family: "Open Sans", sans-serif;
 
-  .chat-area {
+  .chat_area {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -18,8 +18,19 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
 
-    .chat-area {
+    .chat_area {
       display: none;
+    }
+
+    // When user is selected, show chat and hide users
+    &.user_selected {
+      .user_list {
+        display: none;
+      }
+
+      .chat_area {
+        display: flex;
+      }
     }
   }
 }

@@ -1,10 +1,10 @@
-.user-list {
+.user_list {
   border-right: 1px solid var(--gray-200);
   padding: 1rem;
   overflow-y: auto;
   background: var(--gray-300);
 
-  .user-list-header {
+  &_header {
     display: flex;
     align-items: end;
     justify-content: space-between;
