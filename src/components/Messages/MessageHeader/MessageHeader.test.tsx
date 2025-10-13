@@ -89,26 +89,26 @@ describe("MessageHeader", () => {
     renderHeader("12345");
     expect(screen.getByText("Jane Doe")).toBeInTheDocument();
     expect(screen.getByText("12345")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "" })).toBeInTheDocument();
+    expect(screen.getByTestId("actions-btn")).toBeInTheDocument();
   });
 
   it("shows dropdown when three-dot button is clicked", () => {
     renderHeader("12345");
-    fireEvent.click(screen.getByRole("button", { name: "" }));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     expect(screen.getByText("Edit Name")).toBeInTheDocument();
     expect(screen.getByText("Delete User")).toBeInTheDocument();
   });
 
   it("renders 'Assign Name' option for unnamed user in dropdown", async () => {
     renderHeader("67890");
-    fireEvent.click(screen.getByRole("button", { name: "" }));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     expect(await screen.findByText("Assign Name")).toBeInTheDocument();
     expect(screen.getByText("Delete User")).toBeInTheDocument();
   });
 
   it("opens modal on dropdown 'Edit User' click", async () => {
     renderHeader("12345");
-    fireEvent.click(screen.getByRole("button", { name: "" }));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     fireEvent.click(screen.getByText("Edit Name"));
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
@@ -118,7 +118,7 @@ describe("MessageHeader", () => {
 
   it("opens modal on dropdown 'Assign Name' click", async () => {
     renderHeader("67890");
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     fireEvent.click(screen.getByText("Assign Name"));
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe("MessageHeader", () => {
 
   it("closes modal when close button is clicked", async () => {
     renderHeader("12345");
-    fireEvent.click(screen.getByRole("button", { name: "" }));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     fireEvent.click(screen.getByText("Edit Name"));
     expect(await screen.findByTestId("modal")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Close"));
@@ -139,7 +139,7 @@ describe("MessageHeader", () => {
 
   it("opens modal on dropdown 'Delete User' click", async () => {
     renderHeader("12345");
-    fireEvent.click(screen.getByRole("button")); // open dropdown
+    fireEvent.click(screen.getByTestId("actions-btn")); // open dropdown
     fireEvent.click(screen.getByText("Delete User")); // click delete
     await waitFor(() => {
       expect(screen.getByTestId("modal")).toBeInTheDocument();
@@ -150,7 +150,7 @@ describe("MessageHeader", () => {
   it("closes dropdown when clicking outside the dropdown", async () => {
     renderHeader("12345");
     // Open dropdown
-    fireEvent.click(screen.getByRole("button", { name: "" }));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     expect(screen.getByText("Edit Name")).toBeInTheDocument();
 
     // Simulate click outside dropdown
@@ -165,7 +165,7 @@ describe("MessageHeader", () => {
   it("does not close dropdown when clicking inside the dropdown", async () => {
     renderHeader("12345");
     // Open dropdown
-    fireEvent.click(screen.getByRole("button", { name: "" }));
+    fireEvent.click(screen.getByTestId("actions-btn"));
     expect(screen.getByText("Edit Name")).toBeInTheDocument();
 
     // Click inside dropdown (on Edit Name)
