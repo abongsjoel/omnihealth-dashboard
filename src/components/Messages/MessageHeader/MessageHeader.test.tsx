@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { usersApi } from "../../../redux/apis/usersApi";
 import authReducer from "../../../redux/slices/authSlice";
+import usersReducer from "../../../redux/slices/usersSlice";
 import MessageHeader from "../MessageHeader";
 
 // Mock modal-related components to prevent actual DOM complexity
@@ -64,20 +65,34 @@ vi.mock("../../../redux/apis/usersApi", async () => {
   };
 });
 
-const renderHeader = (selectedUserId: string) => {
+const renderHeader = (selectedUserId: string, preloadedState = {}) => {
   const store = configureStore({
     reducer: {
       auth: authReducer,
+      users: usersReducer,
       [usersApi.reducerPath]: usersApi.reducer,
     },
     middleware: (gDM) => gDM().concat(usersApi.middleware),
+    preloadedState: {
+      users: {
+        selectedUser: {
+          userId: selectedUserId,
+          userName: "Jane Doe",
+          lastMessageTimeStamp: 0,
+        },
+      },
+      ...preloadedState,
+    },
   });
 
-  return render(
-    <Provider store={store}>
-      <MessageHeader selectedUserId={selectedUserId} />
-    </Provider>
-  );
+  return {
+    store,
+    component: render(
+      <Provider store={store}>
+        <MessageHeader selectedUserId={selectedUserId} />
+      </Provider>
+    ),
+  };
 };
 
 describe("MessageHeader", () => {
@@ -90,6 +105,24 @@ describe("MessageHeader", () => {
     expect(screen.getByText("Jane Doe")).toBeInTheDocument();
     expect(screen.getByText("12345")).toBeInTheDocument();
     expect(screen.getByTestId("actions-btn")).toBeInTheDocument();
+  });
+
+  it("shows back button", () => {
+    renderHeader("12345");
+    expect(screen.getByTestId("back-btn")).toBeInTheDocument();
+  });
+
+  it("dispatches updateSelectedUser(null) when back button is clicked", () => {
+    const { store } = renderHeader("12345");
+
+    // Verify initial state - user is selected
+    expect(store.getState().users.selectedUser?.userId).toBe("12345");
+
+    // Click back button
+    fireEvent.click(screen.getByTestId("back-btn"));
+
+    // Verify selectedUser is cleared
+    expect(store.getState().users.selectedUser).toBeNull();
   });
 
   it("shows dropdown when three-dot button is clicked", () => {
