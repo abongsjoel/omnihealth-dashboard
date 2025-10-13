@@ -4,15 +4,22 @@
   height: 95vh;
   font-family: "Open Sans", sans-serif;
 
-  @media (max-width: $mobile-breakpoint) {
-    grid-template-columns: 1fr 2fr;
-  }
-
   .chat-area {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
     height: 95vh;
+  }
+}
+
+@media (max-width: $mobile-breakpoint) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+
+    .chat-area {
+      display: none;
+    }
   }
 }
