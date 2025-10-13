@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import {
   FiMoreVertical,
   FiEdit2,
@@ -7,7 +6,10 @@ import {
   FiChevronLeft,
 } from "react-icons/fi";
 
+import { useAppDispatch } from "../../../redux/hooks";
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
+import { updateSelectedUser } from "../../../redux/slices/usersSlice";
+
 import UserForm from "../UserForm";
 import Button from "../../common/Button";
 import Modal from "../../common/Modal";
@@ -20,6 +22,8 @@ interface MessageHeaderProps {
 }
 
 const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
+  const dispatch = useAppDispatch();
+
   const { data: users = [] } = useGetUsersQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -54,6 +58,10 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
+  const handleBackToUsers = () => {
+    dispatch(updateSelectedUser(null));
+  };
+
   useEffect(() => {
     if (userName) {
       setAction(userName ? "Edit" : "Assign");
@@ -83,7 +91,7 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
       <header className="message-header">
         <article className="user_info_container">
           <div className="back_button">
-            <Button plain onClick={handleDropdownToggle} data-testid="back-btn">
+            <Button plain onClick={handleBackToUsers} data-testid="back-btn">
               <FiChevronLeft size={30} />
             </Button>
           </div>
