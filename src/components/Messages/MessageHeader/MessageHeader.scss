@@ -10,6 +10,16 @@
   align-items: center;
   justify-content: space-between;
 
+  .user_info_container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .back_button {
+      display: none;
+    }
+  }
+
   .user-info {
     display: flex;
     flex-direction: column;
@@ -83,6 +93,13 @@
 
       .phone-number {
         font-size: 0.6rem;
+      }
+    }
+
+    .user_info_container {
+      .back_button {
+        display: flex;
+        margin-left: -0.5rem;
       }
     }
   }

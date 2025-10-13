@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
+import {
+  FiMoreVertical,
+  FiEdit2,
+  FiTrash2,
+  FiChevronLeft,
+} from "react-icons/fi";
 
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
 import UserForm from "../UserForm";
@@ -76,12 +81,23 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   return (
     <>
       <header className="message-header">
-        <section className="user-info">
-          <h3 className="display-name">{userName}</h3>
-          <h2 className="phone-number">{selectedUserId}</h2>
-        </section>
+        <article className="user_info_container">
+          <div className="back_button">
+            <Button plain onClick={handleDropdownToggle} data-testid="back-btn">
+              <FiChevronLeft size={30} />
+            </Button>
+          </div>
+          <section className="user-info">
+            <h3 className="display-name">{userName}</h3>
+            <h2 className="phone-number">{selectedUserId}</h2>
+          </section>
+        </article>
         <section className="action">
-          <Button plain onClick={handleDropdownToggle}>
+          <Button
+            plain
+            onClick={handleDropdownToggle}
+            data-testid="actions-btn"
+          >
             <FiMoreVertical size={20} />
           </Button>
           {isDropdownOpen && (
