@@ -74,7 +74,13 @@ const renderHeader = (selectedUserId: string, preloadedState = {}) => {
     },
     middleware: (gDM) => gDM().concat(usersApi.middleware),
     preloadedState: {
+      auth: {
+        isAuthenticated: false,
+        returnTo: null,
+        careteamMember: null,
+      },
       users: {
+        users: [], // Add the users array
         selectedUser: {
           userId: selectedUserId,
           userName: "Jane Doe",
