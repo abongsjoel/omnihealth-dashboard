@@ -48,7 +48,7 @@
     flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
-    
+
     .unread_indicator {
       background-color: var(--success);
       color: var(--white);
@@ -60,7 +60,7 @@
       text-align: center;
       white-space: nowrap;
     }
-  
+
     .last_message_time {
       font-size: 0.625rem;
       color: var(--text-200);
@@ -68,7 +68,6 @@
       margin-left: 0.5rem;
     }
   }
-
 
   &.skeleton {
     height: 2rem;
@@ -85,30 +84,6 @@
     }
     50% {
       background-color: #f0f0f0;
-    }
-  }
-}
-
-@media (max-width: $mobile-breakpoint) {
-  .user {
-    font-size: 0.7rem;
-
-    .user-details {
-      .user_name {
-        font-size: 0.75rem;
-      }
-
-      .user_id {
-        font-size: 0.5rem;
-      }
-    }
-
-    .user_id_only {
-      font-size: 0.75rem;
-    }
-
-    .last_message_time {
-      font-size: 0.5rem;
     }
   }
 }

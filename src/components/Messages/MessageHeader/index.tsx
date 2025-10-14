@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
+import {
+  FiMoreVertical,
+  FiEdit2,
+  FiTrash2,
+  FiChevronLeft,
+} from "react-icons/fi";
 
-import { FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
-
+import { useAppDispatch } from "../../../redux/hooks";
 import { useGetUsersQuery } from "../../../redux/apis/usersApi";
+import { updateSelectedUser } from "../../../redux/slices/usersSlice";
+
 import UserForm from "../UserForm";
 import Button from "../../common/Button";
 import Modal from "../../common/Modal";
@@ -15,6 +22,8 @@ interface MessageHeaderProps {
 }
 
 const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
+  const dispatch = useAppDispatch();
+
   const { data: users = [] } = useGetUsersQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -49,6 +58,10 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
     setIsModalOpen(false);
   };
 
+  const handleBackToUsers = () => {
+    dispatch(updateSelectedUser(null));
+  };
+
   useEffect(() => {
     if (userName) {
       setAction(userName ? "Edit" : "Assign");
@@ -76,12 +89,23 @@ const MessageHeader: React.FC<MessageHeaderProps> = ({ selectedUserId }) => {
   return (
     <>
       <header className="message-header">
-        <section className="user-info">
-          <h3 className="display-name">{userName}</h3>
-          <h2 className="phone-number">{selectedUserId}</h2>
-        </section>
+        <article className="user_info_container">
+          <div className="back_button">
+            <Button plain onClick={handleBackToUsers} data-testid="back-btn">
+              <FiChevronLeft size={30} />
+            </Button>
+          </div>
+          <section className="user-info">
+            <h3 className="display-name">{userName}</h3>
+            <h2 className="phone-number">{selectedUserId}</h2>
+          </section>
+        </article>
         <section className="action">
-          <Button plain onClick={handleDropdownToggle}>
+          <Button
+            plain
+            onClick={handleDropdownToggle}
+            data-testid="actions-btn"
+          >
             <FiMoreVertical size={20} />
           </Button>
           {isDropdownOpen && (

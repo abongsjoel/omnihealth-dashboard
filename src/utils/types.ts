@@ -18,6 +18,10 @@ export interface User {
   userName: string;
 }
 
+export interface UserItem extends User {
+  lastMessageTimeStamp: number;
+}
+
 export interface MenuItem {
   label: string;
   path: string;

@@ -16,6 +16,7 @@ import Modal from "../common/Modal";
 import Tooltip from "../common/Tooltip";
 import UserItem from "./UserItem";
 import Search from "../common/Search";
+import type { UserItem as User } from "../../utils/types";
 
 import "./Users.scss";
 
@@ -52,7 +53,7 @@ const Users: React.FC = () => {
     [errorLastMessages, errorUsers]
   );
 
-  const usersList = useMemo(() => {
+  const usersList: User[] = useMemo(() => {
     const updatedList = lastMessages.map((msg) => {
       const user = users.find((u) => u.userId === msg.userId);
 
@@ -68,14 +69,11 @@ const Users: React.FC = () => {
         userId: msg.userId,
         userName: user ? user.userName : "",
         lastMessageTimeStamp: Number.isFinite(ts) ? (ts as number) : 0, // ensure a number
-      };
+      } as User;
     });
 
     // Remove duplicates (in case lastMessages has multiple entries for same userId)
-    const uniqueMap = new Map<
-      string,
-      { userId: string; userName: string; lastMessageTimeStamp: number }
-    >();
+    const uniqueMap = new Map<string, User>();
     updatedList.forEach((u) => {
       if (!uniqueMap.has(u.userId)) {
         uniqueMap.set(u.userId, u);
@@ -96,12 +94,17 @@ const Users: React.FC = () => {
   const filteredUsersList = useMemo(() => {
     if (!searchTerm.trim()) return usersList;
     const lowerSearch = searchTerm.toLowerCase();
+
     return usersList.filter(
       (u) =>
         u.userId.toLowerCase().includes(lowerSearch) ||
         u.userName.toLowerCase().includes(lowerSearch)
     );
   }, [usersList, searchTerm]);
+
+  const handleSelectUser = (user: User) => {
+    dispatch(updateSelectedUser(user));
+  };
 
   const handleAddUserClick = () => {
     setIsModalOpen(true);
@@ -121,8 +124,8 @@ const Users: React.FC = () => {
 
   return (
     <>
-      <section className="user-list">
-        <section className="user-list-header">
+      <section className="user_list">
+        <section className="user_list_header">
           <h2 className="title">Users</h2>
           <Tooltip message="Add a new user" position="left">
             <Button
@@ -132,6 +135,7 @@ const Users: React.FC = () => {
             />
           </Tooltip>
         </section>
+
         <section className="search-bar">
           <Search
             value={searchTerm}
@@ -139,6 +143,7 @@ const Users: React.FC = () => {
             onClear={handleSearchClear}
           />
         </section>
+
         {isLoading ? (
           <Skeleton />
         ) : error ? (
@@ -152,7 +157,7 @@ const Users: React.FC = () => {
               key={usr.userId}
               user={usr}
               isSelected={selectedUser?.userId === usr.userId}
-              onSelect={() => dispatch(updateSelectedUser(usr))}
+              onSelect={() => handleSelectUser(usr)}
             />
           ))
         ) : (
