@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { SurveyEntry } from "../../utils/types";
+import { API_BASE_URL } from "../../config";
 
 export const surveyApi = createApi({
   reducerPath: "surveyApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
+    baseUrl: API_BASE_URL,
   }),
   tagTypes: ["Surveys"],
   endpoints: (builder) => ({
