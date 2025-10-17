@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { CareTeamMember } from "../../utils/types";
+import { API_BASE_URL } from "../../config";
 
 interface CareTeamSignupPayload {
   fullName: string;
@@ -13,7 +14,7 @@ interface CareTeamSignupPayload {
 export const careTeamApi = createApi({
   reducerPath: "careTeamApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
+    baseUrl: API_BASE_URL,
   }),
   endpoints: (builder) => ({
     signupCareTeam: builder.mutation<CareTeamMember, CareTeamSignupPayload>({

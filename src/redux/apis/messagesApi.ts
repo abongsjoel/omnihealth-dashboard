@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getAuthHeader } from "./utils";
 import type { ChatMessage, LastMessage } from "../../utils/types";
+import { API_BASE_URL } from "../../config";
 
 export interface Message {
   to: string;
@@ -11,7 +12,7 @@ export interface Message {
 export const messagesApi = createApi({
   reducerPath: "messagesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
+    baseUrl: API_BASE_URL,
     prepareHeaders: (headers) => {
       const authHeader = getAuthHeader();
       headers.set('Authorization', authHeader.Authorization);

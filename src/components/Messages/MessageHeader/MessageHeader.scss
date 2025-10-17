@@ -86,6 +86,10 @@
 
 @media (max-width: $mobile-breakpoint) {
   .message-header {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+
     .user-info {
       .display-name {
         font-size: 0.75rem;
