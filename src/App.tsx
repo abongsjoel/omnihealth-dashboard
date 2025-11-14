@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createBrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import {
@@ -11,12 +12,26 @@ import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import Route from "./components/Route";
 import MenuBar from "./components/MenuBar";
 import PrivateRoute from "./components/Route/PrivateRoute";
+import Layout from "./components/Layout";
 
 import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
 import Auth from "./Auth";
 
 import "./App.scss";
+
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <Layout />,
+//     errorElement: <ErrorPage />,
+//     children: [
+//       { index: true, element: <HomePage /> },
+//       { path: "products", element: <ProductsPage /> },
+//       { path: "products/:productId", element: <ProductDetail /> },
+//     ],
+//   },
+// ]);
 
 function App() {
   const dispatch = useAppDispatch();
