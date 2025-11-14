@@ -6,11 +6,10 @@ import {
   clearReturnTo,
   login,
   logout,
-  // selectIsAuthenticated,
+  selectIsAuthenticated,
 } from "./redux/slices/authSlice";
-import { useAppDispatch } from "./redux/hooks";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 // import Route from "./components/Route";
-// import MenuBar from "./components/MenuBar";
 // import PrivateRoute from "./components/Route/PrivateRoute";
 import Layout from "./components/Layout";
 
@@ -36,8 +35,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  console.log("App rendered");
+
   const dispatch = useAppDispatch();
-  // const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  console.log({ isAuthenticated });
 
   useEffect(() => {
     const careteamMember = localStorage.getItem("careteamMember");

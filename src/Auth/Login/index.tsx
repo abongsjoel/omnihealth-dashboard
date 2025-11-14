@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { type FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
@@ -10,22 +11,22 @@ import {
   selectReturnTo,
 } from "../../redux/slices/authSlice";
 import { useLoginCareTeamMutation } from "../../redux/apis/careTeamApi";
-import useNavigation from "../../hooks/useNavigation";
 
 import Logo from "../../components/common/Logo";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useInput } from "../../hooks/useInput";
-
-import "./Login.scss";
 import { getValidationError } from "../../utils/utils";
 
-const Login: React.FC = () => {
+import "./Login.scss";
+
+const Login: FC = () => {
+  const navigate = useNavigate();
+
   const [loginCareTeam, { isLoading }] = useLoginCareTeamMutation();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const returnTo = useAppSelector(selectReturnTo);
-  const { navigate } = useNavigation();
 
   const {
     value: emailValue,
