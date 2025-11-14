@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { type FC, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import type { CareTeamMember, MenuItem } from "../../../utils/types";
@@ -10,7 +10,6 @@ interface ThumbnailProps {
   name: string;
   imageUrl?: string;
   menuItems: MenuItem[];
-  onMenuClick: (path: string) => void;
   currentPath: string;
   member: CareTeamMember | null;
   onLogout: () => void;
@@ -26,8 +25,6 @@ const Thumbnail: FC<ThumbnailProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  console.log({ menuItems, currentPath });
 
   const getInitials = (name: string) => {
     const words = name.trim().split(/\s+/);

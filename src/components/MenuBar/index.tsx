@@ -1,5 +1,3 @@
-// import classNames from "classnames";
-
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
 import useNavigation from "../../hooks/useNavigation";
@@ -12,7 +10,7 @@ import "./MenuBar.scss";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentPath, navigate } = useNavigation();
+  const { currentPath } = useNavigation();
 
   const member = useAppSelector(selectLoggedInMember);
   const displayName = member?.displayName;
@@ -28,36 +26,14 @@ const MenuBar: React.FC = () => {
     dispatch(logout());
   };
 
-  const handleMenuClick = (path: string) => {
-    navigate(path);
-  };
-
   return (
     <nav className="menu_bar" data-testid="menu_bar">
       <Logo />
 
-      {/* <ul className="menu_items">
-        {menuItems.map(({ label, path }) => (
-          <li
-            key={path}
-            onClick={() => handleMenuClick(path)}
-            className={classNames("menu_item", {
-              active: currentPath === path,
-            })}
-            data-testid={`menu_item_${path}`}
-          >
-            {label}
-          </li>
-        ))}
-      </ul> */}
-
       <section>
         {menuItems.find((item) => item.path === currentPath) && (
           <p className="current_page" data-testid="current_page">
-            {
-              menuItems.find((item) => item.path === currentPath)
-                ?.label /* Safe to use non-null assertion as we check existence above */
-            }
+            {menuItems.find((item) => item.path === currentPath)?.label}
           </p>
         )}
       </section>
@@ -71,7 +47,6 @@ const MenuBar: React.FC = () => {
           member={member}
           onLogout={handleLogout}
           menuItems={menuItems}
-          onMenuClick={handleMenuClick}
           currentPath={currentPath}
         />
       </section>
