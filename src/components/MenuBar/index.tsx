@@ -1,8 +1,8 @@
+import { useLocation } from "react-router-dom";
+
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout, selectLoggedInMember } from "../../redux/slices/authSlice";
-import useNavigation from "../../hooks/useNavigation";
 import type { MenuItem } from "../../utils/types";
-
 import Logo from "../common/Logo";
 import Thumbnail from "../common/Thumbnail";
 
@@ -10,7 +10,7 @@ import "./MenuBar.scss";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentPath } = useNavigation();
+  const { pathname } = useLocation();
 
   const member = useAppSelector(selectLoggedInMember);
   const displayName = member?.displayName;
@@ -31,9 +31,9 @@ const MenuBar: React.FC = () => {
       <Logo />
 
       <section>
-        {menuItems.find((item) => item.path === currentPath) && (
+        {menuItems.find((item) => item.path === pathname) && (
           <p className="current_page" data-testid="current_page">
-            {menuItems.find((item) => item.path === currentPath)?.label}
+            {menuItems.find((item) => item.path === pathname)?.label}
           </p>
         )}
       </section>
@@ -47,7 +47,7 @@ const MenuBar: React.FC = () => {
           member={member}
           onLogout={handleLogout}
           menuItems={menuItems}
-          currentPath={currentPath}
+          currentPath={pathname}
         />
       </section>
     </nav>
