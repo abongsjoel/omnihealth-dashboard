@@ -1,3 +1,4 @@
+import { type FC } from "react";
 import { useLocation } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -8,7 +9,7 @@ import Thumbnail from "../common/Thumbnail";
 
 import "./MenuBar.scss";
 
-const MenuBar: React.FC = () => {
+const MenuBar: FC = () => {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
 
