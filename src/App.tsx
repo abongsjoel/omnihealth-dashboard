@@ -1,41 +1,43 @@
 import { useEffect } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import {
   clearReturnTo,
   login,
   logout,
-  selectIsAuthenticated,
+  // selectIsAuthenticated,
 } from "./redux/slices/authSlice";
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import Route from "./components/Route";
-import MenuBar from "./components/MenuBar";
-import PrivateRoute from "./components/Route/PrivateRoute";
+import { useAppDispatch } from "./redux/hooks";
+// import Route from "./components/Route";
+// import MenuBar from "./components/MenuBar";
+// import PrivateRoute from "./components/Route/PrivateRoute";
 import Layout from "./components/Layout";
 
 import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
 import Auth from "./Auth";
+import ErrorPage from "./pages/Error";
 
 import "./App.scss";
 
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <Layout />,
-//     errorElement: <ErrorPage />,
-//     children: [
-//       { index: true, element: <HomePage /> },
-//       { path: "products", element: <ProductsPage /> },
-//       { path: "products/:productId", element: <ProductDetail /> },
-//     ],
-//   },
-// ]);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <Dashboard /> },
+      { path: "survey", element: <Survey /> },
+      { path: "login", element: <Auth /> },
+      { path: "signup", element: <Auth /> },
+    ],
+  },
+]);
 
 function App() {
   const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  // const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   useEffect(() => {
     const careteamMember = localStorage.getItem("careteamMember");
@@ -65,8 +67,8 @@ function App() {
           },
         }}
       />
-
-      {isAuthenticated && <MenuBar />}
+      <RouterProvider router={router} />;
+      {/* {isAuthenticated && <MenuBar />}
 
       <main className={`app_main ${!isAuthenticated ? "full_screen" : ""}`}>
         <Route path="/">
@@ -85,7 +87,7 @@ function App() {
         <Route path="/signup">
           <Auth />
         </Route>
-      </main>
+      </main> */}
     </section>
   );
 }
