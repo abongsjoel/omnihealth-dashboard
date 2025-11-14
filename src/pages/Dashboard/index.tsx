@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC } from "react";
 
 import { useAppSelector } from "../../redux/hooks";
 import { selectSelectedUser } from "../../redux/slices/usersSlice";
@@ -10,7 +10,7 @@ import EmptyChat from "../../components/Messages/EmptyChat";
 
 import "./Dashboard.scss";
 
-const Dashboard: React.FC = () => {
+const Dashboard: FC = () => {
   const selectedUser = useAppSelector(selectSelectedUser);
 
   return (
