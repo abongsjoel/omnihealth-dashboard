@@ -10,7 +10,6 @@ const Survey: React.FC = () => {
   const { data: surveys = [], isLoading, error } = useGetAllSurveysQuery();
 
   const data = surveys.filter((s) => s.userId !== "WEB_SIMULATION");
-  console.log({ surveys, isLoading, error });
 
   const config = [
     {
@@ -91,10 +90,20 @@ const Survey: React.FC = () => {
     return survey._id;
   };
 
+  /* Improve subsequently with better loading and error states */
+
   return (
     <div className="survey_container">
       <h1 className="title">Survey Results</h1>
-      <Table data={data} config={config} keyFn={keyFn} />
+      {isLoading ? (
+        <p>Loading survey results...</p>
+      ) : error ? (
+        <p>Error loading survey results.</p>
+      ) : data.length === 0 ? (
+        <p>No survey results found.</p>
+      ) : (
+        <Table data={data} config={config} keyFn={keyFn} />
+      )}
     </div>
   );
 };

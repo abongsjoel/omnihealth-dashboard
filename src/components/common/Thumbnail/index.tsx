@@ -5,6 +5,7 @@ import type { CareTeamMember, MenuItem } from "../../../utils/types";
 import Icon from "../Icon";
 
 import "./Thumbnail.scss";
+import { NavLink } from "react-router-dom";
 
 interface ThumbnailProps {
   name: string;
@@ -22,11 +23,13 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   imageUrl,
   currentPath,
   onLogout,
-  onMenuClick,
+  // onMenuClick,
   member,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  console.log({ menuItems, currentPath });
 
   const getInitials = (name: string) => {
     const words = name.trim().split(/\s+/);
@@ -37,8 +40,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 
   const initials = getInitials(name);
 
-  const handleMenuClick = (path: string) => {
-    onMenuClick(path);
+  const handleMenuClick = () => {
     setIsOpen(false);
   };
 
@@ -88,15 +90,17 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
           </header>
           <ul className="dropdown_main">
             {menuItems.map(({ label, path, iconTitle }) => (
-              <li
-                key={path}
-                onClick={() => handleMenuClick(path)}
-                className={classNames("dropdown_item", {
-                  active: currentPath === path,
-                })}
-              >
-                <Icon title={iconTitle} size="sm" />
-                {label}
+              <li key={path}>
+                <NavLink
+                  to={path}
+                  className={({ isActive }) =>
+                    isActive ? "dropdown_item active" : "dropdown_item"
+                  }
+                  onClick={handleMenuClick}
+                >
+                  <Icon title={iconTitle} size="sm" />
+                  {label}
+                </NavLink>
               </li>
             ))}
             <li className="dropdown_item">
