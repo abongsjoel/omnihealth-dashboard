@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
+import { FC, useEffect, useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 import type { CareTeamMember, MenuItem } from "../../../utils/types";
 import Icon from "../Icon";
 
 import "./Thumbnail.scss";
-import { NavLink } from "react-router-dom";
 
 interface ThumbnailProps {
   name: string;
@@ -17,13 +16,12 @@ interface ThumbnailProps {
   onLogout: () => void;
 }
 
-const Thumbnail: React.FC<ThumbnailProps> = ({
+const Thumbnail: FC<ThumbnailProps> = ({
   name,
   menuItems,
   imageUrl,
   currentPath,
   onLogout,
-  // onMenuClick,
   member,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,14 +101,30 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
                 </NavLink>
               </li>
             ))}
-            <li className="dropdown_item">
-              <Icon title="user" size="sm" />
-              Your profile
+            {/* <li>
+              <NavLink
+                to="/profile"
+                onClick={handleMenuClick}
+                className={({ isActive }) =>
+                  isActive ? "dropdown_item active" : "dropdown_item"
+                }
+              >
+                <Icon title="user" size="sm" />
+                Your profile
+              </NavLink>
             </li>
-            <li className="dropdown_item">
-              <Icon title="settings" size="sm" />
-              Settings
-            </li>
+            <li>
+              <NavLink
+                to="/settings"
+                onClick={handleMenuClick}
+                className={({ isActive }) =>
+                  isActive ? "dropdown_item active" : "dropdown_item"
+                }
+              >
+                <Icon title="settings" size="sm" />
+                Settings
+              </NavLink>
+            </li> */}
           </ul>
           <footer className="dropdown_footer">
             <div className="dropdown_item" onClick={onLogout}>
