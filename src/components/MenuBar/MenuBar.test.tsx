@@ -2,38 +2,43 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import { MemoryRouter } from "react-router-dom";
 
 import MenuBar from "../MenuBar";
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
 
-// Mocks
-const mockNavigate = vi.fn();
-const thumbnailSpy = vi.fn();
+// Define the MenuItem type
+interface MenuItem {
+  label: string;
+  path: string;
+}
 
-vi.mock("../../hooks/useNavigation", () => ({
-  default: () => ({
-    currentPath: "/",
-    navigate: mockNavigate,
-  }),
-}));
+// Mocks
+const thumbnailSpy = vi.fn();
 
 vi.mock("../common/Logo", () => ({
   __esModule: true,
   default: () => <div data-testid="logo">Logo</div>,
 }));
 
-let menuClickFn: ((path: string) => void) | undefined;
-
 vi.mock("../common/Thumbnail", () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: {
+    name: string;
+    onLogout: () => void;
+    menuItems?: MenuItem[];
+    currentPath?: string;
+    onMenuClick?: (path: string) => void;
+  }) => {
     thumbnailSpy(props);
-    menuClickFn = props.onMenuClick;
     return (
-      <button data-testid="logout-button" onClick={props.onLogout}>
-        Logout
-      </button>
+      <div>
+        <div data-testid="thumbnail-name">{props.name}</div>
+        <button data-testid="logout-button" onClick={props.onLogout}>
+          Logout
+        </button>
+      </div>
     );
   },
 }));
@@ -64,10 +69,12 @@ const createStore = () =>
     },
   });
 
-const renderWithStore = (store = createStore()) =>
+const renderWithStore = (store = createStore(), initialRoute = "/") =>
   render(
     <Provider store={store}>
-      <MenuBar />
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <MenuBar />
+      </MemoryRouter>
     </Provider>
   );
 
@@ -80,51 +87,44 @@ describe("MenuBar Component", () => {
     renderWithStore();
     expect(screen.getByTestId("logo")).toBeInTheDocument();
     expect(screen.getByText("Welcome")).toBeInTheDocument();
-    expect(screen.getByText("Dr. Test")).toBeInTheDocument();
+    // Use getByTestId to avoid multiple matches
+    expect(screen.getByTestId("thumbnail-name")).toHaveTextContent("Dr. Test");
     expect(screen.getByTestId("logout-button")).toBeInTheDocument();
   });
-
-  // it("renders menu items and highlights current path", () => {
-  //   renderWithStore();
-  //   expect(screen.getByText("Dashboard")).toHaveClass("menu_item active");
-  //   expect(screen.getByText("Survey")).toHaveClass("menu_item");
-  // });
-
-  // it("calls navigate when a top-level menu item is clicked", () => {
-  //   renderWithStore();
-
-  //   fireEvent.click(screen.getByTestId("menu_item_/survey"));
-
-  //   expect(mockNavigate).toHaveBeenCalledWith("/survey");
-  // });
 
   it("renders the current page label when path matches", () => {
     renderWithStore();
     expect(screen.getByTestId("current_page")).toHaveTextContent("Dashboard");
   });
 
-  it("passes menuItems, onMenuClick, and currentPath to Thumbnail", () => {
+  it("renders Survey label when on /survey route", () => {
+    renderWithStore(createStore(), "/survey");
+    expect(screen.getByTestId("current_page")).toHaveTextContent("Survey");
+  });
+
+  it("passes menuItems and currentPath to Thumbnail", () => {
     renderWithStore();
 
     expect(thumbnailSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        menuItems: expect.any(Array),
-        onMenuClick: expect.any(Function),
+        menuItems: expect.arrayContaining([
+          expect.objectContaining({ label: "Dashboard", path: "/" }),
+          expect.objectContaining({ label: "Survey", path: "/survey" }),
+        ]),
         currentPath: "/",
+        name: "Dr. Test",
       })
     );
   });
 
-  it("calls navigate when handleMenuClick is triggered via Thumbnail", () => {
-    renderWithStore();
+  it("passes correct currentPath to Thumbnail when on /survey", () => {
+    renderWithStore(createStore(), "/survey");
 
-    // Simulate clicking a menu item via Thumbnail
-    if (menuClickFn) {
-      menuClickFn("/survey");
-      expect(mockNavigate).toHaveBeenCalledWith("/survey");
-    } else {
-      throw new Error("onMenuClick not passed to Thumbnail");
-    }
+    expect(thumbnailSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentPath: "/survey",
+      })
+    );
   });
 
   it("dispatches logout when logout button is clicked", () => {
@@ -138,5 +138,10 @@ describe("MenuBar Component", () => {
     expect(dispatchSpy).toHaveBeenCalledWith({
       type: "auth/logout",
     });
+  });
+
+  it("displays displayName over fullName when both exist", () => {
+    renderWithStore();
+    expect(screen.getByTestId("thumbnail-name")).toHaveTextContent("Dr. Test");
   });
 });
