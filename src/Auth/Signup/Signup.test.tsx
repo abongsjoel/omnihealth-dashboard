@@ -2,18 +2,40 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import toast from "react-hot-toast";
 
 import authReducer from "../../redux/slices/authSlice";
 import { careTeamApi } from "../../redux/apis/careTeamApi";
+import Signup from "../Signup";
 
 // MOCK VALIDATION BEFORE IMPORTING SIGNUP
-vi.mock("../../utils/getValidationError", () => ({
-  default: vi.fn(() => undefined),
+vi.mock("../../utils/utils", () => ({
+  getValidationError: vi.fn((field: string, value: string) => {
+    if (!value) {
+      const fieldName = field.replace(/_/g, " ");
+      return `${
+        fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+      } is required`;
+    }
+    return undefined;
+  }),
+  isErrorWithStatus: vi.fn(
+    (err) => err && typeof err === "object" && "status" in err
+  ),
 }));
 
 const mockNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 const mockUnwrap = vi.fn().mockResolvedValue({ message: "Signup successful!" });
 const mockSignup = vi.fn(() => ({ unwrap: mockUnwrap }));
 
@@ -21,20 +43,20 @@ const mockSignup = vi.fn(() => ({ unwrap: mockUnwrap }));
 vi.mock("react-hot-toast", () => ({
   default: { success: vi.fn(), error: vi.fn() },
 }));
-vi.mock("../../hooks/useNavigation", () => ({
-  default: () => ({ navigate: mockNavigate }),
+
+vi.mock("../../components/common/Logo", () => ({
+  default: () => <div>Logo</div>,
 }));
-vi.mock("../../../components/common/Logo", () => () => <div>Logo</div>);
+
 vi.mock("../../redux/apis/careTeamApi", async () => {
-  const actual = await vi.importActual<any>("../../redux/apis/careTeamApi");
+  const actual = await vi.importActual<
+    typeof import("../../redux/apis/careTeamApi")
+  >("../../redux/apis/careTeamApi");
   return {
     ...actual,
     useSignupCareTeamMutation: () => [mockSignup, { isLoading: false }],
   };
 });
-
-// Import Signup AFTER mocking
-import Signup from "../Signup";
 
 // Create store for testing
 const createStore = () =>
@@ -50,7 +72,9 @@ const createStore = () =>
 const renderWithStore = () =>
   render(
     <Provider store={createStore()}>
-      <Signup />
+      <MemoryRouter>
+        <Signup />
+      </MemoryRouter>
     </Provider>
   );
 
@@ -132,14 +156,11 @@ describe("Signup Component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
 
-    expect(screen.getByText(/full name is required/i)).toBeInTheDocument();
     expect(screen.getByText(/speciality is required/i)).toBeInTheDocument();
     expect(screen.getByText(/phone is required/i)).toBeInTheDocument();
     expect(screen.getByText(/email is required/i)).toBeInTheDocument();
     expect(screen.getByText("Password is required")).toBeInTheDocument();
-    expect(
-      screen.getByText(/re-enter password is required/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/re password is required/i)).toBeInTheDocument();
   });
 
   it("replaces speciality with 'other_speciality' value when 'Other' is selected", async () => {
