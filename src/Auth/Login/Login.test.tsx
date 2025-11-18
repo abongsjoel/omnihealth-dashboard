@@ -10,6 +10,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { act } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
 import Login from "../Login";
 import authReducer from "../../redux/slices/authSlice";
@@ -25,9 +26,16 @@ vi.mock("../../utils/utils", () => ({
 
 // Mock APIs
 vi.mock("react-hot-toast", () => ({ default: { error: vi.fn() } }));
-vi.mock("../../../hooks/useNavigation", () => ({
-  default: () => ({ navigate: vi.fn() }),
-}));
+
+// Mock useNavigate from react-router-dom
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 const mockUnwrap = vi.fn();
 const mockLoginMutation = [
@@ -43,7 +51,9 @@ vi.mock("../../redux/apis/careTeamApi", async () => {
   };
 });
 
-vi.mock("../../../components/common/Logo", () => () => <div>Logo</div>);
+vi.mock("../../../components/common/Logo", () => ({
+  default: () => <div>Logo</div>,
+}));
 
 const createStore = () =>
   configureStore({
@@ -65,7 +75,9 @@ const createStore = () =>
 const renderWithStore = (store = createStore()) =>
   render(
     <Provider store={store}>
-      <Login />
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
     </Provider>
   );
 
@@ -172,7 +184,9 @@ describe("Login Component", () => {
 
     render(
       <Provider store={store}>
-        <Login />
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -189,6 +203,26 @@ describe("Login Component", () => {
       const state = store.getState().auth;
       expect(state.isAuthenticated).toBe(true);
       expect(state.careteamMember).toEqual(fakeMember);
+    });
+  });
+
+  it("navigates to dashboard after successful login", async () => {
+    const fakeMember = { id: "1", fullName: "Dr. Jane Doe" };
+    mockUnwrap.mockResolvedValue(fakeMember);
+
+    renderWithStore();
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "jane@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "Secure@123" },
+    });
+
+    fireEvent.submit(screen.getByTestId("login_form"));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/");
     });
   });
 
@@ -330,7 +364,9 @@ describe("Login Component", () => {
 
     render(
       <Provider store={store}>
-        <Login />
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
       </Provider>
     );
 

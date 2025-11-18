@@ -1,26 +1,48 @@
 import { useEffect } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import {
-  clearReturnTo,
-  login,
-  logout,
-  selectIsAuthenticated,
-} from "./redux/slices/authSlice";
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import Route from "./components/Route";
-import MenuBar from "./components/MenuBar";
-import PrivateRoute from "./components/Route/PrivateRoute";
-
+import { clearReturnTo, login, logout } from "./redux/slices/authSlice";
+import { useAppDispatch } from "./redux/hooks";
+import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Survey from "./pages/Survey";
 import Auth from "./Auth";
+import ErrorPage from "./pages/Error";
 
 import "./App.scss";
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "survey",
+        element: (
+          <ProtectedRoute>
+            <Survey />
+          </ProtectedRoute>
+        ),
+      },
+      { path: "login", element: <Auth /> },
+      { path: "signup", element: <Auth /> },
+    ],
+  },
+]);
+
 function App() {
   const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   useEffect(() => {
     const careteamMember = localStorage.getItem("careteamMember");
@@ -50,27 +72,7 @@ function App() {
           },
         }}
       />
-
-      {isAuthenticated && <MenuBar />}
-
-      <main className={`app_main ${!isAuthenticated ? "full_screen" : ""}`}>
-        <Route path="/">
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <Dashboard />
-          </PrivateRoute>
-        </Route>
-        <Route path="/survey">
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <Survey />
-          </PrivateRoute>
-        </Route>
-        <Route path="/login">
-          <Auth />
-        </Route>
-        <Route path="/signup">
-          <Auth />
-        </Route>
-      </main>
+      <RouterProvider router={router} />;
     </section>
   );
 }

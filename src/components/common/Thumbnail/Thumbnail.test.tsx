@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import Thumbnail from "../Thumbnail";
 import type { CareTeamMember, MenuItem } from "../../../utils/types";
 
@@ -23,43 +24,46 @@ describe("Thumbnail Component", () => {
     speciality: "Optamologiest",
     email: "jane@example.com",
     phone: "237670000000",
-    createdAt: new Date().toDateString(),
-    updatedAt: new Date().toDateString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   const onLogout = vi.fn();
-  const onMenuClick = vi.fn();
+
+  const renderWithRouter = (initialRoute = "/dashboard") =>
+    render(
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <Thumbnail
+          name="Jane Smith"
+          menuItems={menuItems}
+          currentPath={initialRoute}
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
+    );
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("renders initials if no image is provided", () => {
-    render(
-      <Thumbnail
-        name="Jane Smith"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
-    );
-
+    renderWithRouter();
     expect(screen.getByText("JS")).toBeInTheDocument();
   });
 
   it("renders image if imageUrl is provided", () => {
     render(
-      <Thumbnail
-        name="Jane Smith"
-        imageUrl="https://example.com/photo.jpg"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name="Jane Smith"
+          imageUrl="https://example.com/photo.jpg"
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     const img = screen.getByAltText("Jane Smith's profile") as HTMLImageElement;
@@ -67,37 +71,25 @@ describe("Thumbnail Component", () => {
     expect(img.src).toContain("https://example.com/photo.jpg");
   });
 
-  it("toggles dropdown on click and calls onMenuClick", () => {
-    render(
-      <Thumbnail
-        name="Jane Smith"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
-    );
+  it("toggles dropdown on click and navigates on menu item click", () => {
+    renderWithRouter();
 
     const thumb = screen.getByText("JS");
     fireEvent.click(thumb);
 
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
-    fireEvent.click(screen.getByText("Patients"));
-    expect(onMenuClick).toHaveBeenCalledWith("/patients");
+
+    // Click on Patients link
+    const patientsLink = screen.getByText("Patients");
+    expect(patientsLink).toBeInTheDocument();
+    fireEvent.click(patientsLink);
+
+    // Dropdown should close after navigation
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
 
   it("calls onLogout when logout is clicked", () => {
-    render(
-      <Thumbnail
-        name="Jane Smith"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
-    );
+    renderWithRouter();
 
     fireEvent.click(screen.getByText("JS"));
     fireEvent.click(screen.getByText("Logout"));
@@ -106,17 +98,18 @@ describe("Thumbnail Component", () => {
 
   it("closes dropdown when clicking outside", () => {
     render(
-      <div>
-        <Thumbnail
-          name="Jane Smith"
-          menuItems={menuItems}
-          currentPath="/dashboard"
-          onLogout={onLogout}
-          onMenuClick={onMenuClick}
-          member={member}
-        />
-        <button data-testid="outside">Outside</button>
-      </div>
+      <MemoryRouter>
+        <div>
+          <Thumbnail
+            name="Jane Smith"
+            menuItems={menuItems}
+            currentPath="/dashboard"
+            onLogout={onLogout}
+            member={member}
+          />
+          <button data-testid="outside">Outside</button>
+        </div>
+      </MemoryRouter>
     );
 
     // Open the dropdown
@@ -131,16 +124,7 @@ describe("Thumbnail Component", () => {
   });
 
   it("toggles dropdown using keyboard (Enter key)", () => {
-    render(
-      <Thumbnail
-        name="Jane Smith"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
-    );
+    renderWithRouter();
 
     const thumbnail = screen
       .getByTestId("thumbnail")
@@ -152,16 +136,7 @@ describe("Thumbnail Component", () => {
   });
 
   it("toggles dropdown using keyboard (spacebar)", () => {
-    render(
-      <Thumbnail
-        name="Jane Smith"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
-    );
+    renderWithRouter();
 
     const thumbnail = screen
       .getByTestId("thumbnail")
@@ -174,14 +149,15 @@ describe("Thumbnail Component", () => {
 
   it("renders single initial if only one name is given", () => {
     render(
-      <Thumbnail
-        name="Jane"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name="Jane"
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     expect(screen.getByText("J")).toBeInTheDocument();
@@ -189,14 +165,15 @@ describe("Thumbnail Component", () => {
 
   it("renders empty initials if name is empty", () => {
     render(
-      <Thumbnail
-        name=""
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name=""
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     const initialEl = screen.getByTestId("thumbnail_initial");
@@ -206,14 +183,15 @@ describe("Thumbnail Component", () => {
 
   it("renders only first initial if second name is missing", () => {
     render(
-      <Thumbnail
-        name="A"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name="A"
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     expect(screen.getByText("A")).toBeInTheDocument();
@@ -221,14 +199,15 @@ describe("Thumbnail Component", () => {
 
   it("covers first initial logic explicitly", () => {
     render(
-      <Thumbnail
-        name="alice"
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name="alice"
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     // Should render "A" as uppercase of first char in name
@@ -237,14 +216,15 @@ describe("Thumbnail Component", () => {
 
   it("handles edge case with only whitespace in name", () => {
     render(
-      <Thumbnail
-        name="   "
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name="   "
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     const initialEl = screen.getByTestId("thumbnail_initial");
@@ -253,44 +233,40 @@ describe("Thumbnail Component", () => {
   });
 
   it("handles edge case with undefined words array scenario", () => {
-    // Test case where the nullish coalescing operator (??) is triggered
     render(
-      <Thumbnail
-        name=""
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name=""
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     const initialEl = screen.getByTestId("thumbnail_initial");
-    expect(initialEl).toHaveTextContent(""); // Should be empty string from ??
+    expect(initialEl).toHaveTextContent("");
   });
 
   it("handles extreme edge case that triggers nullish coalescing", () => {
-    // Test where split creates an array but first element is empty or undefined
-    // This should specifically test the ?? "" part of line 33
     render(
-      <Thumbnail
-        name="    " // Multiple spaces that will be trimmed to empty
-        menuItems={menuItems}
-        currentPath="/dashboard"
-        onLogout={onLogout}
-        onMenuClick={onMenuClick}
-        member={member}
-      />
+      <MemoryRouter>
+        <Thumbnail
+          name="    "
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
     );
 
     const initialEl = screen.getByTestId("thumbnail_initial");
-    expect(initialEl).toHaveTextContent(""); // Should be empty from nullish coalescing
+    expect(initialEl).toHaveTextContent("");
   });
 
   it("tests the complete logic path of getInitials function", () => {
-    // This test ensures we hit all the logic branches in getInitials
-    // including the edge case that may trigger the nullish coalescing
-
     const testCases = [
       { name: "John Doe", expected: "JD" },
       { name: "John", expected: "J" },
@@ -298,20 +274,20 @@ describe("Thumbnail Component", () => {
       { name: "   ", expected: "" },
       { name: "a", expected: "A" },
       { name: "a b", expected: "AB" },
-      // Edge case: string with only non-word characters
       { name: "\t\n\r", expected: "" },
     ];
 
     testCases.forEach(({ name, expected }) => {
       const { rerender } = render(
-        <Thumbnail
-          name={name}
-          menuItems={menuItems}
-          currentPath="/dashboard"
-          onLogout={onLogout}
-          onMenuClick={onMenuClick}
-          member={member}
-        />
+        <MemoryRouter>
+          <Thumbnail
+            name={name}
+            menuItems={menuItems}
+            currentPath="/dashboard"
+            onLogout={onLogout}
+            member={member}
+          />
+        </MemoryRouter>
       );
 
       const initialEl = screen.getByTestId("thumbnail_initial");
@@ -320,5 +296,48 @@ describe("Thumbnail Component", () => {
       // Clean up for next iteration
       rerender(<div />);
     });
+  });
+
+  it("closes dropdown when currentPath changes", () => {
+    const { rerender } = render(
+      <MemoryRouter initialEntries={["/dashboard"]}>
+        <Thumbnail
+          name="Jane Smith"
+          menuItems={menuItems}
+          currentPath="/dashboard"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
+    );
+
+    // Open dropdown
+    fireEvent.click(screen.getByText("JS"));
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+
+    // Change currentPath prop
+    rerender(
+      <MemoryRouter initialEntries={["/patients"]}>
+        <Thumbnail
+          name="Jane Smith"
+          menuItems={menuItems}
+          currentPath="/patients"
+          onLogout={onLogout}
+          member={member}
+        />
+      </MemoryRouter>
+    );
+
+    // Dropdown should be closed
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
+  });
+
+  it("displays member information in dropdown header", () => {
+    renderWithRouter();
+
+    fireEvent.click(screen.getByText("JS"));
+
+    expect(screen.getByText("Dr. Jane Smith")).toBeInTheDocument();
+    expect(screen.getByText("jane@example.com")).toBeInTheDocument();
   });
 });

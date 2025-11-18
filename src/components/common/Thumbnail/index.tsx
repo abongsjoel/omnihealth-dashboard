@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
+import { type FC, useEffect, useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 import type { CareTeamMember, MenuItem } from "../../../utils/types";
 import Icon from "../Icon";
@@ -10,19 +10,17 @@ interface ThumbnailProps {
   name: string;
   imageUrl?: string;
   menuItems: MenuItem[];
-  onMenuClick: (path: string) => void;
   currentPath: string;
   member: CareTeamMember | null;
   onLogout: () => void;
 }
 
-const Thumbnail: React.FC<ThumbnailProps> = ({
+const Thumbnail: FC<ThumbnailProps> = ({
   name,
   menuItems,
   imageUrl,
   currentPath,
   onLogout,
-  onMenuClick,
   member,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,8 +35,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 
   const initials = getInitials(name);
 
-  const handleMenuClick = (path: string) => {
-    onMenuClick(path);
+  const handleMenuClick = () => {
     setIsOpen(false);
   };
 
@@ -88,25 +85,43 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
           </header>
           <ul className="dropdown_main">
             {menuItems.map(({ label, path, iconTitle }) => (
-              <li
-                key={path}
-                onClick={() => handleMenuClick(path)}
-                className={classNames("dropdown_item", {
-                  active: currentPath === path,
-                })}
-              >
-                <Icon title={iconTitle} size="sm" />
-                {label}
+              <li key={path}>
+                <NavLink
+                  to={path}
+                  className={({ isActive }) =>
+                    isActive ? "dropdown_item active" : "dropdown_item"
+                  }
+                  onClick={handleMenuClick}
+                >
+                  <Icon title={iconTitle} size="sm" />
+                  {label}
+                </NavLink>
               </li>
             ))}
-            <li className="dropdown_item">
-              <Icon title="user" size="sm" />
-              Your profile
+            {/* <li>
+              <NavLink
+                to="/profile"
+                onClick={handleMenuClick}
+                className={({ isActive }) =>
+                  isActive ? "dropdown_item active" : "dropdown_item"
+                }
+              >
+                <Icon title="user" size="sm" />
+                Your profile
+              </NavLink>
             </li>
-            <li className="dropdown_item">
-              <Icon title="settings" size="sm" />
-              Settings
-            </li>
+            <li>
+              <NavLink
+                to="/settings"
+                onClick={handleMenuClick}
+                className={({ isActive }) =>
+                  isActive ? "dropdown_item active" : "dropdown_item"
+                }
+              >
+                <Icon title="settings" size="sm" />
+                Settings
+              </NavLink>
+            </li> */}
           </ul>
           <footer className="dropdown_footer">
             <div className="dropdown_item" onClick={onLogout}>

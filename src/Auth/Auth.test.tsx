@@ -1,12 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen } from "@testing-library/react";
-import { renderWithProvider } from "../utils/test-utils";
-// import Auth from "../Auth";
-
-// Mock useNavigation to simulate different paths
-vi.mock("../hooks/useNavigation", () => ({
-  default: () => ({ currentPath: "/" }),
-}));
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import Auth from "../Auth";
 
 // Mock Login and Signup components
 vi.mock("./Login", () => ({
@@ -24,35 +19,45 @@ vi.mock("./AuthImg", () => ({
   ),
 }));
 
+const renderWithRouter = (initialRoute: string) =>
+  render(
+    <MemoryRouter initialEntries={[initialRoute]}>
+      <Auth />
+    </MemoryRouter>
+  );
+
 describe("Auth Component", () => {
-  beforeEach(() => {
-    vi.resetModules(); // Reset module cache between tests
-  });
-
-  it("renders Signup component when path is /signup", async () => {
-    vi.doMock("../hooks/useNavigation", () => ({
-      default: () => ({ currentPath: "/signup" }),
-    }));
-
-    // Re-import component after mocking updated module
-    const { default: AuthWithSignup } = await import("../Auth");
-    renderWithProvider(<AuthWithSignup />);
+  it("renders Signup component when path is /signup", () => {
+    renderWithRouter("/signup");
 
     expect(screen.getByText("Signup Component")).toBeInTheDocument();
     expect(screen.queryByText("Login Component")).not.toBeInTheDocument();
     expect(screen.getByText(/Auth Image Component/)).toBeInTheDocument();
   });
 
-  it("renders Login component when path is not /signup", async () => {
-    vi.doMock("../hooks/useNavigation", () => ({
-      default: () => ({ currentPath: "/login" }),
-    }));
-
-    const { default: AuthWithLogin } = await import("../Auth");
-    renderWithProvider(<AuthWithLogin />);
+  it("renders Login component when path is /login", () => {
+    renderWithRouter("/login");
 
     expect(screen.getByText("Login Component")).toBeInTheDocument();
     expect(screen.queryByText("Signup Component")).not.toBeInTheDocument();
     expect(screen.getByText(/Auth Image Component/)).toBeInTheDocument();
+  });
+
+  it("renders Login component when path is / (default)", () => {
+    renderWithRouter("/");
+
+    expect(screen.getByText("Login Component")).toBeInTheDocument();
+    expect(screen.queryByText("Signup Component")).not.toBeInTheDocument();
+    expect(screen.getByText(/Auth Image Component/)).toBeInTheDocument();
+  });
+
+  it("renders AuthImg with correct images", () => {
+    renderWithRouter("/login");
+
+    // The AuthImg mock should render with images passed to it
+    const authImgElement = screen.getByText(/Auth Image Component/);
+    expect(authImgElement).toBeInTheDocument();
+    // The mock displays the image paths, so we can verify it received them
+    expect(authImgElement).toHaveTextContent("Auth Image Component:");
   });
 });

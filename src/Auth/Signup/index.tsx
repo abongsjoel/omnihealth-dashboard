@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from "react";
+import { type FC, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useSignupCareTeamMutation } from "../../redux/apis/careTeamApi";
-import useNavigation from "../../hooks/useNavigation";
 import { getValidationError, isErrorWithStatus } from "../../utils/utils";
 
 import Logo from "../../components/common/Logo";
@@ -44,9 +44,10 @@ const validate = (formValues: FormValues): FormErrors => {
   return errors;
 };
 
-const Signup: React.FC = () => {
+const Signup: FC = () => {
+  const navigate = useNavigate();
+
   const [signupCareTeam, { isLoading }] = useSignupCareTeamMutation();
-  const { navigate } = useNavigation();
 
   const [formValues, setFormValues] = useState<FormValues>({
     fullName: "",

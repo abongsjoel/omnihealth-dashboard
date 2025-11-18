@@ -1,16 +1,31 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import Survey from "../Survey";
+import type { SurveyEntry } from "../../utils/types";
+
+// Define types for Table component props
+interface TableConfig<T> {
+  label: string;
+  render: (row: T) => React.ReactNode;
+  sortValue?: (row: T) => string | number;
+}
+
+interface TableProps<T> {
+  data: T[];
+  config: TableConfig<T>[];
+  keyFn: (row: T) => string;
+}
 
 // Mock the Table component
 vi.mock("../../components/common/Table", () => ({
-  default: ({ data, config, keyFn }: any) => (
+  default: <T,>({ data, config, keyFn }: TableProps<T>) => (
     <div>
       Mocked Table
-      {data.map((row: any) => (
+      {data.map((row: T) => (
         <div key={keyFn(row)}>
-          {row.userId} -{" "}
-          {config.find((c: any) => c.label === "Conditions")?.render(row)}
+          {(row as SurveyEntry).userId} -{" "}
+          {config.find((c) => c.label === "Conditions")?.render(row)}
         </div>
       ))}
     </div>
@@ -28,13 +43,20 @@ vi.mock("../../redux/apis/surveysApi", async () => {
 
 import { useGetAllSurveysQuery } from "../../redux/apis/surveysApi";
 
+const renderWithRouter = () =>
+  render(
+    <MemoryRouter>
+      <Survey />
+    </MemoryRouter>
+  );
+
 describe("Survey Component", () => {
   it("renders survey data correctly", () => {
-    const mockSurveys = [
+    const mockSurveys: SurveyEntry[] = [
       {
         _id: "1",
         userId: "12345",
-        age: 28,
+        age: "28",
         gender: "Female",
         conditions: ["Hypertension"],
         duration: "2 months",
@@ -47,11 +69,12 @@ describe("Survey Component", () => {
         challenge: "None",
         receive_care: "Home",
         interested: "Yes",
+        timestamp: new Date().toISOString(),
       },
       {
         _id: "2",
         userId: "WEB_SIMULATION", // Should be filtered out
-        age: 30,
+        age: "30",
         gender: "Male",
         conditions: ["Diabetes"],
         duration: "1 year",
@@ -64,16 +87,29 @@ describe("Survey Component", () => {
         challenge: "Distance",
         receive_care: "Hospital",
         interested: "No",
+        timestamp: new Date().toISOString(),
       },
     ];
 
-    (useGetAllSurveysQuery as any).mockReturnValue({
+    vi.mocked(useGetAllSurveysQuery).mockReturnValue({
       data: mockSurveys,
       isLoading: false,
-      error: null,
+      error: undefined,
+      isSuccess: true,
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      refetch: vi.fn(),
+      startedTimeStamp: Date.now(),
+      fulfilledTimeStamp: Date.now(),
+      currentData: mockSurveys,
+      endpointName: "getAllSurveys",
+      requestId: "test-request-id",
+      originalArgs: undefined,
+      status: "fulfilled",
     });
 
-    render(<Survey />);
+    renderWithRouter();
 
     expect(screen.getByText("Survey Results")).toBeInTheDocument();
     expect(screen.getByText("Mocked Table")).toBeInTheDocument();
@@ -85,26 +121,76 @@ describe("Survey Component", () => {
   });
 
   it("handles loading state", () => {
-    (useGetAllSurveysQuery as any).mockReturnValue({
-      data: [],
+    vi.mocked(useGetAllSurveysQuery).mockReturnValue({
+      data: undefined,
       isLoading: true,
-      error: null,
+      error: undefined,
+      isSuccess: false,
+      isError: false,
+      isFetching: true,
+      isUninitialized: false,
+      refetch: vi.fn(),
+      startedTimeStamp: Date.now(),
+      fulfilledTimeStamp: undefined,
+      currentData: undefined,
+      endpointName: "getAllSurveys",
+      requestId: "test-request-id",
+      originalArgs: undefined,
+      status: "pending",
     });
 
-    render(<Survey />);
+    renderWithRouter();
     expect(screen.getByText("Survey Results")).toBeInTheDocument();
-    expect(screen.getByText("Mocked Table")).toBeInTheDocument();
+    expect(screen.getByText("Loading survey results...")).toBeInTheDocument();
   });
 
   it("handles error state", () => {
-    (useGetAllSurveysQuery as any).mockReturnValue({
-      data: [],
+    vi.mocked(useGetAllSurveysQuery).mockReturnValue({
+      data: undefined,
       isLoading: false,
-      error: { message: "Failed to fetch" },
+      error: { status: 500, data: { message: "Failed to fetch" } },
+      isSuccess: false,
+      isError: true,
+      isFetching: false,
+      isUninitialized: false,
+      refetch: vi.fn(),
+      startedTimeStamp: Date.now(),
+      fulfilledTimeStamp: undefined,
+      currentData: undefined,
+      endpointName: "getAllSurveys",
+      requestId: "test-request-id",
+      originalArgs: undefined,
+      status: "rejected",
     });
 
-    render(<Survey />);
+    renderWithRouter();
     expect(screen.getByText("Survey Results")).toBeInTheDocument();
-    expect(screen.getByText("Mocked Table")).toBeInTheDocument();
+    expect(
+      screen.getByText("Error loading survey results.")
+    ).toBeInTheDocument();
+  });
+
+  it("handles empty data state", () => {
+    vi.mocked(useGetAllSurveysQuery).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: undefined,
+      isSuccess: true,
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      refetch: vi.fn(),
+      startedTimeStamp: Date.now(),
+      fulfilledTimeStamp: Date.now(),
+      currentData: [],
+      endpointName: "getAllSurveys",
+      requestId: "test-request-id",
+      originalArgs: undefined,
+      status: "fulfilled",
+    });
+
+    renderWithRouter();
+    expect(screen.getByText("Survey Results")).toBeInTheDocument();
+    expect(screen.getByText("No survey results found.")).toBeInTheDocument();
   });
 });
